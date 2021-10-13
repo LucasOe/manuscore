@@ -1,19 +1,18 @@
 # Praktikum Visual Computing I - Leitfaden
 
 ## Praktikumszeitplan, Termine und Fristen
-
 - **KW 38 - 41**
   - Bildverarbeitung: Einführung in OpenCV; Computergrafik: Einführung in OpenGL/Jogl
-- **ab KW 4 1** spätester _Projektstart_
+- **ab KW 41** - spätester _Projektstart_
 - **KW 39** – Freitag, 01.10.2021 18 Uhr MEZ: _Abgabe Praktikumsanmeldung (Teammitglieder, Projektleitung)_
   - _Pro Team eine Anmeldung_
-- **KW 4 1** – Freitag, 15.10.20 21 Uhr MEZ: _Abgabe Idee, Pflichtenheft und Prototypen_
+- **KW 41** – Freitag, 15.10.20 21 Uhr MEZ: _Abgabe Idee, Pflichtenheft und Prototypen_
   - _Pro Team je ein Upload Pflichtenheft und Prototyp_
 - **KW 42/43** – Projekt: Präsentation der Projektidee und des Prototyps in der Kontaktzeit
   - pro Team je eine Präsentation in Bildverarbeitung (Projektarbeit Teil Bildverarbeitung) und Computergrafik (Projektarbeit Teil Computergrafik)
 - **KW 44-50** – Projekt: Kontaktzeit und _Abgabe vor der Kontaktzeit: Statusbericht (Daily SCRUM Template)_
   - _pro Team eine Abgabe (Upload vor der Kontaktzeit)_
-- **KW 51** _– Projekt: Kontaktzeit_
+- **KW 51** - _Projekt: Kontaktzeit_
 - **KW 51** – Donnerstag, 23.12.21 12 Uhr MEZ: späteste _Projektabgabe (Softwareprodukt, Projektabschlussbericht, Projektabschlusspräsentation, Projektvideo)_
   - _pro Team eine Abgabe_
 - **KW 1/2 (2022)** – Projekt: Projektabschlusspräsentation in der Kontaktzeit:
@@ -22,27 +21,25 @@
   - _pro Teammitglied eine Abgabe_
 
 ## Teams
+Sie formen innerhalb ihrer Gruppe eigenständig ein Team, welches aus vier Studierenden bestehen muss. In begründeten Ausnahmefällen sind Dreierteams möglich.
 
-Sie formen innerhalb ihrer Gruppe eigenständig ein Team, welches aus vier Studierenden bestehen muss. In begründeten Ausnahmefälle n sind Dreierteams möglich.
-
-Führen Sie frühestmöglich ein Kick- Off-Meeting mit Ihrem Team durch, in dem u.a. die Projektl eitung festgelegt wird. Wenden Sie die Inhalte der Projektmanagement- Lehrveranstaltung des 2. Fachsemesters CvD an.
+Führen Sie frühestmöglich ein Kick-Off-Meeting mit Ihrem Team durch, in dem u.a. die Projektleitung festgelegt wird. Wenden Sie die Inhalte der Projektmanagement- Lehrveranstaltung des 2. Fachsemesters CvD an.
 
 **Alle Abgaben sind vom Team bzw. Teammitgliedern eigenständig und fristgerecht auf der Lernplattform zu erbringen.**
 
 **Während der Präsentation der Projektidee und bei der Projektabschlusspräsentation ist von jedem Teammitglied ein Redeanteil zu erbringen. Jeder nicht erfolgte Redeanteil wird für das betreffende Teammitglied mit 0 Punkten bewertet.**
 
 ## Dokumentenvorlagen und -abgaben
-
 Sie verwenden für Ihre Abgaben die Dokumentenvorlagen (Templates), die Ihnen über die Lernplattform zur Verfügung gestellt werden.
 
 Die Abgaben werden per Upload im Moodle-Kurs „Praktikum Visual Computing I“ vom Projektteam selbständig und fristgerecht realisiert.
 
 ## Praktikumsanmeldung
-Bitte laden Sie bis zum Anmeldeschluss (siehe oben) **einmal pro Team** die von alle n Teammitglie dern unterschriebene Praktikumsanmeldung auf der Lernplattform hoch. Die Praktikumsanmeldung muss elektronisch im PDF-Format ausgefüllt sein. Eingescannte oder abfotografierte handschriftlich ausgefüllte Anmeldungen können nicht akzeptiert werden.
+Bitte laden Sie bis zum Anmeldeschluss (siehe oben) **einmal pro Team** die von allen Teammitgliedern unterschriebene Praktikumsanmeldung auf der Lernplattform hoch. Die Praktikumsanmeldung muss elektronisch im PDF-Format ausgefüllt sein. Eingescannte oder abfotografierte handschriftlich ausgefüllte Anmeldungen können nicht akzeptiert werden.
 
 Hierbei nennen Sie
-- Namen der Teammitglie der mit E-Mail-Adressen
-- Name des Projektl eiters in Ihrem Proj ektt eam
+- Namen der Teammitglieder mit E-Mail-Adressen
+- Name des Projektleiters in Ihrem Projektteam
 
 ## Idee, Pflichtenheft und Prototypen
 Bitte laden Sie bis zum Uploadschluss (siehe oben) je einmal pro Team das Pflichtenheft im pdf-Format und die Idee sowie den Prototypen Ihres Projektes auf der Lernplattform hoch.
@@ -55,13 +52,13 @@ Sie werden im Laufe der Projektarbeit fachlich durch die folgenden Personen unte
 Die Dozenten dienen als Ansprechpersonen während der Projektphase.
 
 ## Projektthemen
-Ihr Projektthema muss sich mit den Lerninhalten aus den Lehrveranstaltungen Bildverarbeitung und Computergrafik besch äftigen und sich auf **innovative** Weise von verfügbaren Lösungen abheben. In Ihrer Team-Anmeldung bis spätestens zum 8.10.20 18 Uhr MEZ beschreiben Sie Ihre Projektidee kurz und verständlich, so dass spätestens bei der Präsentation der Projektidee in KW 42 und 43 die Aufgabenstellung mit den Dozenten abgestimmt werden kann.
+Ihr Projektthema muss sich mit den Lerninhalten aus den Lehrveranstaltungen Bildverarbeitung und Computergrafik beschäftigen und sich auf **innovative** Weise von verfügbaren Lösungen abheben. In Ihrer Team-Anmeldung bis spätestens zum 8.10.20 18 Uhr MEZ beschreiben Sie Ihre Projektidee kurz und verständlich, so dass spätestens bei der Präsentation der Projektidee in KW 42 und 43 die Aufgabenstellung mit den Dozenten abgestimmt werden kann.
 
 Was genau die Bildverarbeitung und Computergrafik ist und wie sie zusammenhängen, wird in den ersten beiden Wochen der Vorlesungen und Übungen detailliert besprochen. Hier haben Sie bereits die Möglichkeit in diesen Lehrveranstaltungen erste Projektideen zu entwickeln und diese mit den Dozenten abzustimmen.
 
-Hierzu sollen Sie zwei Arbeitspakete „Bildverarbeitu ng“ und „Computergrafik“ in Ihrem Projektplan definieren, die die Inhalte diese r Lehrve ranstaltungen entweder miteinander vereinen oder unabhängig voneinander bearbeiten.
+Hierzu sollen Sie zwei Arbeitspakete „Bildverarbeitung“ und „Computergrafik“ in Ihrem Projektplan definieren, die die Inhalte diese r Lehrveranstaltungen entweder miteinander vereinen oder unabhängig voneinander bearbeiten.
 
-Es muss ein innovativer **Eigenanteil** des Projektt eams in der Lösung erkennbar sein. Eine starke inhaltliche Überschneidung der Themen von verschiedenen Teams ist dabei nicht erwünscht. Falls Ihre Dozenten eine zu starke Überschneidung feststellen, muss das Thema Ihres Teams in Absprach e mit den Dozenten modifiziert werden.
+Es muss ein innovativer **Eigenanteil** des Projektteams in der Lösung erkennbar sein. Eine starke inhaltliche Überschneidung der Themen von verschiedenen Teams ist dabei nicht erwünscht. Falls Ihre Dozenten eine zu starke Überschneidung feststellen, muss das Thema Ihres Teams in Absprach e mit den Dozenten modifiziert werden.
 
 Sprechen Sie zudem bereits in den ersten Praktikumsstunden mit Ihren Dozenten über Ihre Projektidee und die weitere Vorgehensweise. **Eine Nachprogrammierung einer Praktikumsaufgabe oder einer Aufgabe aus dem Internet erfüllt nicht das Projektziel.** Falls Sie Quellen verwenden, achten Sie unbedingt auf den korrekten Verweis auf den Urheber. Andernfalls muss Ihre Arbeit als **Plagiat** und als **schwerer Täuschungsversuch** gewertet werden. Achten Sie auch unabhängig von der korrekten Zitierweise darauf, dass Sie die Quellen verwenden dürfen (Regelungen in den Lizenzbestimmungen).
 
@@ -98,12 +95,12 @@ Das Projekt wird über die Lernplattform abgegeben (Abgabetermin: siehe oben). B
 
 Sollten die Datei en zu groß sein, um sie per Upload abzugeben, kontaktieren Sie Frau MSc. Kathleen Pelikan (+49 (2381) 8789 – 932 , Kathleen.Pelikan@hshl.de), um Ihre Daten mit dem Datenträger (z.B. CD/DVD) abzugeben. Sollten Sie eine Abgabe z.B. per USB-Stick oder mobiler Festplatte durchführen, kann der Datenträger aus prüfungsrechtlichen Gründen nicht zurückgegeben werden.
 
-Bitte geben Sie pro Praktikumsteam nur **einmal** Ihre Ergebnisse ab. Benennen Sie die Datei en wie oben angegeben so, dass Ihre Abgabe klar Ihrem Praktikumsteam zugeordnet werden ka nn (verwenden Sie wie zuvor beschrieben Ihre Teamnummer in der Dateibenennung).
+Bitte geben Sie pro Praktikumsteam nur **einmal** Ihre Ergebnisse ab. Benennen Sie die Datei en wie oben angegeben so, dass Ihre Abgabe klar Ihrem Praktikumsteam zugeordnet werden kann (verwenden Sie wie zuvor beschrieben Ihre Teamnummer in der Dateibenennung).
 
 Das **Softwareprodukt** ist ein ZIP-komprimiertes IntelliJ-Projekt (inklusive einer **ausführbaren** jar-Datei bei Java-/Jogl/OpenCV-Programmierung) und muss folgende Anforderungen erfüllen:
 
 - Das Java-/Jogl-/OpenCV-Programm muss lauffähig, funktionsfähig in einer angemessenen Geschwindigke it sein.
-- Der Ja va-Quellcode muss in einer Standard-IntelliJ-Struktur vorliegen. In diese m Ordner befinden sich die IntelliJ-Metadaten und das oder die Projekte. Falls diese Struktur nicht eingehalten wird, kann eine Bewertung nicht stattfinden. Das Projektprogramm wird in diesem Fall mit 0 Punkten bewertet.
+- Der Java-Quellcode muss in einer Standard-IntelliJ-Struktur vorliegen. In diese m Ordner befinden sich die IntelliJ-Metadaten und das oder die Projekte. Falls diese Struktur nicht eingehalten wird, kann eine Bewertung nicht stattfinden. Das Projektprogramm wird in diesem Fall mit 0 Punkten bewertet.
 - Lauffähig mit Adopt OpenJDK 11 (LTS)
 - Alle Ressourcen (Bilder, weitere Libraries, etc.) müssen mit abgegeben werden.
 - Das Programm muss über eine GUI oder über die Kommandozeile bedienbar sein.
@@ -113,12 +110,12 @@ Der **Projektabschlussbericht** (Richtwert: ca. 20-25 Seiten ohne den Quellcode,
 
 - Verwendete Algorithmen und deren Erläuterung, Softwarebeschreibung, Lessons Learned.
 - Im Anhang: Kompletter, mit JavaDoc selbsterklärend kommentierte Java/Jogl/OpenCV-Quellcodes.
-- Im Anhang: Eine genaue Besc hreibung wie das Programm zu installieren und zu starten ist.
+- Im Anhang: Eine genaue Beschreibung wie das Programm zu installieren und zu starten ist.
 
 Die **Projektabschlusspräsentation** ist eine PDF-Datei (z.B. extrahiert aus einer Powerpoint-Präsentation) und muss folgende Aspekte abdecken:
 
-- Besc hreibung des Entwurfs und der verwendeten Algorithmen, aufgeteilt in die Arbeitspakete Computergrafik und Bildverarbeitung.
-- Anschauliche Erkl ärung der verwendeten Algorithmen.
+- Beschreibung des Entwurfs und der verwendeten Algorithmen, aufgeteilt in die Arbeitspakete Computergrafik und Bildverarbeitung.
+- Anschauliche Erklärung der verwendeten Algorithmen.
 - Screenshots der lauffähigen Software.
 - Ansprechende Gestaltung der Präsentation.
 
@@ -158,9 +155,9 @@ Cosma, G.; Joy, M., "Towards a Definition of Source-Code Plagiarism," Education,
 no.2, pp.195,200, May 2008
 ```
 ## Projektabschlusspräsentation
-Die Präsentationen der Projektergebnisse (Projektabschlusspräsentation) erfolgt als Team fachspezifisch in den Praktikumsstunden der Computergrafik und der Bildverarbeitu ng in KW 2 und 3, 2021. Präse nti ert werden im Team - nach einer kurzen Beschreibung Ihres Gesamtprojektes - im Praktikum Bildverarbeitung das Arbeitspake t Bildverarbeitu ng und im Praktikum Computergrafik das Arbeitspaket Computergrafik. Die Dauer der Präsentation der einzelnen Arbeitspake te sollte 10 Minuten inklusive Diskussion nicht überschreiten.
+Die Präsentationen der Projektergebnisse (Projektabschlusspräsentation) erfolgt als Team fachspezifisch in den Praktikumsstunden der Computergrafik und der Bildverarbeitung in KW 2 und 3, 2021. Präsentiert werden im Team - nach einer kurzen Beschreibung Ihres Gesamtprojektes - im Praktikum Bildverarbeitung das Arbeitspaket Bildverarbeitung und im Praktikum Computergrafik das Arbeitspaket Computergrafik. Die Dauer der Präsentation der einzelnen Arbeitspakete sollte 10 Minuten inklusive Diskussion nicht überschreiten.
 
-Diese Teamleistung fließt in die Bewertung ein. Die Nichtteilnahme führt zu einer Bewertung des gesa mten Präse ntationsteils, auch bei Teilnahme aber fehlendem Redeanteil, mit 0 Punkten.
+Diese Teamleistung fließt in die Bewertung ein. Die Nichtteilnahme führt zu einer Bewertung des gesamten Präsentationsteils, auch bei Teilnahme aber fehlendem Redeanteil, mit 0 Punkten.
 
 ## Einwilligungserklärung (optional)
 Bei einer guten Projektleistung präsentieren wir Ihre Projektinhalte von Seiten der HSHL gern Studierenden niedrigerer Semester oder anderen Interessenten. Die Verwendung durch die HSHL dient nur nicht-kommerziellen Zwecken. Wenn Sie dies möchten, geben Sie mit Ihrer Projektabgabe eine ausgefüllt und von allen Teammitgliedern unterschriebene Einwilligungserklärung als PDF-Dokument ab.
