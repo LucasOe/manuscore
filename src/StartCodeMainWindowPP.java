@@ -58,9 +58,9 @@ import com.jogamp.opengl.util.FPSAnimator;
 public class StartCodeMainWindowPP extends JFrame {
 
     private static final long serialVersionUID = 1L;
-    private static String FRAME_TITLE = "Start Code Main Window - Programmable Pipeline";
-    private static final int GLCANVAS_WIDTH = 640; // width of the canvas
-    private static final int GLCANVAS_HEIGHT = 480; // height of the canvas
+    private static String FRAME_TITLE = "ManosCore - Programmable Pipeline";
+    private static final int GLCANVAS_WIDTH = 1280; // width of the canvas
+    private static final int GLCANVAS_HEIGHT = 720; // height of the canvas
     private static final int FRAME_RATE = 60; // target frames per second
 
     /**
