@@ -1,3 +1,7 @@
+package app;
+
+import app.scenes.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -13,12 +17,14 @@ import com.jogamp.opengl.util.FPSAnimator;
 
 public class MainWindow extends JFrame {
 
-    private static String FRAME_TITLE = "ManosCore - Programmable Pipeline";
+    private static final String FRAME_TITLE = "ManosCore - Programmable Pipeline";
 
     private static final int WINDOW_WIDTH = 1280;
     private static final int WINDOW_HEIGHT = 720;
 
     private static final int FRAME_RATE = 60;
+
+    private static GLCanvas canvas;
 
     // Constructor generating Java Swing window
     public MainWindow() {
@@ -29,7 +35,7 @@ public class MainWindow extends JFrame {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         // Create the OpenGL Canvas for rendering content
-        GLCanvas canvas = new StartRenderer(capabilities);
+        canvas = new StartRenderer(capabilities);
 
         // Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
         final FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
@@ -46,15 +52,8 @@ public class MainWindow extends JFrame {
         JPanel menuPanel = new JPanel();
         splitPane.setLeftComponent(menuPanel);
 
-        // Create and add button to menu pane
-        JButton button = new JButton("Click me");
-        button.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.out.println("Hello World");
-            }
-        });
-        menuPanel.add(button);
+        // Add buttons for switching between scenes
+        addButtons(menuPanel, capabilities);
 
         // Create and add glpanel to right side of split pane
         JPanel glPanel = new JPanel();
@@ -100,5 +99,27 @@ public class MainWindow extends JFrame {
                 new MainWindow();
             }
         });
+    }
+
+    private static void addButtons(JPanel menuPanel, GLCapabilities capabilities) {
+        // Add Scene 1 button
+        JButton buttonScene1 = new JButton("Szene 1");
+        buttonScene1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Szene 1");
+            }
+        });
+        menuPanel.add(buttonScene1);
+
+        // Add Scene 2 button
+        JButton buttonScene2 = new JButton("Szene 2");
+        buttonScene2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.out.println("Szene 2");
+            }
+        });
+        menuPanel.add(buttonScene2);
     }
 }
