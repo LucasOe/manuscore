@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -36,10 +35,11 @@ public class MainWindow extends JFrame {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         // Create the OpenGL Canvas for rendering content
-        canvas = new Scene1(capabilities);
+        canvas = new GLCanvas(capabilities);
+        canvas.addGLEventListener(new Scene1());
 
         // Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
-        final FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
+        FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
 
         // Create the window container
         this.setPreferredSize(new Dimension(WINDOW_WIDTH, WINDOW_HEIGHT));
@@ -108,9 +108,7 @@ public class MainWindow extends JFrame {
         buttonScene1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Szene 1");
-                GLEventListener scene = new Scene1(capabilities);
-                canvas.addGLEventListener(scene);
+                canvas.addGLEventListener(new Scene1());
             }
         });
         menuPanel.add(buttonScene1);
@@ -120,9 +118,7 @@ public class MainWindow extends JFrame {
         buttonScene2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Szene 2");
-                GLEventListener scene = new Scene2(capabilities);
-                canvas.addGLEventListener(scene);
+                canvas.addGLEventListener(new Scene2());
             }
         });
         menuPanel.add(buttonScene2);
