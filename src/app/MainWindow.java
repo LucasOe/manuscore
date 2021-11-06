@@ -1,7 +1,5 @@
 package app;
 
-import app.scenes.*;
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
