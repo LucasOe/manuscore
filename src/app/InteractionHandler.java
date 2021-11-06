@@ -3,17 +3,10 @@ package app;
 import java.awt.*;
 import java.awt.event.*;
 
-/**
- * Java class for handling the keyboard and mouse interaction.
- * Intented to be used for an OpenGL scene renderer.
- * @author Karsten Lehn
- * @version 23.8.2017, 10.9.2017, 22.9.2018
- */
-
 public class InteractionHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
     // Constant for debugging purposes
-    private static final boolean VERBOSE = false;
+    private static final boolean VERBOSE = true;
 
     // Variables for camera distance
     private float eyeZ = 2f;
@@ -43,6 +36,7 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
      * Standard constructor for creation of the interaction handler.
      */
     public InteractionHandler() {
+
     }
 
     public float getEyeZ() {
