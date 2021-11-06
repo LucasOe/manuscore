@@ -1,5 +1,7 @@
 package app;
 
+import app.scenes.*;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -9,6 +11,7 @@ import java.awt.event.WindowEvent;
 import javax.swing.*;
 
 import com.jogamp.opengl.GLCapabilities;
+import com.jogamp.opengl.GLEventListener;
 import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
@@ -33,7 +36,7 @@ public class MainWindow extends JFrame {
         GLCapabilities capabilities = new GLCapabilities(profile);
 
         // Create the OpenGL Canvas for rendering content
-        canvas = new StartRenderer(capabilities);
+        canvas = new Scene1(capabilities);
 
         // Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
         final FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
@@ -106,6 +109,8 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Szene 1");
+                GLEventListener scene = new Scene1(capabilities);
+                canvas.addGLEventListener(scene);
             }
         });
         menuPanel.add(buttonScene1);
@@ -116,6 +121,8 @@ public class MainWindow extends JFrame {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Szene 2");
+                GLEventListener scene = new Scene2(capabilities);
+                canvas.addGLEventListener(scene);
             }
         });
         menuPanel.add(buttonScene2);

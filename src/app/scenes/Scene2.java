@@ -1,4 +1,6 @@
-package app;
+package app.scenes;
+
+import app.InteractionHandler;
 
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
@@ -9,30 +11,10 @@ import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
 import com.jogamp.opengl.glu.GLU;
 
-/**
- * Performs the OpenGL rendering
- * Uses fixed function pipeline commands.
- * Does not use shaders.
- *
- * Rotation and translation of the camera is included.
- * 	    Use keyboard: left/right/up/down-keys and +/-Keys
- * 	    Alternatively use mouse movements:
- * 	        press left/right button and move and use mouse wheel
- *
- * Draws a simple triangle.
- * Serves as a template (start code) for setting up an OpenGL/Jogl application
- *
- *  * Based on a tutorial by Chua Hock-Chuan
- * http://www3.ntu.edu.sg/home/ehchua/programming/opengl/JOGL2.0.html
- *
- * and on an example by Xerxes Rånby
- * http://jogamp.org/git/?p=jogl-demos.git;a=blob;f=src/demos/es2/RawGL2ES2demo.java;hb=HEAD
- *
- * @author Karsten Lehn
- * @version 26.8.2015, 29.8.2015, 16.9.2015, 5.9.2017, 10.9.2017, 13.10.2017, 16.9.2018, 19.9.2018
- *
- */
-public class StartRenderer extends GLCanvas implements GLEventListener {
+/*
+    Green Triangle
+*/
+public class Scene2 extends GLCanvas implements GLEventListener {
 
     private static final long serialVersionUID = 1L;
     // Declaration of an object for handling keyboard and mouse interactions
@@ -43,7 +25,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
     /**
      * Standard constructor for object creation.
      */
-    public StartRenderer() {
+    public Scene2() {
         // Create the GLCanvas with default capabilities
         super();
         // Add this object as OpenGL event listener to the canvas
@@ -55,7 +37,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
      * Create the GLCanvas with the requested OpenGL capabilities
      * @param capabilities The capabilities of the GLCanvas, including the OpenGL profile
      */
-    public StartRenderer(GLCapabilities capabilities) {
+    public Scene2(GLCapabilities capabilities) {
         // Create the canvas with the requested OpenGL capabilities
         super(capabilities);
         // Add this object as event listener
@@ -138,7 +120,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
                 ", y-Translation: " + interactionHandler.getyPosition());// definition of translation of model (Model/Object Coordinates --> World Coordinates)
         */
         // BEGIN: definition of scene content (i.e. objects, models)
-        gl.glColor4f(1.00f, 0.00f, 0.00f, 1.0f);
+        gl.glColor4f(0.00f, 1.00f, 0.00f, 1.0f);
         gl.glBegin(GL.GL_TRIANGLES);
         gl.glVertex3f(-0.5f, -0.5f, 0.0f);
         gl.glVertex3f(0.5f, -0.5f, 0.0f);
