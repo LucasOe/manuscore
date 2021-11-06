@@ -1,3 +1,5 @@
+package app;
+
 import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL2;
 import com.jogamp.opengl.GLAutoDrawable;
@@ -136,7 +138,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
                 ", y-Translation: " + interactionHandler.getyPosition());// definition of translation of model (Model/Object Coordinates --> World Coordinates)
         */
         // BEGIN: definition of scene content (i.e. objects, models)
-        gl.glColor4f(0.96f, 0.56f, 0.04f, 1.0f);
+        gl.glColor4f(1.00f, 0.00f, 0.00f, 1.0f);
         gl.glBegin(GL.GL_TRIANGLES);
         gl.glVertex3f(-0.5f, -0.5f, 0.0f);
         gl.glVertex3f(0.5f, -0.5f, 0.0f);
