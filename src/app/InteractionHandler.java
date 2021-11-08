@@ -6,7 +6,7 @@ import java.awt.event.*;
 public class InteractionHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
     // Constant for debugging purposes
-    private static final boolean VERBOSE = true;
+    private static final boolean VERBOSE = false;
 
     // Variables for camera distance
     private float eyeZ = 2f;
