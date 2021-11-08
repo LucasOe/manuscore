@@ -1,8 +1,6 @@
 package app;
 
-import app.scenes.*;
-
-import java.awt.*;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -10,8 +8,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
-import com.jogamp.opengl.GLCapabilities;
-import com.jogamp.opengl.GLProfile;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
@@ -24,19 +20,10 @@ public class MainWindow extends JFrame {
 
     private static final int FRAME_RATE = 60;
 
-    private static GLCanvas canvas;
-
     // Constructor generating Java Swing window
     public MainWindow() {
-        // Setup an OpenGL context for the GLCanvas
-        // Using the JOGL-Profile GL2
-        // GL2: Compatibility profile, OpenGL Versions 1.0 to 3.0
-        GLProfile profile = GLProfile.get(GLProfile.GL2);
-        GLCapabilities capabilities = new GLCapabilities(profile);
-
         // Create the OpenGL Canvas for rendering content
-        canvas = new GLCanvas(capabilities);
-        canvas.addGLEventListener(new Scene1());
+        GLCanvas canvas = new StartRenderer();
 
         // Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
         FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
@@ -54,7 +41,7 @@ public class MainWindow extends JFrame {
         splitPane.setLeftComponent(menuPanel);
 
         // Add buttons for switching between scenes
-        addButtons(menuPanel, capabilities);
+        addButtons(menuPanel);
 
         // Create and add glpanel to right side of split pane
         JPanel glPanel = new JPanel();
@@ -102,13 +89,13 @@ public class MainWindow extends JFrame {
         });
     }
 
-    private static void addButtons(JPanel menuPanel, GLCapabilities capabilities) {
+    private static void addButtons(JPanel menuPanel) {
         // Add Scene 1 button
         JButton buttonScene1 = new JButton("Szene 1");
         buttonScene1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                canvas.addGLEventListener(new Scene1());
+                System.out.println("Szuanne");
             }
         });
         menuPanel.add(buttonScene1);
@@ -118,7 +105,7 @@ public class MainWindow extends JFrame {
         buttonScene2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                canvas.addGLEventListener(new Scene2());
+                System.out.println("Herz");
             }
         });
         menuPanel.add(buttonScene2);
