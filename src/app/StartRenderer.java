@@ -110,7 +110,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
         {
 
             for (int vertexIndex = 0; vertexIndex + 5 < vertices.length; vertexIndex += 6) {
-                float x = vertices[vertexIndex] + 0.5f;
+                float x = vertices[vertexIndex + 0];
                 float y = vertices[vertexIndex + 1];
                 float z = vertices[vertexIndex + 2];
 
