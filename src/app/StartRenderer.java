@@ -1,39 +1,66 @@
 package app;
 
+import com.jogamp.opengl.*;
+import com.jogamp.opengl.awt.GLCanvas;
+import com.jogamp.opengl.util.PMVMatrix;
+
 import java.io.IOException;
+import java.nio.FloatBuffer;
+import java.nio.IntBuffer;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 
-import com.jogamp.opengl.GL;
-import com.jogamp.opengl.GL2;
-import com.jogamp.opengl.GLAutoDrawable;
-import com.jogamp.opengl.GLEventListener;
-import com.jogamp.opengl.awt.GLCanvas;
-import com.jogamp.opengl.fixedfunc.GLLightingFunc;
-import com.jogamp.opengl.fixedfunc.GLMatrixFunc;
-import com.jogamp.opengl.glu.GLU;
-
 import de.hshl.obj.loader.OBJLoader;
 import de.hshl.obj.loader.Resource;
+import de.hshl.obj.loader.objects.Mesh;
 
-/*
-    Red Triangle
-*/
 public class StartRenderer extends GLCanvas implements GLEventListener {
 
-    private InteractionHandler interactionHandler;
-    private GLU glu;
-
+    private static final long serialVersionUID = 1L;
+    // Defining shader source code file paths and names
+    final String shaderPath = ".\\resources\\shader\\";
+    final String vertexShaderFileName = "Basic.vert";
+    final String fragmentShaderFileName = "Basic.frag";
     private static final Path objFile = Paths.get("./resources/models/suzanne.obj");
-    private float[] vertices;
+
+    // Object for loading shaders and creating a shader program
+    private ShaderProgram shaderProgram;
+
+    // OpenGL buffer names for data allocation and handling on GPU
+    int[] vaoName; // List of names (integer pointers) of vertex array objects
+    int[] vboName; // List of names (integer pointers) of vertex buffer objects
+    int[] iboName; // List of names (integer pointers) of index buffer objects
+
+    // Declaration of an object for handling keyboard and mouse interactions
+    InteractionHandler interactionHandler;
+
+    // Declaration for using the projection-model-view matrix tool
+    PMVMatrix pmvMatrix;
+
+    // contains the geometry of our OBJ file
+    float[] verticies;
+    int[] indices;
 
     public StartRenderer() {
-        System.out.println("Loaded Scene 1");
+        // Create the OpenGL canvas with default capabilities
+        super();
+        // Add this object as OpenGL event listener to the canvas
+        this.addGLEventListener(this);
+        createAndRegisterInteractionHandler();
+    }
+
+    public StartRenderer(GLCapabilities capabilities) {
+        // Create the OpenGL canvas with the requested OpenGL capabilities
+        super(capabilities);
+        // Add this object as an OpenGL event listener to the canvas
         this.addGLEventListener(this);
         createAndRegisterInteractionHandler();
     }
 
     private void createAndRegisterInteractionHandler() {
+        // The constructor call of the interaction handler generates meaningful default values.
+        // The start parameters can also be set via setters
+        // (see class definition of the interaction handler).
         interactionHandler = new InteractionHandler();
         this.addKeyListener(interactionHandler);
         this.addMouseListener(interactionHandler);
@@ -44,9 +71,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
     @Override
     public void init(GLAutoDrawable drawable) {
         // Retrieve the OpenGL graphics context
-        GL2 gl = drawable.getGL().getGL2();
-        // Creation of an GLU object, for using the OpenGL Utility Library
-        glu = new GLU();
+        GL3 gl = drawable.getGL().getGL3();
         // Outputs information about the available and chosen profile
         System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
         System.err.println("INIT GL IS: " + gl.getClass().getName());
@@ -54,106 +79,167 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
         System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
         System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
 
+        // Loading the vertex and fragment shaders and creation of the shader program.
+        shaderProgram = new ShaderProgram(gl);
+        ShaderProgram.loadShaderAndCreateProgram(shaderPath, vertexShaderFileName, fragmentShaderFileName);
+
+        // Create object for projection-model-view matrix calculation.
+        pmvMatrix = new PMVMatrix();
+
+        // Vertices for drawing a triangle.
+        // To be transferred to a vertex buffer object on the GPU.
+        // Interleaved data layout: position, color
         try {
-            vertices = new OBJLoader().setLoadNormals(true).loadMesh(Resource.file(objFile)).getVertices();
-        } catch (IOException fileException) {
-            fileException.printStackTrace();
-            System.exit(1);
+            Mesh mesh = new OBJLoader().setLoadNormals(true) // tell the loader to also load normal data
+                    .setGenerateIndexedMeshes(true) // tell the loader to output separate index arrays
+                    .loadMesh(Resource.file(objFile)); // actually load the file
+
+            verticies = mesh.getVertices();
+            indices = mesh.getIndices();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
 
-        // A subroutine for light definition might be called here
-        //setLight(gl);
+        // Create and activate a vertex array object (VAO)
+        // Useful for switching between data sets for object rendering.
+        vaoName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenVertexArrays(1, vaoName, 0);
+        if (vaoName[0] < 1)
+            System.err.println("Error allocating vertex array object (VAO) on GPU.");
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[0]);
 
-        // Start parameter settings for the interaction handler might be called here
-        // interactionHandler.setEyeZ(2);
+        // Create, activate and initialize vertex buffer object (VBO)
+        // Used to store vertex data on the GPU.
+        vboName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenBuffers(1, vboName, 0);
+        if (vboName[0] < 1)
+            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES, FloatBuffer.wrap(verticies),
+                GL.GL_STATIC_DRAW);
 
-        // Background color of the GLCanvas
-        gl.glClearColor(0.1f, 0.1f, 0.1f, 1.0f);
+        iboName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenBuffers(1, iboName, 0);
+        if (iboName[0] < 1)
+            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
 
-        // enable shading
-        gl.glEnable(GLLightingFunc.GL_LIGHTING);
-        gl.glEnable(GLLightingFunc.GL_LIGHT0);
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, this.indices.length * Integer.BYTES, IntBuffer.wrap(indices),
+                GL.GL_STATIC_DRAW);
 
-        gl.glEnable(GL.GL_CULL_FACE);
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+
+        // Set start parameter(s) for the interaction handler.
+        interactionHandler.setEyeZ(2);
+
+        // Switch on back face culling
+        // gl.glEnable(GL.GL_CULL_FACE);
+        //gl.glCullFace(GL.GL_BACK);
+
+        // Switch on depth test.
         gl.glEnable(GL.GL_DEPTH_TEST);
+
+        // Set background color of the GLCanvas.
+        gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
     }
 
     @Override
     public void display(GLAutoDrawable drawable) {
         // Retrieve the OpenGL graphics context
-        GL2 gl = drawable.getGL().getGL2();
+        GL3 gl = drawable.getGL().getGL3();
         // Clear color and depth buffer
-        gl.glClear(GL2.GL_COLOR_BUFFER_BIT | GL2.GL_DEPTH_BUFFER_BIT);
-
-        // Switch on back face culling
-        //gl.glEnable(GL.GL_CULL_FACE);
-        //gl.glCullFace(GL.GL_BACK);
-
-        // Reset matrix for geometric transformations
-        gl.glLoadIdentity();
-        // Apply view transform including camera positioning steered by the interaction handler
-        glu.gluLookAt(0f, 0f, interactionHandler.getEyeZ(), 0f, 0f, 0f, 0f, 1.0f, 0f);
-        gl.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
-        gl.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
-        gl.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
+        gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
 
         // Controlling the interaction settings
         /*        System.out.println("Camera: z = " + interactionHandler.getEyeZ() + ", " +
-         "x-Rot: " + interactionHandler.getAngleXaxis() +
-         ", y-Rot: " + interactionHandler.getAngleYaxis() +
-         ", x-Translation: " + interactionHandler.getxPosition()+
-         ", y-Translation: " + interactionHandler.getyPosition());// definition of translation of model (Model/Object Coordinates --> World Coordinates)
+                "x-Rot: " + interactionHandler.getAngleXaxis() +
+                ", y-Rot: " + interactionHandler.getAngleYaxis() +
+                ", x-Translation: " + interactionHandler.getxPosition()+
+                ", y-Translation: " + interactionHandler.getyPosition());// definition of translation of model (Model/Object Coordinates --> World Coordinates)
         */
-        // BEGIN: definition of scene content (i.e. objects, models)
-        gl.glColor4f(0.96f, 0.56f, 0.04f, 1.0f);
-        gl.glBegin(GL.GL_TRIANGLES);
-        {
 
-            for (int vertexIndex = 0; vertexIndex + 5 < vertices.length; vertexIndex += 6) {
-                float x = vertices[vertexIndex + 0];
-                float y = vertices[vertexIndex + 1];
-                float z = vertices[vertexIndex + 2];
+        // Apply view transform using the PMV-Tool
+        // Camera positioning is steered by the interaction handler
+        pmvMatrix.glLoadIdentity();
+        pmvMatrix.gluLookAt(0f, 0f, interactionHandler.getEyeZ(), 0f, 0f, 0f, 0f, 1.0f, 0f);
+        pmvMatrix.glTranslatef(interactionHandler.getxPosition(), interactionHandler.getyPosition(), 0f);
+        pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
+        pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
-                float nx = vertices[vertexIndex + 3];
-                float ny = vertices[vertexIndex + 4];
-                float nz = vertices[vertexIndex + 5];
+        // Switch to this vertex buffer array for drawing.
+        gl.glBindVertexArray(vaoName[0]);
+        // Activating the compiled shader program.
+        // Could be placed into the init-method for this simple example.
+        gl.glUseProgram(shaderProgram.getShaderProgramID());
 
-                gl.glNormal3f(nx, ny, nz);
-                gl.glVertex3f(x, y, z);
-            }
+        // Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
+        // via uniforms
+        // Transfer projection matrix via uniform layout position 0
+        gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+        // Transfer model-view matrix via layout position 1
+        gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 
-        }
-        gl.glEnd();
-        // END: definition of scene content
+        // Draw the triangles using the indices array
+        gl.glDrawElements(GL.GL_TRIANGLES, // mode
+                indices.length, // count
+                GL.GL_UNSIGNED_INT, // type
+                0 // element array buffer offset
+        );
     }
 
     @Override
     public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
         // Retrieve the OpenGL graphics context
-        GL2 gl = drawable.getGL().getGL2();
+        GL3 gl = drawable.getGL().getGL3();
 
-        // Avoiding division by zero
-        if (height == 0)
-            height = 1;
         // Set the viewport to the entire window
         gl.glViewport(0, 0, width, height);
-        // Switch to perspective projection
-        gl.glMatrixMode(GLMatrixFunc.GL_PROJECTION);
+        // Switch the pmv-tool to perspective projection
+        pmvMatrix.glMatrixMode(PMVMatrix.GL_PROJECTION);
         // Reset projection matrix to identity
-        gl.glLoadIdentity();
-        // Determine the aspect ratio of the viewport
-        float aspectRatio = (float) width / (float) height;
+        pmvMatrix.glLoadIdentity();
         // Calculate projection matrix
-        //      Parameters for  glu-call:
+        //      Parameters:
         //          fovy (field of view), aspect ratio,
         //          zNear (near clipping plane), zFar (far clipping plane)
-        glu.gluPerspective(45.0, aspectRatio, 0.1, 10000.0);
+        pmvMatrix.gluPerspective(45f, (float) width / (float) height, 0.1f, 10000f);
         // Switch to model-view transform
-        gl.glMatrixMode(GLMatrixFunc.GL_MODELVIEW);
+        pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
     }
 
     @Override
     public void dispose(GLAutoDrawable drawable) {
+        // Retrieve the OpenGL graphics context
+        GL3 gl = drawable.getGL().getGL3();
+        System.out.println("Deleting allocated objects, incl. the shader program.");
 
+        // Detach and delete shader program
+        gl.glUseProgram(0);
+        shaderProgram.deleteShaderProgram();
+
+        // deactivate VAO and VBO
+        gl.glBindVertexArray(0);
+        gl.glDisableVertexAttribArray(0);
+        gl.glDisableVertexAttribArray(1);
+        gl.glDeleteVertexArrays(1, vaoName, 0);
+        gl.glDeleteBuffers(1, vboName, 0);
+
+        System.exit(0);
     }
 }
