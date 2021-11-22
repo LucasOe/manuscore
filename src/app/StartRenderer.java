@@ -16,12 +16,16 @@ import de.hshl.obj.loader.objects.Mesh;
 
 public class StartRenderer extends GLCanvas implements GLEventListener {
 
-    private static final long serialVersionUID = 1L;
+    static int activeObject;
+
     // Defining shader source code file paths and names
-    final String shaderPath = ".\\resources\\shader\\";
+    final static String shaderPath = ".\\resources\\shaders\\";
+    final static String modelPath = ".\\resources\\models\\";
+
     final String vertexShaderFileName = "Basic.vert";
     final String fragmentShaderFileName = "Basic.frag";
-    private static final Path objFile = Paths.get("./resources/models/suzanne.obj");
+
+    private static Path[] objectPaths = { Paths.get(modelPath + "suzanne.obj"), Paths.get(modelPath + "heart.obj") };
 
     // Object for loading shaders and creating a shader program
     private ShaderProgram shaderProgram;
@@ -38,8 +42,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
     PMVMatrix pmvMatrix;
 
     // contains the geometry of our OBJ file
-    float[] verticies;
-    int[] indices;
+    static Model[] objectData = new Model[2];
 
     public StartRenderer() {
         // Create the OpenGL canvas with default capabilities
@@ -89,61 +92,21 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
         // Vertices for drawing a triangle.
         // To be transferred to a vertex buffer object on the GPU.
         // Interleaved data layout: position, color
-        try {
-            Mesh mesh = new OBJLoader().setLoadNormals(true) // tell the loader to also load normal data
-                    .setGenerateIndexedMeshes(true) // tell the loader to output separate index arrays
-                    .loadMesh(Resource.file(objFile)); // actually load the file
+        for (int i = 0; i < objectPaths.length; i++) {
+            try {
+                Mesh mesh = new OBJLoader().setLoadNormals(true) // tell the loader to also load normal data
+                        .setGenerateIndexedMeshes(true) // tell the loader to output separate index arrays
+                        .loadMesh(Resource.file(objectPaths[i])); // actually load the file
 
-            verticies = mesh.getVertices();
-            indices = mesh.getIndices();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+                objectData[i] = new Model(mesh.getVertices(), mesh.getIndices());
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
         }
 
-        // Create and activate a vertex array object (VAO)
-        // Useful for switching between data sets for object rendering.
-        vaoName = new int[1];
-        // Creating the buffer on GPU.
-        gl.glGenVertexArrays(1, vaoName, 0);
-        if (vaoName[0] < 1)
-            System.err.println("Error allocating vertex array object (VAO) on GPU.");
-        // Switch to this VAO.
-        gl.glBindVertexArray(vaoName[0]);
-
-        // Create, activate and initialize vertex buffer object (VBO)
-        // Used to store vertex data on the GPU.
-        vboName = new int[1];
-        // Creating the buffer on GPU.
-        gl.glGenBuffers(1, vboName, 0);
-        if (vboName[0] < 1)
-            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
-        // Activating this buffer as vertex buffer object.
-        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
-        // Transferring the vertex data (see above) to the VBO on GPU.
-        // (floats use 4 bytes in Java)
-        gl.glBufferData(GL.GL_ARRAY_BUFFER, verticies.length * Float.BYTES, FloatBuffer.wrap(verticies),
-                GL.GL_STATIC_DRAW);
-
-        iboName = new int[1];
-        // Creating the buffer on GPU.
-        gl.glGenBuffers(1, iboName, 0);
-        if (iboName[0] < 1)
-            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
-
-        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
-        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, this.indices.length * Integer.BYTES, IntBuffer.wrap(indices),
-                GL.GL_STATIC_DRAW);
-
-        // Activate and map input for the vertex shader from VBO,
-        // taking care of interleaved layout of vertex data (position and color),
-        // Enable layout position 0
-        gl.glEnableVertexAttribArray(0);
-        // Map layout position 0 to the position information per vertex in the VBO.
-        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-        // Enable layout position 1
-        gl.glEnableVertexAttribArray(1);
-        // Map layout position 1 to the color information per vertex in the VBO.
-        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+        // Enable alpha transparency
+        gl.glEnable(GL.GL_BLEND);
+        gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
         // Set start parameter(s) for the interaction handler.
         interactionHandler.setEyeZ(2);
@@ -182,6 +145,59 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
         pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
         pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
+        /*
+            Begin
+        */
+
+        // Create and activate a vertex array object (VAO)
+        // Useful for switching between data sets for object rendering.
+        vaoName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenVertexArrays(1, vaoName, 0);
+        if (vaoName[0] < 1)
+            System.err.println("Error allocating vertex array object (VAO) on GPU.");
+        // Switch to this VAO.
+        gl.glBindVertexArray(vaoName[0]);
+
+        // Create, activate and initialize vertex buffer object (VBO)
+        // Used to store vertex data on the GPU.
+        vboName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenBuffers(1, vboName, 0);
+        if (vboName[0] < 1)
+            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
+        // Activating this buffer as vertex buffer object.
+        gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
+        // Transferring the vertex data (see above) to the VBO on GPU.
+        // (floats use 4 bytes in Java)
+        gl.glBufferData(GL.GL_ARRAY_BUFFER, objectData[activeObject].vertices.length * Float.BYTES,
+                FloatBuffer.wrap(objectData[activeObject].vertices), GL.GL_STATIC_DRAW);
+
+        iboName = new int[1];
+        // Creating the buffer on GPU.
+        gl.glGenBuffers(1, iboName, 0);
+        if (iboName[0] < 1)
+            System.err.println("Error allocating vertex buffer object (VBO) on GPU.");
+
+        gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
+        gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, objectData[activeObject].indices.length * Integer.BYTES,
+                IntBuffer.wrap(objectData[activeObject].indices), GL.GL_STATIC_DRAW);
+
+        // Activate and map input for the vertex shader from VBO,
+        // taking care of interleaved layout of vertex data (position and color),
+        // Enable layout position 0
+        gl.glEnableVertexAttribArray(0);
+        // Map layout position 0 to the position information per vertex in the VBO.
+        gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+        // Enable layout position 1
+        gl.glEnableVertexAttribArray(1);
+        // Map layout position 1 to the color information per vertex in the VBO.
+        gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+
+        /*
+            End
+        */
+
         // Switch to this vertex buffer array for drawing.
         gl.glBindVertexArray(vaoName[0]);
         // Activating the compiled shader program.
@@ -197,7 +213,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
         // Draw the triangles using the indices array
         gl.glDrawElements(GL.GL_TRIANGLES, // mode
-                indices.length, // count
+                objectData[activeObject].indices.length, // count
                 GL.GL_UNSIGNED_INT, // type
                 0 // element array buffer offset
         );
@@ -241,5 +257,9 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
         gl.glDeleteBuffers(1, vboName, 0);
 
         System.exit(0);
+    }
+
+    public static void clickButton(int active) {
+        activeObject = active;
     }
 }

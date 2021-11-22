@@ -95,7 +95,7 @@ public class MainWindow extends JFrame {
         buttonScene1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Szuanne");
+                StartRenderer.clickButton(0);
             }
         });
         menuPanel.add(buttonScene1);
@@ -105,7 +105,7 @@ public class MainWindow extends JFrame {
         buttonScene2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("Herz");
+                StartRenderer.clickButton(1);
             }
         });
         menuPanel.add(buttonScene2);
