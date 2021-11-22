@@ -42,7 +42,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
     PMVMatrix pmvMatrix;
 
     // contains the geometry of our OBJ file
-    static Model[] objectData = new Model[2];
+    static Model[] objectData = new Model[objectPaths.length];
 
     public StartRenderer() {
         // Create the OpenGL canvas with default capabilities
