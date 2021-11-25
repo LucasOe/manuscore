@@ -7,26 +7,18 @@ import java.io.IOException;
 import com.jogamp.opengl.GL2ES2;
 
 public class ShaderProgram {
+
     static int shaderProgramID;
-    // GL2ES2 is a base that can be used in other GL profiles as well,
-    // e.g. GL3 is a subinterface form GL2E2.
     static GL2ES2 gl;
 
     public ShaderProgram(GL2ES2 gl) {
         ShaderProgram.gl = gl;
     }
 
-    /**
-     * Returns the OpenGL-ID of the shader program.
-     */
     public int getShaderProgramID() {
         return shaderProgramID;
     }
 
-    /**
-     * Deletes the shader program associated with this object
-     * (and stored in the field shaderProgramID).
-     */
     public void deleteShaderProgram() {
         gl.glDeleteProgram(shaderProgramID);
     }
@@ -64,13 +56,12 @@ public class ShaderProgram {
         shaderProgramID = gl.glCreateProgram();
         gl.glAttachShader(shaderProgramID, vertexShader);
         gl.glAttachShader(shaderProgramID, fragmentShader);
+
         // Link the program.
         gl.glLinkProgram(shaderProgramID);
 
         // The shader objects (on the GPU) can be deleted because they are linked with the program.
-        gl.glDetachShader(shaderProgramID, vertexShader); // not necessarily needed
         gl.glDeleteShader(vertexShader);
-        gl.glDetachShader(shaderProgramID, fragmentShader); // not necessarily needed
         gl.glDeleteShader(fragmentShader);
     }
 

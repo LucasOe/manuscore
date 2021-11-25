@@ -8,7 +8,6 @@ import java.awt.event.WindowEvent;
 
 import javax.swing.*;
 
-import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.FPSAnimator;
 
 public class MainWindow extends JFrame {
@@ -20,10 +19,12 @@ public class MainWindow extends JFrame {
 
     private static final int FRAME_RATE = 60;
 
+    static StartRenderer canvas;
+
     // Constructor generating Java Swing window
     public MainWindow() {
         // Create the OpenGL Canvas for rendering content
-        GLCanvas canvas = new StartRenderer();
+        canvas = new StartRenderer();
 
         // Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
         FPSAnimator animator = new FPSAnimator(canvas, FRAME_RATE, true);
@@ -95,7 +96,7 @@ public class MainWindow extends JFrame {
         buttonScene1.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StartRenderer.clickButton(0);
+                canvas.clickButton(0);
             }
         });
         menuPanel.add(buttonScene1);
@@ -105,7 +106,7 @@ public class MainWindow extends JFrame {
         buttonScene2.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                StartRenderer.clickButton(1);
+                canvas.clickButton(1);
             }
         });
         menuPanel.add(buttonScene2);
