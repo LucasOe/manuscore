@@ -5,10 +5,16 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import com.jogamp.opengl.util.FPSAnimator;
+
+import org.opencv.core.Core;
 
 public class MainWindow extends JFrame {
 
@@ -20,9 +26,16 @@ public class MainWindow extends JFrame {
     private static final int FRAME_RATE = 60;
 
     static StartRenderer canvas;
+    static JPanel menuPanel;
+    static JLabel imageLabel;
 
     // Constructor generating Java Swing window
     public MainWindow() {
+        // load the native OpenCV library
+        System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
+
+        ImageProcessor imageProcessor = new ImageProcessor();
+
         // Create the OpenGL Canvas for rendering content
         canvas = new StartRenderer();
 
@@ -38,11 +51,13 @@ public class MainWindow extends JFrame {
         splitPane.setEnabled(false);
 
         // Create and add menu panel to left side of split pane
-        JPanel menuPanel = new JPanel();
+        menuPanel = new JPanel();
         splitPane.setLeftComponent(menuPanel);
 
         // Add buttons for switching between scenes
-        addButtons(menuPanel);
+        addButtons();
+        addVideoCaputeButtons(imageProcessor);
+        addImage(".\\resources\\images\\placeholder.jpg");
 
         // Create and add glpanel to right side of split pane
         JPanel glPanel = new JPanel();
@@ -90,7 +105,7 @@ public class MainWindow extends JFrame {
         });
     }
 
-    private static void addButtons(JPanel menuPanel) {
+    private static void addButtons() {
         // Add Scene 1 button
         JButton buttonScene1 = new JButton("Szene 1");
         buttonScene1.addActionListener(new ActionListener() {
@@ -110,5 +125,40 @@ public class MainWindow extends JFrame {
             }
         });
         menuPanel.add(buttonScene2);
+    }
+
+    private static void addVideoCaputeButtons(ImageProcessor imageProcessor) {
+        JButton startCaptureButton = new JButton("Start Capture");
+        startCaptureButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                imageProcessor.startCapture();
+            }
+        });
+        menuPanel.add(startCaptureButton);
+
+        JButton stopCaptureButton = new JButton("Stop Capture");
+        stopCaptureButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                imageProcessor.stopCapture();
+            }
+        });
+        menuPanel.add(stopCaptureButton);
+    }
+
+    public static void addImage(String path) {
+        BufferedImage newImage;
+        try {
+            newImage = ImageIO.read(new File(path));
+            imageLabel = new JLabel(new ImageIcon(newImage));
+            menuPanel.add(imageLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void showImage(BufferedImage image) {
+        imageLabel.setIcon(new ImageIcon(image));
     }
 }
