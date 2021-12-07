@@ -28,13 +28,14 @@ public class MainWindow extends JFrame {
     static StartRenderer canvas;
     static JPanel menuPanel;
     static JLabel imageLabel;
+    static JLabel imageProcessedLabel;
 
     // Constructor generating Java Swing window
     public MainWindow() {
         // load the native OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        ImageProcessor imageProcessor = new ImageProcessor();
+        WebcamCapture imageProcessor = new WebcamCapture();
 
         // Create the OpenGL Canvas for rendering content
         canvas = new StartRenderer();
@@ -81,7 +82,7 @@ public class MainWindow extends JFrame {
                 }.start();
             }
         });
-        this.setResizable(false);
+        this.setResizable(true);
         this.setTitle(FRAME_TITLE);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.pack();
@@ -127,7 +128,7 @@ public class MainWindow extends JFrame {
         menuPanel.add(buttonScene2);
     }
 
-    private static void addVideoCaputeButtons(ImageProcessor imageProcessor) {
+    private static void addVideoCaputeButtons(WebcamCapture imageProcessor) {
         JButton startCaptureButton = new JButton("Start Capture");
         startCaptureButton.addActionListener(new ActionListener() {
             @Override
@@ -148,17 +149,25 @@ public class MainWindow extends JFrame {
     }
 
     public static void addImage(String path) {
-        BufferedImage newImage;
         try {
-            newImage = ImageIO.read(new File(path));
+            BufferedImage newImage = ImageIO.read(new File(path));
             imageLabel = new JLabel(new ImageIcon(newImage));
             menuPanel.add(imageLabel);
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            BufferedImage newImageProcessed = ImageIO.read(new File(path));
+            imageProcessedLabel = new JLabel(new ImageIcon(newImageProcessed));
+            menuPanel.add(imageProcessedLabel);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public static void showImage(BufferedImage image) {
+    public static void showImage(BufferedImage image, BufferedImage imageProcessed) {
         imageLabel.setIcon(new ImageIcon(image));
+        imageProcessedLabel.setIcon(new ImageIcon(imageProcessed));
     }
 }
