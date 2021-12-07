@@ -6,10 +6,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.opencv.core.Mat;
-import org.opencv.imgproc.Imgproc;
 import org.opencv.videoio.VideoCapture;
-
-import jogamp.opengl.glu.mipmap.Image;
 
 public class WebcamCapture {
     // a timer for acquiring the video stream
