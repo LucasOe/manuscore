@@ -18,6 +18,7 @@ import javax.swing.JSplitPane;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
+import app.opencv.SceneSelect;
 import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
 
@@ -32,17 +33,20 @@ public class UserInterface extends JFrame {
 	private StartRenderer renderCanvas;
 	private WebcamCapture webcamCapture;
 	private FileSelect fileSelect;
+	private SceneSelect sceneSelect;
 	private FPSAnimator animator;
 
 	private JLabel webcamLabel;
 	private JButton captureButton;
 
+	// The image that is used to select the scene
 	private Image currentFrame;
 
 	public UserInterface() {
 		// initialize Components
 		webcamCapture = new WebcamCapture(this, CONTENT_WIDTH, CONTENT_HEIGHT);
 		fileSelect = new FileSelect(this);
+		sceneSelect = new SceneSelect();
 		renderCanvas = new StartRenderer();
 
 		initializeUserInterface();
@@ -161,6 +165,8 @@ public class UserInterface extends JFrame {
 
 	// Continue with current frame
 	private void continueWithFrame() {
-
+		if (currentFrame != null) {
+			sceneSelect.selectScene(currentFrame);
+		}
 	}
 }

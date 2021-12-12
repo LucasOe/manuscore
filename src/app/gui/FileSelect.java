@@ -22,10 +22,6 @@ public class FileSelect {
 
 		if (result == JFileChooser.APPROVE_OPTION) {
 			File file = fileChooser.getSelectedFile();
-
-			//This is where a real application would open the file.
-			System.out.println(file.getName());
-
 			try {
 				BufferedImage image = ImageIO.read(file);
 				userInterface.setCurrentFrame(image);
