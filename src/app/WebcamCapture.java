@@ -49,7 +49,7 @@ public class WebcamCapture {
                             BufferedImage imageOut = Utils.Mat2BufferedImage(frame);
                             BufferedImage imageProcessedOut = Utils.Mat2BufferedImage(frameProcessed);
 
-                            MainWindow.showImage(imageOut, imageProcessedOut);
+                            //Main.showImage(imageOut, imageProcessedOut);
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
