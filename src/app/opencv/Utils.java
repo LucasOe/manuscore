@@ -11,13 +11,13 @@ import org.opencv.imgcodecs.Imgcodecs;
 
 public final class Utils {
 
-    // Conver Mat object to BufferedImage
-    static BufferedImage Mat2BufferedImage(Mat matrix) throws Exception {
-        MatOfByte mob = new MatOfByte();
-        Imgcodecs.imencode(".jpg", matrix, mob);
-        byte bufferedArray[] = mob.toArray();
+	// Conver Mat object to BufferedImage
+	static BufferedImage Mat2BufferedImage(Mat matrix) throws Exception {
+		MatOfByte mob = new MatOfByte();
+		Imgcodecs.imencode(".jpg", matrix, mob);
+		byte bufferedArray[] = mob.toArray();
 
-        BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(bufferedArray));
-        return bufferedImage;
-    }
+		BufferedImage bufferedImage = ImageIO.read(new ByteArrayInputStream(bufferedArray));
+		return bufferedImage;
+	}
 }
