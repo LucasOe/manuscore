@@ -1,4 +1,4 @@
-package app;
+package app.opengl;
 
 public class Model {
     float[] vertices;

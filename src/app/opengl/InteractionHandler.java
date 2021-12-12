@@ -1,4 +1,4 @@
-package app;
+package app.opengl;
 
 import java.awt.*;
 import java.awt.event.*;
@@ -139,43 +139,43 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
     public void keyPressed(KeyEvent e) {
         int keyCode = e.getKeyCode();
         switch (keyCode) {
-        case KeyEvent.VK_CONTROL:
-            ctrlKeyPressed = true;
-            break;
-        case KeyEvent.VK_LEFT:
-            if (ctrlKeyPressed) {
-                xPosition += xPositionInc;
-            } else {
-                angleYaxis += angleYaxisInc;
-            }
-            break;
-        case KeyEvent.VK_RIGHT:
-            if (ctrlKeyPressed) {
-                xPosition -= xPositionInc;
-            } else {
-                angleYaxis -= angleYaxisInc;
-            }
-            break;
-        case KeyEvent.VK_UP:
-            if (ctrlKeyPressed) {
-                yPosition -= yPositionInc;
-            } else {
-                angleXaxis += angleXaxisInc;
-            }
-            break;
-        case KeyEvent.VK_DOWN:
-            if (ctrlKeyPressed) {
-                yPosition += yPositionInc;
-            } else {
-                angleXaxis -= angleXaxisInc;
-            }
-            break;
-        case KeyEvent.VK_MINUS:
-            eyeZ = eyeZ - eyeZInc;
-            break;
-        case KeyEvent.VK_PLUS:
-            eyeZ = eyeZ + eyeZInc;
-            break;
+            case KeyEvent.VK_CONTROL:
+                ctrlKeyPressed = true;
+                break;
+            case KeyEvent.VK_LEFT:
+                if (ctrlKeyPressed) {
+                    xPosition += xPositionInc;
+                } else {
+                    angleYaxis += angleYaxisInc;
+                }
+                break;
+            case KeyEvent.VK_RIGHT:
+                if (ctrlKeyPressed) {
+                    xPosition -= xPositionInc;
+                } else {
+                    angleYaxis -= angleYaxisInc;
+                }
+                break;
+            case KeyEvent.VK_UP:
+                if (ctrlKeyPressed) {
+                    yPosition -= yPositionInc;
+                } else {
+                    angleXaxis += angleXaxisInc;
+                }
+                break;
+            case KeyEvent.VK_DOWN:
+                if (ctrlKeyPressed) {
+                    yPosition += yPositionInc;
+                } else {
+                    angleXaxis -= angleXaxisInc;
+                }
+                break;
+            case KeyEvent.VK_MINUS:
+                eyeZ = eyeZ - eyeZInc;
+                break;
+            case KeyEvent.VK_PLUS:
+                eyeZ = eyeZ + eyeZInc;
+                break;
         }
     }
 
@@ -213,30 +213,30 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         if (VERBOSE) {
             System.out.print("Mouse pressed event. ");
             switch (pressedButton) {
-            case MouseEvent.BUTTON1:
-                System.out.print("Left mouse button pressed.");
-                break;
-            case MouseEvent.BUTTON2:
-                System.out.print("Mouse wheel or middle button pressed.");
-                break;
-            case MouseEvent.BUTTON3:
-                System.out.print("Right mouse button pressed.");
-                break;
-            case MouseEvent.NOBUTTON:
-                System.out.print(" No button detected.");
-                break;
-            default:
-                System.out.print("Unknown button pressed.");
+                case MouseEvent.BUTTON1:
+                    System.out.print("Left mouse button pressed.");
+                    break;
+                case MouseEvent.BUTTON2:
+                    System.out.print("Mouse wheel or middle button pressed.");
+                    break;
+                case MouseEvent.BUTTON3:
+                    System.out.print("Right mouse button pressed.");
+                    break;
+                case MouseEvent.NOBUTTON:
+                    System.out.print(" No button detected.");
+                    break;
+                default:
+                    System.out.print("Unknown button pressed.");
             }
             System.out.println(" At location: " + lastMouseLocation);
         }
         switch (pressedButton) {
-        case MouseEvent.BUTTON1:
-            leftMouseButtonPressed = true;
-            break;
-        case MouseEvent.BUTTON3:
-            rightMouseButtonPressed = true;
-            break;
+            case MouseEvent.BUTTON1:
+                leftMouseButtonPressed = true;
+                break;
+            case MouseEvent.BUTTON3:
+                rightMouseButtonPressed = true;
+                break;
         }
     }
 
@@ -249,29 +249,29 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
         if (VERBOSE) {
             System.out.print("Mouse pressed event. ");
             switch (releasedButton) {
-            case MouseEvent.BUTTON1:
-                System.out.println("Left mouse button released.");
-                break;
-            case MouseEvent.BUTTON2:
-                System.out.println("Mouse wheel or middle button released.");
-                break;
-            case MouseEvent.BUTTON3:
-                System.out.println("Right mouse button released.");
-                break;
-            case MouseEvent.NOBUTTON:
-                System.out.println(" No button detected.");
-                break;
-            default:
-                System.out.println("Unknow button pressed.");
+                case MouseEvent.BUTTON1:
+                    System.out.println("Left mouse button released.");
+                    break;
+                case MouseEvent.BUTTON2:
+                    System.out.println("Mouse wheel or middle button released.");
+                    break;
+                case MouseEvent.BUTTON3:
+                    System.out.println("Right mouse button released.");
+                    break;
+                case MouseEvent.NOBUTTON:
+                    System.out.println(" No button detected.");
+                    break;
+                default:
+                    System.out.println("Unknow button pressed.");
             }
         }
         switch (releasedButton) {
-        case MouseEvent.BUTTON1:
-            leftMouseButtonPressed = false;
-            break;
-        case MouseEvent.BUTTON3:
-            rightMouseButtonPressed = false;
-            break;
+            case MouseEvent.BUTTON1:
+                leftMouseButtonPressed = false;
+                break;
+            case MouseEvent.BUTTON3:
+                rightMouseButtonPressed = false;
+                break;
         }
     }
 

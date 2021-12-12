@@ -1,4 +1,4 @@
-package app;
+package app.opengl;
 
 import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;

@@ -1,4 +1,4 @@
-package app;
+package app.opengl;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
