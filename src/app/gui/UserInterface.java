@@ -18,8 +18,8 @@ import javax.swing.JSplitPane;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
-import app.StartRenderer;
 import app.opencv.WebcamCapture;
+import app.opengl.StartRenderer;
 
 public class UserInterface extends JFrame {
     private static final String FRAME_TITLE = "ManosCore - Programmable Pipeline";
@@ -80,7 +80,7 @@ public class UserInterface extends JFrame {
 
         // Create and add webcam output as the top component of the split pane
         JPanel contentPanel = new JPanel(new GridBagLayout());
-        JPanel content = getContentWebcam(".\\resources\\images\\webcam_placeholder.jpg");
+        JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
         contentPanel.add(content);
         splitPane.setTopComponent(contentPanel);
 
