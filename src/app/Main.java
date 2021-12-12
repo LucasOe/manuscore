@@ -12,11 +12,7 @@ public class Main {
         // load the native OpenCV library
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
-        // initialize Components
-        WebcamCapture webcamCapture = new WebcamCapture();
-        StartRenderer renderCanvas = new StartRenderer();
-
-        new UserInterface(webcamCapture, renderCanvas);
+        new UserInterface();
     }
 
     public static void main(String[] args) {

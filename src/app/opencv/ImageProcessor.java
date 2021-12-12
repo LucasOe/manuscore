@@ -1,4 +1,4 @@
-package app;
+package app.opencv;
 
 import org.opencv.core.Mat;
 import org.opencv.imgproc.Imgproc;

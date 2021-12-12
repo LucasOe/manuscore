@@ -1,4 +1,4 @@
-package app;
+package app.opencv;
 
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
