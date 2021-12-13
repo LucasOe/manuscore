@@ -68,17 +68,17 @@ public class ImageProcessor {
             Mat cropped = new Mat();
             frame.copyTo(cropped, centroidRegion);
 
-            /*
             List<double[]> allWidthValue = new ArrayList<>();
-            
+
             double resultH = 1;
             double resultS = 1;
             double resultV = 1;
-            
+
             //Inspiriert durch Thomas Engel aus meinem Studiengang
             //(Vewendung von ".get" fuer Farbwert eines Pixels und nur weiße Pixel in Liste einfuegen)
-            
+
             ///////ERROR IN VIDEO WENN KEINE MASKE GEFUNDEN WIRD (DER HINTERGRUND SCHWARZ IST)
+            /*
             for (int y = 0; y < cropped.rows(); y++) {
                 for (int j = 0; j < cropped.cols(); j++) {
                     // HSV WERT in widthValue
@@ -96,19 +96,21 @@ public class ImageProcessor {
                     }
                 }
             }
-            int[] hsvCrop = new int[3];
-            hsvCrop[0] = (int) resultH / allWidthValue.size();
-            hsvCrop[1] = (int) resultS / allWidthValue.size();
-            hsvCrop[2] = (int) resultV / allWidthValue.size();
             */
+            int[] hsvCrop = new int[3];
 
+            if (allWidthValue.size() != 0) {
+                hsvCrop[0] = (int) resultH / allWidthValue.size();
+                hsvCrop[1] = (int) resultS / allWidthValue.size();
+                hsvCrop[2] = (int) resultV / allWidthValue.size();
+            }
             //Mittelwert der HSV Farben
-            //System.out.println("H: " + hsvCrop[0] + ", " + "S: " + hsvCrop[1] + ", " + "V: " + hsvCrop[2]);
+            System.out.println("H: " + hsvCrop[0] + ", " + "S: " + hsvCrop[1] + ", " + "V: " + hsvCrop[2]);
 
             return cropped;
         }
 
-        return frame;
+        return null;
     }
 
     public static void fillRegion(Mat imgMat, Mat labels, ArrayList<Integer> selectedLabel) {
