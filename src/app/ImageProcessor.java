@@ -1,7 +1,6 @@
 package app;
 
 import org.opencv.core.*;
-import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.util.ArrayList;
@@ -10,6 +9,8 @@ import java.util.List;
 public class ImageProcessor {
 
     public static Mat processImage(Mat frame) {
+        System.out.println("Processing image");
+
         // if the frame is not empty, process it
         Mat processedImage = new Mat();
 
@@ -21,13 +22,12 @@ public class ImageProcessor {
 
             //entnimmt den S-Wert aus HSV und speichert ihn
             Mat S = hsv.get(1);
-            Imgproc.GaussianBlur(frame,frame, new Size(25,25),0);
-            Imgproc.medianBlur(S, S, 25);
+            Imgproc.GaussianBlur(frame, frame, new Size(15, 15), 0);
+            Imgproc.medianBlur(S, S, 15);
 
             // Threshold in binäres Bild mit der OTSU-Methode
             Mat region = new Mat();
-            Imgproc.threshold(S, region, 0, 255,
-                    Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+            Imgproc.threshold(S, region, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
 
             // Gebe alle zusammengehörige Komponenten
             Mat labels = new Mat();
@@ -37,8 +37,7 @@ public class ImageProcessor {
 
             // Wie viele Komponenten haben wir?
             Core.MinMaxLocResult x = Core.minMaxLoc(labels);
-            System.out.println(x.maxVal);
-
+            System.out.println("MaxVal: " + x.maxVal);
 
             // Prüfe bei Komponenten ob in Mitte des Bildes
             // tolerance = Abweichung von der Mitte des Bildes
@@ -48,12 +47,14 @@ public class ImageProcessor {
             Mat centroidRegion = new Mat(region.rows(), region.cols(), region.type(), Scalar.all(0));
             ArrayList<Integer> selectedLabels = new ArrayList<>();
 
-            for (int l=1; l < x.maxVal; l++) {
+            for (int l = 1; l < x.maxVal; l++) {
                 int x_centroid = (int) centroids.get(l, 0)[0];
                 int y_centroid = (int) centroids.get(l, 1)[0];
 
-                if ( x_centroid >= (width/2) - tolerance*(width/2) && x_centroid <= (width/2) + tolerance*(width/2)) {
-                    if (y_centroid >= (height/2) - tolerance*(height/2) && y_centroid <= (height/2) + tolerance*(height/2)) {
+                if (x_centroid >= (width / 2) - tolerance * (width / 2)
+                        && x_centroid <= (width / 2) + tolerance * (width / 2)) {
+                    if (y_centroid >= (height / 2) - tolerance * (height / 2)
+                            && y_centroid <= (height / 2) + tolerance * (height / 2)) {
                         // Alle Komponenten, die in der Mitte liegen werden in der Arraylist "selectedLabels" gespeichert
                         selectedLabels.add(l);
                     }
@@ -67,27 +68,28 @@ public class ImageProcessor {
             Mat cropped = new Mat();
             frame.copyTo(cropped, centroidRegion);
 
+            /*
             List<double[]> allWidthValue = new ArrayList<>();
-
+            
             double resultH = 1;
             double resultS = 1;
             double resultV = 1;
-
+            
             //Inspiriert durch Thomas Engel aus meinem Studiengang
             //(Vewendung von ".get" fuer Farbwert eines Pixels und nur weiße Pixel in Liste einfuegen)
-
+            
             ///////ERROR IN VIDEO WENN KEINE MASKE GEFUNDEN WIRD (DER HINTERGRUND SCHWARZ IST)
-            for (int y = 0; y < cropped.rows(); y++){
-                for (int j = 0; j < cropped.cols(); j++){
+            for (int y = 0; y < cropped.rows(); y++) {
+                for (int j = 0; j < cropped.cols(); j++) {
                     // HSV WERT in widthValue
                     double[] widthValues = cropped.get(y, j);
                     int value = (int) widthValues[0];
-
+            
                     //waehlt nur Bildsegment innerhalb der Maske aus
-                    if (value != 0){
-
+                    if (value != 0) {
+            
                         allWidthValue.add(widthValues);
-
+            
                         resultH += widthValues[0];
                         resultS += widthValues[1];
                         resultV += widthValues[2];
@@ -95,45 +97,27 @@ public class ImageProcessor {
                 }
             }
             int[] hsvCrop = new int[3];
-            hsvCrop[0] = (int) resultH/allWidthValue.size();
-            hsvCrop[1] = (int) resultS/allWidthValue.size();
-            hsvCrop[2] = (int) resultV/allWidthValue.size();
+            hsvCrop[0] = (int) resultH / allWidthValue.size();
+            hsvCrop[1] = (int) resultS / allWidthValue.size();
+            hsvCrop[2] = (int) resultV / allWidthValue.size();
+            */
 
             //Mittelwert der HSV Farben
-            System.out.println("H: " + hsvCrop[0]+", "+"S: "+hsvCrop[1]+", "+ "V: " +hsvCrop[2]);
+            //System.out.println("H: " + hsvCrop[0] + ", " + "S: " + hsvCrop[1] + ", " + "V: " + hsvCrop[2]);
 
-
-
-
-            /////////////////////////////////////////////////////////////////////////
-
-            // Show processed image --- hier grad austauschen für Ergebnis
-            imgPanel2.setImage(Mat2BufferedImage(cropped));
-            pack();
-
-            // Write unprocessed and processed frame successively to files
-            writeImage(frame, "unprocessedImage.png");
-            writeImage(processedImage, "processedImage.png");
+            return cropped;
         }
 
         return frame;
     }
 
-    public static void fillRegion(Mat imgMat, Mat labels, ArrayList<Integer> selectedLabel){
-        for (int r=0; r < imgMat.rows(); r++) {
-            for (int c=0; c < imgMat.cols(); c++) {
-                if (selectedLabel.contains(new Integer((int)labels.get(r,c)[0]))){
-                    imgMat.put(r,c, 255);
+    public static void fillRegion(Mat imgMat, Mat labels, ArrayList<Integer> selectedLabel) {
+        for (int r = 0; r < imgMat.rows(); r++) {
+            for (int c = 0; c < imgMat.cols(); c++) {
+                if (selectedLabel.contains(new Integer((int) labels.get(r, c)[0]))) {
+                    imgMat.put(r, c, 255);
                 }
             }
         }
     }
-
-    private static void writeImage(Mat imgMat, String filename) {
-        String filePathName = "videos/" + filename;
-        Imgcodecs.imwrite(filePathName, imgMat,
-                new MatOfInt(Imgcodecs.IMWRITE_PNG_STRATEGY_HUFFMAN_ONLY,
-                        Imgcodecs.IMWRITE_PNG_STRATEGY_FIXED));
-    }
-
 }

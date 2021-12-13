@@ -42,7 +42,7 @@ public class WebcamCapture {
                         Mat frameProcessed = grabFrame();
 
                         // Process image
-                        ImageProcessor.processImage(frameProcessed);
+                        frameProcessed = ImageProcessor.processImage(frameProcessed);
 
                         // convert and show the frame
                         try {
