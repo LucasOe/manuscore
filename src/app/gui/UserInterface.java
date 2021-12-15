@@ -23,7 +23,7 @@ import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
 
 public class UserInterface extends JFrame {
-	private static final String FRAME_TITLE = "ManosCore - Programmable Pipeline";
+	private static final String FRAME_TITLE = "ManusCore";
 	private static final int FRAME_WIDTH = 1280;
 	private static final int FRAME_HEIGHT = 720;
 	private static final int FRAME_RATE = 60;
