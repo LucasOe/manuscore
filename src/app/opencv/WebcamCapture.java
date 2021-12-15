@@ -64,6 +64,9 @@ public class WebcamCapture {
 					// Grab a single frame
 					Mat frame = grabFrame();
 
+					// Process Frame
+					frame = ImageProcessor.processImage(frame);
+
 					// Convert the frame to a bufferd image and display it
 					try {
 						BufferedImage image = Utils.Mat2BufferedImage(frame);
