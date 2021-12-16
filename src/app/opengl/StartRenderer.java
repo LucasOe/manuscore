@@ -205,7 +205,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	}
 
 	// Called by the EvenHandler in MainWindow.java
-	public void clickButton(int active) {
+	public void setCurrentScene(int active) {
 		activeObject = active;
 		System.out.println("Loading: " + objectPaths[activeObject]);
 	}
