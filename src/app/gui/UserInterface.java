@@ -73,6 +73,10 @@ public class UserInterface extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
+
+		animator.start();
+		renderCanvas.setSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+		renderCanvas.requestFocusInWindow();
 	}
 
 	private void initializeUserInterface() {
@@ -141,15 +145,15 @@ public class UserInterface extends JFrame {
 	private JPanel getControlsScene() {
 		JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEADING, 20, 0));
 
-		JButton continueButton = new JButton("Zurück");
-		continueButton.addActionListener(new ActionListener() {
+		JButton backButton = new JButton("Zurück");
+		backButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				setContentWebcam();
 				setControlsWebcam();
 			}
 		});
-		controls.add(continueButton);
+		controls.add(backButton);
 
 		return controls;
 	}
@@ -172,17 +176,16 @@ public class UserInterface extends JFrame {
 	private JPanel getContentScene(int scene) {
 		JPanel content = new JPanel();
 
-		// Set scene as text
-		JLabel text = new JLabel("Szene: " + String.valueOf(scene));
-		content.add(text);
+		renderCanvas.setCurrentScene(scene);
+		content.add(renderCanvas);
 
 		return content;
 	}
 
-	// set content to the webcam output
+	// Set content to the webcam output
 	public void setContentWebcam() {
 		if (contentPanel.getComponents().length > 0) {
-			contentPanel.remove(0);
+			contentPanel.remove(0); // Crashes the program for some reason
 		}
 		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
 		contentPanel.add(content);
@@ -191,7 +194,7 @@ public class UserInterface extends JFrame {
 		contentPanel.repaint();
 	}
 
-	// set content to the opengl canvas
+	// Set content to the opengl canvas
 	public void setContentScene(int scene) {
 		if (contentPanel.getComponents().length > 0) {
 			contentPanel.remove(0);
