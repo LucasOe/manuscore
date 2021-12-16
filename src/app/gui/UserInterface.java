@@ -50,7 +50,6 @@ public class UserInterface extends JFrame {
 		webcamCapture = new WebcamCapture(this, CONTENT_WIDTH, CONTENT_HEIGHT);
 		fileSelect = new FileSelect(this);
 		sceneSelect = new SceneSelect(this);
-		renderCanvas = new StartRenderer();
 
 		initializeUserInterface();
 
@@ -73,16 +72,9 @@ public class UserInterface extends JFrame {
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		this.pack();
 		this.setVisible(true);
-
-		animator.start();
-		renderCanvas.setSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
-		renderCanvas.requestFocusInWindow();
 	}
 
 	private void initializeUserInterface() {
-		// Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
-		animator = new FPSAnimator(renderCanvas, FRAME_RATE, true);
-
 		// Create the window container
 		this.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
@@ -176,7 +168,16 @@ public class UserInterface extends JFrame {
 	private JPanel getContentScene(int scene) {
 		JPanel content = new JPanel();
 
-		renderCanvas.setCurrentScene(scene);
+		renderCanvas = new StartRenderer();
+
+		// Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
+		animator = new FPSAnimator(renderCanvas, FRAME_RATE, true);
+		animator.start();
+
+		renderCanvas.setSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
+		renderCanvas.requestFocusInWindow();
+		renderCanvas.setCurrentScene(scene); // TODO: Replace with contructor
+
 		content.add(renderCanvas);
 
 		return content;
@@ -185,7 +186,7 @@ public class UserInterface extends JFrame {
 	// Set content to the webcam output
 	public void setContentWebcam() {
 		if (contentPanel.getComponents().length > 0) {
-			contentPanel.remove(0); // Crashes the program for some reason
+			contentPanel.remove(0); // TODO: Crashes the program for some reason
 		}
 		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
 		contentPanel.add(content);
