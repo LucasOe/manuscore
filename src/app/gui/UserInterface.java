@@ -36,6 +36,9 @@ public class UserInterface extends JFrame {
 	private SceneSelect sceneSelect;
 	private FPSAnimator animator;
 
+	private JPanel contentPanel;
+	private JPanel controlsPanel;
+
 	private JLabel webcamLabel;
 	private JButton captureButton;
 
@@ -46,7 +49,7 @@ public class UserInterface extends JFrame {
 		// initialize Components
 		webcamCapture = new WebcamCapture(this, CONTENT_WIDTH, CONTENT_HEIGHT);
 		fileSelect = new FileSelect(this);
-		sceneSelect = new SceneSelect();
+		sceneSelect = new SceneSelect(this);
 		renderCanvas = new StartRenderer();
 
 		initializeUserInterface();
@@ -85,16 +88,14 @@ public class UserInterface extends JFrame {
 		splitPane.setEnabled(false);
 
 		// Create and add webcam output as the top component of the split pane
-		JPanel contentPanel = new JPanel(new GridBagLayout());
-		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
-		contentPanel.add(content);
+		contentPanel = new JPanel(new GridBagLayout());
 		splitPane.setTopComponent(contentPanel);
+		setContentWebcam();
 
 		// Create and add menu panel as the bottom component of the split pane
-		JPanel contolsPanel = new JPanel(new GridBagLayout());
-		JPanel controls = getControlsWebcam();
-		contolsPanel.add(controls);
-		splitPane.setBottomComponent(contolsPanel);
+		controlsPanel = new JPanel(new GridBagLayout());
+		splitPane.setBottomComponent(controlsPanel);
+		setControlsWebcam();
 
 		// Add split pane to window
 		this.getContentPane().add(splitPane);
@@ -136,6 +137,23 @@ public class UserInterface extends JFrame {
 		return controls;
 	}
 
+	// Add back button to return to the webcam view
+	private JPanel getControlsScene() {
+		JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEADING, 20, 0));
+
+		JButton continueButton = new JButton("Zurück");
+		continueButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				setContentWebcam();
+				setControlsWebcam();
+			}
+		});
+		controls.add(continueButton);
+
+		return controls;
+	}
+
 	// Get image label to show webcam output
 	private JPanel getContentWebcam(String path) {
 		JPanel content = new JPanel();
@@ -148,6 +166,65 @@ public class UserInterface extends JFrame {
 		content.add(webcamLabel);
 
 		return content;
+	}
+
+	// Get the opengl canvas
+	private JPanel getContentScene(int scene) {
+		JPanel content = new JPanel();
+
+		// Set scene as text
+		JLabel text = new JLabel("Szene: " + String.valueOf(scene));
+		content.add(text);
+
+		return content;
+	}
+
+	// set content to the webcam output
+	public void setContentWebcam() {
+		if (contentPanel.getComponents().length > 0) {
+			contentPanel.remove(0);
+		}
+		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
+		contentPanel.add(content);
+
+		contentPanel.revalidate();
+		contentPanel.repaint();
+	}
+
+	// set content to the opengl canvas
+	public void setContentScene(int scene) {
+		if (contentPanel.getComponents().length > 0) {
+			contentPanel.remove(0);
+		}
+		JPanel content = getContentScene(scene);
+		contentPanel.add(content);
+
+		contentPanel.revalidate();
+		contentPanel.repaint();
+	}
+
+	// Set controls to the webcam buttons
+	public void setControlsWebcam() {
+		if (controlsPanel.getComponents().length > 0) {
+			controlsPanel.remove(0);
+		}
+		JPanel controls = getControlsWebcam();
+		controlsPanel.add(controls);
+
+		controlsPanel.revalidate();
+		controlsPanel.repaint();
+	}
+
+	// Set controls to the opengl buttons
+	public void setControlsScene() {
+		if (controlsPanel.getComponents().length > 0) {
+			controlsPanel.remove(0);
+		}
+		JPanel controls = getControlsScene();
+		controlsPanel.add(controls);
+
+		controlsPanel.revalidate();
+		controlsPanel.repaint();
 	}
 
 	public void setWebcamIcon(Image image) {
@@ -169,4 +246,5 @@ public class UserInterface extends JFrame {
 			sceneSelect.selectScene(currentFrame);
 		}
 	}
+
 }

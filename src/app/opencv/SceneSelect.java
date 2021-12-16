@@ -7,7 +7,15 @@ import java.awt.Color;
 
 import org.opencv.core.Mat;
 
+import app.gui.UserInterface;
+
 public class SceneSelect {
+
+    UserInterface userInterface;
+
+    public SceneSelect(UserInterface userInterface) {
+        this.userInterface = userInterface;
+    }
 
     // Placeholder to select the scene depending on the top left pixel color
     public void selectScene(Image image) {
@@ -15,11 +23,19 @@ public class SceneSelect {
 
         if (pixelColor.getRed() > 250) {
             System.out.println("Red");
+            setScene(0);
         } else if (pixelColor.getGreen() > 250) {
             System.out.println("Green");
+            setScene(1);
         } else if (pixelColor.getBlue() > 250) {
             System.out.println("Blue");
+            setScene(2);
         }
+    }
+
+    private void setScene(int scene) {
+        userInterface.setContentScene(scene);
+        userInterface.setControlsScene();
     }
 
     // Placeholder method to get the values of the top left pixel
