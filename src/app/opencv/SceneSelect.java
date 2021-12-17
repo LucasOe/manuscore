@@ -17,6 +17,7 @@ public class SceneSelect {
         this.userInterface = userInterface;
     }
 
+    // TODO: Scene selection mit richtiger Szenen-Auswahl ersetzen.
     // Placeholder to select the scene depending on the top left pixel color
     public void selectScene(Image image) {
         Color pixelColor = getPixelColor(image);

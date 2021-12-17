@@ -15,45 +15,46 @@ import de.hshl.obj.loader.Resource;
 import de.hshl.obj.loader.objects.Mesh;
 
 public class StartRenderer extends GLCanvas implements GLEventListener {
-
-	static int activeObject;
-
 	// Defining shader source code file paths and names
-	String shaderPath = ".\\resources\\shaders\\";
-	String modelPath = ".\\resources\\models\\";
+	private String shaderPath = ".\\resources\\shaders\\";
+	private String modelPath = ".\\resources\\models\\";
 
-	String vertexShaderFileName = "Basic.vert";
-	String fragmentShaderFileName = "Basic.frag";
-
-	// List of obj files
-	Path[] objectPaths = { Paths.get(modelPath + "suzanne.obj"), Paths.get(modelPath + "heart.obj") };
-
-	// contains the geometry of the obj file
-	Model[] objectData = new Model[objectPaths.length];
+	private String vertexShaderFileName = "Basic.vert";
+	private String fragmentShaderFileName = "Basic.frag";
 
 	// Object for loading shaders and creating a shader program
-	ShaderProgram shaderProgram;
+	private ShaderProgram shaderProgram;
 
 	// OpenGL buffer names for data allocation and handling on GPU
-	int[] vaoName;
-	int[] vboName;
-	int[] iboName;
+	private int[] vaoName;
+	private int[] vboName;
+	private int[] iboName;
 
 	// Declaration of an object for handling keyboard and mouse interactions
-	InteractionHandler interactionHandler;
+	private InteractionHandler interactionHandler;
 
 	// Declaration for using the projection-model-view matrix tool
-	PMVMatrix pmvMatrix;
+	private PMVMatrix pmvMatrix;
 
-	GL3 gl;
+	private GL3 gl;
 
-	public StartRenderer() {
+	// The Object that gets displayed
+	private int activeObject;
+	// List of Object paths pointing to the .obj file
+	private Path[] objectPaths = { Paths.get(modelPath + "suzanne.obj"), Paths.get(modelPath + "heart.obj") };
+	// List of Objects with the length of objectPaths
+	private Model[] objectList = new Model[objectPaths.length];
+
+	public StartRenderer(int activeObject) {
 		// Create the OpenGL canvas with default capabilities
 		super();
 
 		// Add this object as OpenGL event listener to the canvas
 		this.addGLEventListener(this);
 		createAndRegisterInteractionHandler();
+
+		// Set active Object
+		this.activeObject = activeObject;
 	}
 
 	private void createAndRegisterInteractionHandler() {
@@ -87,11 +88,12 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Create a Model object and load the vertices and indicies from the obj file
 		for (int i = 0; i < objectPaths.length; i++) {
 			try {
-				Mesh mesh = new OBJLoader().setLoadNormals(true) // tell the loader to also load normal data
-						.setGenerateIndexedMeshes(true) // tell the loader to output separate index arrays
-						.loadMesh(Resource.file(objectPaths[i])); // load the file obj file
+				Mesh mesh = new OBJLoader()
+						.setLoadNormals(true)
+						.setGenerateIndexedMeshes(true)
+						.loadMesh(Resource.file(objectPaths[i]));
 
-				objectData[i] = new Model(mesh.getVertices(), mesh.getIndices());
+				objectList[i] = new Model(mesh.getVertices(), mesh.getIndices());
 			} catch (IOException e) {
 				throw new RuntimeException(e);
 			}
@@ -106,15 +108,15 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		vboName = new int[1];
 		gl.glGenBuffers(1, vboName, 0);
 		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
-		gl.glBufferData(GL.GL_ARRAY_BUFFER, objectData[activeObject].getVertices().length * Float.BYTES,
-				FloatBuffer.wrap(objectData[activeObject].getVertices()), GL.GL_STATIC_DRAW);
+		gl.glBufferData(GL.GL_ARRAY_BUFFER, objectList[activeObject].getVertices().length * Float.BYTES,
+				FloatBuffer.wrap(objectList[activeObject].getVertices()), GL.GL_STATIC_DRAW);
 
 		// Creating the Index Buffer Objects on the GPU
 		iboName = new int[1];
 		gl.glGenBuffers(1, iboName, 0);
 		gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
-		gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, objectData[activeObject].getIndices().length * Integer.BYTES,
-				IntBuffer.wrap(objectData[activeObject].getIndices()), GL.GL_STATIC_DRAW);
+		gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, objectList[activeObject].getIndices().length * Integer.BYTES,
+				IntBuffer.wrap(objectList[activeObject].getIndices()), GL.GL_STATIC_DRAW);
 
 		// Enable alpha transparency
 		gl.glEnable(GL.GL_BLEND);
@@ -152,12 +154,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
 		pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
-		// Create the BufferData every single frame to the current active object
-		gl.glBufferData(GL.GL_ARRAY_BUFFER, objectData[activeObject].getVertices().length * Float.BYTES,
-				FloatBuffer.wrap(objectData[activeObject].getVertices()), GL.GL_STATIC_DRAW);
-		gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, objectData[activeObject].getIndices().length * Integer.BYTES,
-				IntBuffer.wrap(objectData[activeObject].getIndices()), GL.GL_STATIC_DRAW);
-
 		// Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
 		// via uniforms
 		// Transfer projection matrix via uniform layout position 0
@@ -166,7 +162,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 
 		// Draw the triangles using the indices array
-		gl.glDrawElements(GL.GL_TRIANGLES, objectData[activeObject].indices.length, GL.GL_UNSIGNED_INT, 0);
+		gl.glDrawElements(GL.GL_TRIANGLES, objectList[activeObject].indices.length, GL.GL_UNSIGNED_INT, 0);
 	}
 
 	@Override
@@ -194,7 +190,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glUseProgram(0);
 		shaderProgram.deleteShaderProgram();
 
-		// deactivate VAO and VBO
+		// Deactivate VAO and VBO
 		gl.glBindVertexArray(0);
 		gl.glDisableVertexAttribArray(0);
 		gl.glDisableVertexAttribArray(1);
@@ -202,11 +198,5 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glDeleteBuffers(1, vboName, 0);
 
 		System.exit(0);
-	}
-
-	// Called by the EvenHandler in MainWindow.java
-	public void setCurrentScene(int active) {
-		activeObject = active;
-		System.out.println("Loading: " + objectPaths[activeObject]);
 	}
 }
