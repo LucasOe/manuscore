@@ -60,7 +60,7 @@ public class UserInterface extends JFrame {
 				new Thread() {
 					@Override
 					public void run() {
-						if (animator.isStarted())
+						if (animator != null && animator.isStarted())
 							animator.stop();
 						System.exit(0);
 					}
