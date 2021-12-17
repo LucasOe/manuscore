@@ -196,7 +196,5 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glDisableVertexAttribArray(1);
 		gl.glDeleteVertexArrays(1, vaoName, 0);
 		gl.glDeleteBuffers(1, vboName, 0);
-
-		System.exit(0);
 	}
 }

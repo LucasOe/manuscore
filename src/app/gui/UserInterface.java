@@ -184,9 +184,10 @@ public class UserInterface extends JFrame {
 
 	// Set content to the webcam output
 	public void setContentWebcam() {
-		if (contentPanel.getComponents().length > 0) {
-			contentPanel.remove(0); // TODO: Crashes the program for some reason
-		}
+		if (animator != null && animator.isAnimating())
+			animator.stop();
+		contentPanel.removeAll();
+
 		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
 		contentPanel.add(content);
 
@@ -196,9 +197,7 @@ public class UserInterface extends JFrame {
 
 	// Set content to the opengl canvas
 	public void setContentScene(int scene) {
-		if (contentPanel.getComponents().length > 0) {
-			contentPanel.remove(0);
-		}
+		contentPanel.removeAll();
 		JPanel content = getContentScene(scene);
 		contentPanel.add(content);
 
@@ -208,9 +207,7 @@ public class UserInterface extends JFrame {
 
 	// Set controls to the webcam buttons
 	public void setControlsWebcam() {
-		if (controlsPanel.getComponents().length > 0) {
-			controlsPanel.remove(0);
-		}
+		controlsPanel.removeAll();
 		JPanel controls = getControlsWebcam();
 		controlsPanel.add(controls);
 
@@ -220,9 +217,7 @@ public class UserInterface extends JFrame {
 
 	// Set controls to the opengl buttons
 	public void setControlsScene() {
-		if (controlsPanel.getComponents().length > 0) {
-			controlsPanel.remove(0);
-		}
+		controlsPanel.removeAll();
 		JPanel controls = getControlsScene();
 		controlsPanel.add(controls);
 
