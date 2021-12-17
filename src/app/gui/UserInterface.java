@@ -168,7 +168,7 @@ public class UserInterface extends JFrame {
 	private JPanel getContentScene(int scene) {
 		JPanel content = new JPanel();
 
-		renderCanvas = new StartRenderer();
+		renderCanvas = new StartRenderer(scene);
 
 		// Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
 		animator = new FPSAnimator(renderCanvas, FRAME_RATE, true);
@@ -176,7 +176,6 @@ public class UserInterface extends JFrame {
 
 		renderCanvas.setSize(new Dimension(CONTENT_WIDTH, CONTENT_HEIGHT));
 		renderCanvas.requestFocusInWindow();
-		renderCanvas.setCurrentScene(scene); // TODO: Replace with contructor
 
 		content.add(renderCanvas);
 
