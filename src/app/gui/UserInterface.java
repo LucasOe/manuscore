@@ -23,6 +23,8 @@ import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
 
 public class UserInterface extends JFrame {
+	private final boolean isDebug = false; // FOR DEBUG PURPOSES JUMP STRAIGHT TO MODEL VIEW
+
 	private static final String FRAME_TITLE = "ManusCore";
 	private static final int FRAME_WIDTH = 1280;
 	private static final int FRAME_HEIGHT = 720;
@@ -86,12 +88,18 @@ public class UserInterface extends JFrame {
 		// Create and add webcam output as the top component of the split pane
 		contentPanel = new JPanel(new GridBagLayout());
 		splitPane.setTopComponent(contentPanel);
-		setContentScene(0);
+		if (!isDebug)
+			setContentWebcam();
+		else
+			setContentScene(0);
 
 		// Create and add menu panel as the bottom component of the split pane
 		controlsPanel = new JPanel(new GridBagLayout());
 		splitPane.setBottomComponent(controlsPanel);
-		setControlsScene();
+		if (!isDebug)
+			setControlsWebcam();
+		else
+			setControlsScene();
 
 		// Add split pane to window
 		this.getContentPane().add(splitPane);

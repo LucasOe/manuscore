@@ -35,8 +35,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	private int activeObject;
 	// List of Object paths pointing to the .obj file
 	private Path[] objectPaths = { Paths.get(modelPath + "suzanne.obj"), Paths.get(modelPath + "heart.obj") };
-	// List of Objects with the length of objectPaths
-	private Model[] objectList = new Model[objectPaths.length];
 
 	public StartRenderer(int activeObject) {
 		// Create the OpenGL canvas with default capabilities
