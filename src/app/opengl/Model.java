@@ -2,8 +2,6 @@ package app.opengl;
 
 import com.jogamp.opengl.GL3;
 
-import jogamp.common.os.elf.Shdr;
-
 public class Model {
 	private float[] vertices;
 	private int[] indices;
