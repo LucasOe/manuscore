@@ -86,12 +86,12 @@ public class UserInterface extends JFrame {
 		// Create and add webcam output as the top component of the split pane
 		contentPanel = new JPanel(new GridBagLayout());
 		splitPane.setTopComponent(contentPanel);
-		setContentWebcam();
+		setContentScene(0);
 
 		// Create and add menu panel as the bottom component of the split pane
 		controlsPanel = new JPanel(new GridBagLayout());
 		splitPane.setBottomComponent(controlsPanel);
-		setControlsWebcam();
+		setControlsScene();
 
 		// Add split pane to window
 		this.getContentPane().add(splitPane);
