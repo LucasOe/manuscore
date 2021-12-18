@@ -15,15 +15,8 @@ import de.hshl.obj.loader.Resource;
 import de.hshl.obj.loader.objects.Mesh;
 
 public class StartRenderer extends GLCanvas implements GLEventListener {
-	// Defining shader source code file paths and names
-	private String shaderPath = ".\\resources\\shaders\\";
 	private String modelPath = ".\\resources\\models\\";
-
-	private String vertexShaderFileName = "Basic.vert";
-	private String fragmentShaderFileName = "Basic.frag";
-
-	// Object for loading shaders and creating a shader program
-	private ShaderProgram shaderProgram;
+	private Model model;
 
 	// OpenGL buffer names for data allocation and handling on GPU
 	private int[] vaoName;
@@ -76,69 +69,52 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
 		System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
 
-		// Loading the vertex and fragment shaders and creation of the shader program.
-		shaderProgram = new ShaderProgram(gl);
-		ShaderProgram.loadShaderAndCreateProgram(shaderPath, vertexShaderFileName, fragmentShaderFileName);
-		// Use the compiled shaderProgram
-		gl.glUseProgram(shaderProgram.getShaderProgramID());
-
-		// Create object for projection-model-view matrix calculation.
-		pmvMatrix = new PMVMatrix();
-
-		// Create a Model object and load the vertices and indicies from the obj file
-		for (int i = 0; i < objectPaths.length; i++) {
-			try {
-				Mesh mesh = new OBJLoader()
-						.setLoadNormals(true)
-						.setGenerateIndexedMeshes(true)
-						.loadMesh(Resource.file(objectPaths[i]));
-
-				objectList[i] = new Model(mesh.getVertices(), mesh.getIndices());
-			} catch (IOException e) {
-				throw new RuntimeException(e);
-			}
-		}
+		// BEGIN: Preparing scene
+		// BEGIN: Allocating vertex array objects and buffers for each object
+		int noOfObjects = 1;
 
 		// Create the Vertex Array Object on the GPU
-		vaoName = new int[1];
-		gl.glGenVertexArrays(1, vaoName, 0);
-		gl.glBindVertexArray(vaoName[0]);
+		vaoName = new int[noOfObjects];
+		gl.glGenVertexArrays(noOfObjects, vaoName, 0);
+		if (vaoName[0] < 1)
+			System.err.println("Error allocating vertex array object (VAO).");
 
 		// Creating the Vertex Buffer Objects on the GPU
-		vboName = new int[1];
-		gl.glGenBuffers(1, vboName, 0);
-		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
-		gl.glBufferData(GL.GL_ARRAY_BUFFER, objectList[activeObject].getVertices().length * Float.BYTES,
-				FloatBuffer.wrap(objectList[activeObject].getVertices()), GL.GL_STATIC_DRAW);
+		vboName = new int[noOfObjects];
+		gl.glGenBuffers(noOfObjects, vboName, 0);
+		if (vboName[0] < 1)
+			System.err.println("Error allocating vertex buffer object (VBO).");
 
 		// Creating the Index Buffer Objects on the GPU
-		iboName = new int[1];
-		gl.glGenBuffers(1, iboName, 0);
-		gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
-		gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, objectList[activeObject].getIndices().length * Integer.BYTES,
-				IntBuffer.wrap(objectList[activeObject].getIndices()), GL.GL_STATIC_DRAW);
+		iboName = new int[noOfObjects];
+		gl.glGenBuffers(noOfObjects, iboName, 0);
+		if (iboName[0] < 1)
+			System.err.println("Error allocating index buffer object.");
+		// END: Allocating vertex array objects and buffers for each object
+
+		// Load activeObject as Model
+		loadModel(gl);
+		// END: Preparing scene
 
 		// Enable alpha transparency
 		gl.glEnable(GL.GL_BLEND);
 		gl.glBlendFunc(GL.GL_SRC_ALPHA, GL.GL_ONE_MINUS_SRC_ALPHA);
 
-		// Enable layout position 0
-		gl.glEnableVertexAttribArray(0);
-		// Map layout position 0 to the position information per vertex in the VBO.
-		gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-		// Enable layout position 1
-		gl.glEnableVertexAttribArray(1);
-		// Map layout position 1 to the color information per vertex in the VBO.
-		gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-
-		// Set start parameter(s) for the interaction handler.
-		interactionHandler.setEyeZ(2);
+		// Switch on back face culling
+		gl.glEnable(GL.GL_CULL_FACE);
+		gl.glCullFace(GL.GL_BACK);
 
 		// Switch on depth test.
 		gl.glEnable(GL.GL_DEPTH_TEST);
 
 		// Set background color of the GLCanvas.
 		gl.glClearColor(0.2f, 0.2f, 0.2f, 1.0f);
+
+		// Create object for projection-model-view matrix calculation.
+		pmvMatrix = new PMVMatrix();
+
+		// Set start parameter(s) for the interaction handler.
+		interactionHandler.setEyeZ(2);
 	}
 
 	@Override
@@ -161,8 +137,10 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Transfer model-view matrix via layout position 1
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 
-		// Draw the triangles using the indices array
-		gl.glDrawElements(GL.GL_TRIANGLES, objectList[activeObject].indices.length, GL.GL_UNSIGNED_INT, 0);
+		pmvMatrix.glPushMatrix();
+		pmvMatrix.glTranslatef(0f, 0f, 0f);
+		displayModel(gl);
+		pmvMatrix.glPopMatrix();
 	}
 
 	@Override
@@ -188,7 +166,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	public void dispose(GLAutoDrawable drawable) {
 		// Detach and delete shader program
 		gl.glUseProgram(0);
-		shaderProgram.deleteShaderProgram();
+		model.deleteShaderProgram();
 
 		// Deactivate VAO and VBO
 		gl.glBindVertexArray(0);
@@ -196,5 +174,50 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glDisableVertexAttribArray(1);
 		gl.glDeleteVertexArrays(1, vaoName, 0);
 		gl.glDeleteBuffers(1, vboName, 0);
+	}
+
+	private void loadModel(GL3 gl) {
+		try {
+			// Create new Model from Mesh data
+			Mesh mesh = new OBJLoader()
+					.setLoadNormals(true)
+					.setGenerateIndexedMeshes(true)
+					.loadMesh(Resource.file(objectPaths[activeObject]));
+			model = new Model(gl, mesh.getVertices(), mesh.getIndices());
+
+			// Create sphere data for rendering a sphere using an index array into a vertex array
+			gl.glBindVertexArray(vaoName[0]);
+
+			// Activate and initialize vertex buffer object (VBO)
+			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
+			gl.glBufferData(GL.GL_ARRAY_BUFFER, model.getVertices().length * Float.BYTES,
+					FloatBuffer.wrap(model.getVertices()), GL.GL_STATIC_DRAW);
+
+			// Activate and initialize index buffer object (IBO)
+			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
+			gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, model.getIndices().length * Integer.BYTES,
+					IntBuffer.wrap(model.getIndices()), GL.GL_STATIC_DRAW);
+
+			// Activate and order vertex buffer object data for the vertex shader
+			// Defining input variables for vertex shader
+			// Pointer for the vertex shader to the position information per vertex
+			gl.glEnableVertexAttribArray(0);
+			gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
+			// Pointer for the vertex shader to the color information per vertex
+			gl.glEnableVertexAttribArray(1);
+			gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
+		} catch (IOException e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	private void displayModel(GL3 gl) {
+		gl.glUseProgram(model.getShaderProgramID());
+		// Transfer the PVM-Matrix (model-view and projection matrix to the vertex shader
+		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
+		gl.glBindVertexArray(vaoName[0]);
+		// Draws the elements in the order defined by the index buffer object (IBO)
+		gl.glDrawElements(GL.GL_TRIANGLES, model.getIndices().length, GL.GL_UNSIGNED_INT, 0);
 	}
 }

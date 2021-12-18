@@ -1,12 +1,25 @@
 package app.opengl;
 
-public class Model {
-	float[] vertices;
-	int[] indices;
+import com.jogamp.opengl.GL3;
 
-	public Model(float[] vertices, int[] indices) {
+import jogamp.common.os.elf.Shdr;
+
+public class Model {
+	private float[] vertices;
+	private int[] indices;
+
+	private ShaderProgram shaderProgram;
+	private String shaderPath = ".\\resources\\shaders\\";
+	private String vertexShaderFileName = "Basic.vert";
+	private String fragmentShaderFileName = "Basic.frag";
+
+	public Model(GL3 gl, float[] vertices, int[] indices) {
 		this.vertices = vertices;
 		this.indices = indices;
+
+		// Set default shaderProgram
+		shaderProgram = new ShaderProgram(gl);
+		ShaderProgram.loadShaderAndCreateProgram(shaderPath, vertexShaderFileName, fragmentShaderFileName);
 	}
 
 	public float[] getVertices() {
@@ -23,5 +36,21 @@ public class Model {
 
 	public void setIndices(int[] indices) {
 		this.indices = indices;
+	}
+
+	public ShaderProgram getShaderProgram() {
+		return this.shaderProgram;
+	}
+
+	public void setShaderProgram(ShaderProgram shaderProgram) {
+		this.shaderProgram = shaderProgram;
+	}
+
+	public void deleteShaderProgram() {
+		shaderProgram.deleteShaderProgram();
+	}
+
+	public int getShaderProgramID() {
+		return shaderProgram.getShaderProgramID();
 	}
 }
