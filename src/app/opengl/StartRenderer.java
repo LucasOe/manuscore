@@ -4,7 +4,7 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.PMVMatrix;
 
-import app.opengl.primitives.Box;
+import app.opengl.primitives.*;
 
 import java.io.IOException;
 import java.nio.FloatBuffer;
@@ -27,7 +27,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			Paths.get(modelPath + "heart.obj")
 	};
 
-	private Model[] models = new Model[2];
+	private Model[] models = new Model[4];
 
 	// OpenGL buffer names for data allocation and handling on GPU
 	private int[] vaoName;
@@ -108,10 +108,20 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			e.printStackTrace();
 		}
 
-		float[] color = { 0.1f, 0.5f, 0.1f };
-		models[1] = new Box(gl, 0.8f, 0.5f, 0.4f, color);
 		// Load Box as Model
+		float[] colorBox = { 0.1f, 0.6f, 0.1f };
+		models[1] = new Box(gl, 0.8f, 0.5f, 0.4f, colorBox);
 		loadModel(gl, models[1], 1, 9);
+
+		// Load Cone as Model
+		float[] colorCone = { 0.1f, 0.1f, 0.6f };
+		models[2] = new Cone(gl, 64, 0.2f, 0.6f, 1f, colorCone);
+		loadModel(gl, models[2], 2, 9);
+
+		// Load Sphere as Model
+		float[] colorSphere = { 0.6f, 0.1f, 0.1f };
+		models[3] = new Sphere(gl, 64, 64, 0.5f, colorSphere);
+		loadModel(gl, models[3], 3, 9);
 		// END: Preparing scene
 
 		// Enable alpha transparency
@@ -148,8 +158,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
 		pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
-		// Transfer the PVM-Matrix (model-view and projection matrix) to the GPU
-		// via uniforms
+		// Transfer the PVM-Matrix (model-view and projection matrix) to the GPU via uniforms
 		// Transfer projection matrix via uniform layout position 0
 		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
 		// Transfer model-view matrix via layout position 1
@@ -164,6 +173,16 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		pmvMatrix.glTranslatef(0f, -0.5f, 0f); // Translate Geometry
 		displayModel(gl, 1, GL.GL_TRIANGLE_STRIP);
 		pmvMatrix.glPopMatrix();
+
+		pmvMatrix.glPushMatrix();
+		pmvMatrix.glTranslatef(1.5f, 0f, 0f); // Translate Geometry
+		displayModel(gl, 2, GL.GL_TRIANGLE_STRIP);
+		pmvMatrix.glPopMatrix();
+
+		pmvMatrix.glPushMatrix();
+		pmvMatrix.glTranslatef(-1.5f, 0f, 0f); // Translate Geometry
+		displayModel(gl, 3, GL.GL_TRIANGLE_STRIP);
+		pmvMatrix.glPopMatrix();
 	}
 
 	@Override
@@ -176,9 +195,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Reset projection matrix to identity
 		pmvMatrix.glLoadIdentity();
 		// Calculate projection matrix
-		//      Parameters:
-		//          fovy (field of view), aspect ratio,
-		//          zNear (near clipping plane), zFar (far clipping plane)
 		pmvMatrix.gluPerspective(45f, (float) width / (float) height, 0.1f, 10000f);
 		// Switch to model-view transform
 		pmvMatrix.glMatrixMode(PMVMatrix.GL_MODELVIEW);
