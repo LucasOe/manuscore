@@ -23,7 +23,7 @@ import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
 
 public class UserInterface extends JFrame {
-	private final boolean isDebug = false; // FOR DEBUG PURPOSES JUMP STRAIGHT TO MODEL VIEW
+	private final boolean isDebug = true; // FOR DEBUG PURPOSES JUMP STRAIGHT TO MODEL VIEW
 
 	private static final String FRAME_TITLE = "ManusCore";
 	private static final int FRAME_WIDTH = 1280;

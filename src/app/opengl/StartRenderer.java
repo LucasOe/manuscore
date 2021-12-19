@@ -4,6 +4,8 @@ import com.jogamp.opengl.*;
 import com.jogamp.opengl.awt.GLCanvas;
 import com.jogamp.opengl.util.PMVMatrix;
 
+import app.opengl.primitives.Box;
+
 import java.io.IOException;
 import java.nio.FloatBuffer;
 import java.nio.IntBuffer;
@@ -15,8 +17,17 @@ import de.hshl.obj.loader.Resource;
 import de.hshl.obj.loader.objects.Mesh;
 
 public class StartRenderer extends GLCanvas implements GLEventListener {
+	// Path to the models directory
 	private String modelPath = ".\\resources\\models\\";
-	private Model model;
+	// The Object that gets displayed
+	private int activeObject;
+	// List of Object paths pointing to the .obj file
+	private Path[] objectPaths = {
+			Paths.get(modelPath + "suzanne.obj"),
+			Paths.get(modelPath + "heart.obj")
+	};
+
+	private Model[] models = new Model[2];
 
 	// OpenGL buffer names for data allocation and handling on GPU
 	private int[] vaoName;
@@ -30,11 +41,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	private PMVMatrix pmvMatrix;
 
 	private GL3 gl;
-
-	// The Object that gets displayed
-	private int activeObject;
-	// List of Object paths pointing to the .obj file
-	private Path[] objectPaths = { Paths.get(modelPath + "suzanne.obj"), Paths.get(modelPath + "heart.obj") };
 
 	public StartRenderer(int activeObject) {
 		// Create the OpenGL canvas with default capabilities
@@ -69,29 +75,43 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 		// BEGIN: Preparing scene
 		// BEGIN: Allocating vertex array objects and buffers for each object
-		int noOfObjects = 1;
-
 		// Create the Vertex Array Object on the GPU
-		vaoName = new int[noOfObjects];
-		gl.glGenVertexArrays(noOfObjects, vaoName, 0);
+		vaoName = new int[models.length];
+		gl.glGenVertexArrays(models.length, vaoName, 0);
 		if (vaoName[0] < 1)
 			System.err.println("Error allocating vertex array object (VAO).");
 
 		// Creating the Vertex Buffer Objects on the GPU
-		vboName = new int[noOfObjects];
-		gl.glGenBuffers(noOfObjects, vboName, 0);
+		vboName = new int[models.length];
+		gl.glGenBuffers(models.length, vboName, 0);
 		if (vboName[0] < 1)
 			System.err.println("Error allocating vertex buffer object (VBO).");
 
 		// Creating the Index Buffer Objects on the GPU
-		iboName = new int[noOfObjects];
-		gl.glGenBuffers(noOfObjects, iboName, 0);
+		iboName = new int[models.length];
+		gl.glGenBuffers(models.length, iboName, 0);
 		if (iboName[0] < 1)
 			System.err.println("Error allocating index buffer object.");
 		// END: Allocating vertex array objects and buffers for each object
 
-		// Load activeObject as Model
-		loadModel(gl);
+		// Create and load new Model from Mesh data
+		try {
+			Mesh mesh = new OBJLoader()
+					.setLoadNormals(true)
+					.setGenerateIndexedMeshes(true)
+					.loadMesh(Resource.file(objectPaths[activeObject]));
+			models[0] = new Model(gl, mesh.getVertices(), mesh.getIndices());
+
+			// Load activeObject as Model
+			loadModel(gl, models[0], 0, 6);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		float[] color = { 0.1f, 0.5f, 0.1f };
+		models[1] = new Box(gl, 0.8f, 0.5f, 0.4f, color);
+		// Load Box as Model
+		loadModel(gl, models[1], 1, 9);
 		// END: Preparing scene
 
 		// Enable alpha transparency
@@ -136,8 +156,13 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 
 		pmvMatrix.glPushMatrix();
-		pmvMatrix.glTranslatef(0f, 0f, 0f);
-		displayModel(gl);
+		pmvMatrix.glTranslatef(0f, 0f, 0f); // Translate Geometry
+		displayModel(gl, 0, GL.GL_TRIANGLES);
+		pmvMatrix.glPopMatrix();
+
+		pmvMatrix.glPushMatrix();
+		pmvMatrix.glTranslatef(0f, -0.5f, 0f); // Translate Geometry
+		displayModel(gl, 1, GL.GL_TRIANGLE_STRIP);
 		pmvMatrix.glPopMatrix();
 	}
 
@@ -164,7 +189,10 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	public void dispose(GLAutoDrawable drawable) {
 		// Detach and delete shader program
 		gl.glUseProgram(0);
-		model.deleteShaderProgram();
+		for (Model model : models) {
+			if (model != null)
+				model.deleteShaderProgram();
+		}
 
 		// Deactivate VAO and VBO
 		gl.glBindVertexArray(0);
@@ -174,48 +202,49 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glDeleteBuffers(1, vboName, 0);
 	}
 
-	private void loadModel(GL3 gl) {
-		try {
-			// Create new Model from Mesh data
-			Mesh mesh = new OBJLoader()
-					.setLoadNormals(true)
-					.setGenerateIndexedMeshes(true)
-					.loadMesh(Resource.file(objectPaths[activeObject]));
-			model = new Model(gl, mesh.getVertices(), mesh.getIndices());
+	private void loadModel(GL3 gl, Model model, int index, int stride) {
+		if (index > models.length)
+			System.err.println("Index is bigger than the allocated number of objects.");
 
-			// Create sphere data for rendering a sphere using an index array into a vertex array
-			gl.glBindVertexArray(vaoName[0]);
+		// Create sphere data for rendering a sphere using an index array into a vertex array
+		gl.glBindVertexArray(vaoName[index]);
 
-			// Activate and initialize vertex buffer object (VBO)
-			gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[0]);
-			gl.glBufferData(GL.GL_ARRAY_BUFFER, model.getVertices().length * Float.BYTES,
-					FloatBuffer.wrap(model.getVertices()), GL.GL_STATIC_DRAW);
+		// Activate and initialize vertex buffer object (VBO)
+		gl.glBindBuffer(GL.GL_ARRAY_BUFFER, vboName[index]);
+		gl.glBufferData(GL.GL_ARRAY_BUFFER, model.getVertices().length * Float.BYTES,
+				FloatBuffer.wrap(model.getVertices()), GL.GL_STATIC_DRAW);
 
-			// Activate and initialize index buffer object (IBO)
-			gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[0]);
-			gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, model.getIndices().length * Integer.BYTES,
-					IntBuffer.wrap(model.getIndices()), GL.GL_STATIC_DRAW);
+		// Activate and initialize index buffer object (IBO)
+		gl.glBindBuffer(GL.GL_ELEMENT_ARRAY_BUFFER, iboName[index]);
+		gl.glBufferData(GL.GL_ELEMENT_ARRAY_BUFFER, model.getIndices().length * Integer.BYTES,
+				IntBuffer.wrap(model.getIndices()), GL.GL_STATIC_DRAW);
 
-			// Activate and order vertex buffer object data for the vertex shader
-			// Defining input variables for vertex shader
-			// Pointer for the vertex shader to the position information per vertex
+		// Activate and order vertex buffer object data for the vertex shader
+		// Defining input variables for vertex shader
+		// Pointer for the vertex shader to the position information per vertex
+		if (stride >= 3) {
 			gl.glEnableVertexAttribArray(0);
-			gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 0);
-			// Pointer for the vertex shader to the color information per vertex
+			gl.glVertexAttribPointer(0, 3, GL.GL_FLOAT, false, stride * Float.BYTES, 0 * Float.BYTES);
+		}
+		// Pointer for the vertex shader to the color information per vertex
+		if (stride >= 6) {
 			gl.glEnableVertexAttribArray(1);
-			gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, 6 * Float.BYTES, 3 * Float.BYTES);
-		} catch (IOException e) {
-			throw new RuntimeException(e);
+			gl.glVertexAttribPointer(1, 3, GL.GL_FLOAT, false, stride * Float.BYTES, 3 * Float.BYTES);
+		}
+		// Pointer for the vertex shader to the normal information per vertex
+		if (stride >= 9) {
+			gl.glEnableVertexAttribArray(2);
+			gl.glVertexAttribPointer(2, 3, GL.GL_FLOAT, false, stride * Float.BYTES, 6 * Float.BYTES);
 		}
 	}
 
-	private void displayModel(GL3 gl) {
-		gl.glUseProgram(model.getShaderProgramID());
+	private void displayModel(GL3 gl, int index, int mode) {
+		gl.glUseProgram(models[index].getShaderProgramID());
 		// Transfer the PVM-Matrix (model-view and projection matrix to the vertex shader
 		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-		gl.glBindVertexArray(vaoName[0]);
+		gl.glBindVertexArray(vaoName[index]);
 		// Draws the elements in the order defined by the index buffer object (IBO)
-		gl.glDrawElements(GL.GL_TRIANGLES, model.getIndices().length, GL.GL_UNSIGNED_INT, 0);
+		gl.glDrawElements(mode, models[index].getIndices().length, GL.GL_UNSIGNED_INT, 0);
 	}
 }
