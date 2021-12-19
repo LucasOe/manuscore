@@ -7,7 +7,10 @@ import app.opengl.Model;
 public class Box extends Model {
 
     public Box(GL3 gl, float width, float height, float depth, float[] color) {
-        super(gl, makeBoxVertices(width, height, depth, color), makeBoxIndices());
+        super(
+                gl,
+                makeBoxVertices(width, height, depth, color),
+                makeBoxIndices());
     }
 
     /**
@@ -21,7 +24,7 @@ public class Box extends Model {
     * @param color three dimensional color vector for each vertex
     * @return list of vertices
     */
-    public static float[] makeBoxVertices(float width, float height, float depth, float[] color) {
+    private static float[] makeBoxVertices(float width, float height, float depth, float[] color) {
         float halfOfWidth = width / 2;
         float halfOfHeight = height / 2;
         float halfOfDepth = depth / 2;
@@ -167,7 +170,7 @@ public class Box extends Model {
      * To be used with "glDrawElements" and "GL_TRIANGLE_STRIP".
      * @return indices into the vertex array of the cube (box)
      */
-    public static int[] makeBoxIndices() {
+    private static int[] makeBoxIndices() {
         // Indices to reference the number of the box vertices
         // defined in makeBoxVertices()
         int[] indices = {
