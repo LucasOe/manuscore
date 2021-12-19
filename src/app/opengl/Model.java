@@ -6,10 +6,10 @@ public class Model {
 	private float[] vertices;
 	private int[] indices;
 
-	private ShaderProgram shaderProgram;
-	private String shaderPath = ".\\resources\\shaders\\";
-	private String vertexShaderFileName = "Basic.vert";
-	private String fragmentShaderFileName = "Basic.frag";
+	private static ShaderProgram shaderProgram;
+	private static String shaderPath = ".\\resources\\shaders\\";
+	private static String vertexShaderFileName = "Basic.vert";
+	private static String fragmentShaderFileName = "Basic.frag";
 
 	public Model(GL3 gl, float[] vertices, int[] indices) {
 		this.vertices = vertices;
@@ -36,12 +36,12 @@ public class Model {
 		this.indices = indices;
 	}
 
-	public ShaderProgram getShaderProgram() {
-		return this.shaderProgram;
+	public static ShaderProgram getShaderProgram() {
+		return Model.shaderProgram;
 	}
 
-	public void setShaderProgram(ShaderProgram shaderProgram) {
-		this.shaderProgram = shaderProgram;
+	public static void setShaderProgram(ShaderProgram shaderProgram) {
+		Model.shaderProgram = shaderProgram;
 	}
 
 	public void deleteShaderProgram() {
