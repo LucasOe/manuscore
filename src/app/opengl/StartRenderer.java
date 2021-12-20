@@ -235,6 +235,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	}
 
 	private void createModels(GL3 gl) {
+		// Create and load new Model from Mesh data
 		try {
 			Mesh mesh = new OBJLoader()
 					.setLoadNormals(true)
@@ -248,8 +249,10 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			e.printStackTrace();
 		}
 
+		// Primitives use TRIANGLE_STIP for faster drawing
 		int mode = GL.GL_TRIANGLE_STRIP;
 
+		// Define colors
 		float[] colorRed = { 0.6f, 0.1f, 0.1f };
 		float[] colorGreen = { 0.1f, 0.6f, 0.1f };
 		float[] colorBlue = { 0.1f, 0.1f, 0.6f };
