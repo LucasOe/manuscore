@@ -27,7 +27,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			Paths.get(modelPath + "heart.obj")
 	};
 
-	private Model[] models = new Model[4];
+	private Model[] models = new Model[50];
 
 	// OpenGL buffer names for data allocation and handling on GPU
 	private int[] vaoName;
@@ -114,8 +114,9 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Create object for projection-model-view matrix calculation.
 		pmvMatrix = new PMVMatrix();
 
-		// Set start parameter(s) for the interaction handler.
-		interactionHandler.setEyeZ(2);
+		// Set camera position
+		interactionHandler.setEyeZ(4.0f);
+		interactionHandler.setyPosition(-1.5f);
 	}
 
 	@Override
@@ -142,10 +143,13 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 		// Display Geometry
 		for (int i = 0; i < models.length; i++) {
-			pmvMatrix.glPushMatrix();
-			pmvMatrix.glTranslatef(models[i].getPosX(), models[i].getPosY(), models[i].getPosZ());
-			displayModel(gl, i, models[i].getMode());
-			pmvMatrix.glPopMatrix();
+			if (models[i] != null) {
+				pmvMatrix.glPushMatrix();
+				pmvMatrix.glTranslatef(models[i].getPosX(), models[i].getPosY(), models[i].getPosZ());
+				pmvMatrix.glRotatef(models[i].getAng(), models[i].getRotX(), models[i].getRotY(), models[i].getRotZ());
+				displayModel(gl, i, models[i].getMode());
+				pmvMatrix.glPopMatrix();
+			}
 		}
 	}
 
@@ -235,16 +239,20 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	}
 
 	private void createModels(GL3 gl) {
+		int index = 0;
+
 		// Create and load new Model from Mesh data
 		try {
 			Mesh mesh = new OBJLoader()
 					.setLoadNormals(true)
 					.setGenerateIndexedMeshes(true)
 					.loadMesh(Resource.file(objectPaths[activeObject]));
-			models[0] = new Model(gl, mesh.getVertices(), mesh.getIndices(), GL.GL_TRIANGLES);
+			models[index] = new Model(gl, mesh.getVertices(), mesh.getIndices(), GL.GL_TRIANGLES);
+			models[index].setPos(0.0f, 1.5f, 0.0f);
 
 			// Load activeObject as Model
-			loadModel(gl, models[0], 0, 6);
+			loadModel(gl, models[index], index, 6);
+			index++;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -253,23 +261,142 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		int mode = GL.GL_TRIANGLE_STRIP;
 
 		// Define colors
-		float[] colorRed = { 0.6f, 0.1f, 0.1f };
+		float[] colorGround = { 0.1f, 0.5f, 0.1f };
 		float[] colorGreen = { 0.1f, 0.6f, 0.1f };
-		float[] colorBlue = { 0.1f, 0.1f, 0.6f };
+		float[] colorBrown = { 0.6f, 0.4f, 0.2f };
+		float[] colorRed = { 0.8f, 0.1f, 0.1f };
+		float[] colorBlue = { 0.1f, 0.1f, 0.8f };
 
-		// Load Box as Model
-		models[1] = new Box(gl, mode, 0.8f, 0.5f, 0.4f, colorRed);
-		models[1].setPos(1.5f, 0.0f, 0.0f);
-		loadModel(gl, models[1], 1, 9);
+		// Ground
+		models[index] = new Cone(gl, mode, 32, 5.0f, 5.0f, 0.1f, colorGround);
+		models[index].setPos(0.0f, 0.0f, 0.0f);
+		loadModel(gl, models[index], index, 9);
+		index++;
 
-		// Load Cone as Model
-		models[2] = new Cone(gl, mode, 64, 0.2f, 0.6f, 1f, colorGreen);
-		models[2].setPos(-1.5f, 0.0f, 0.0f);
-		loadModel(gl, models[2], 2, 9);
+		// Tree 1 Trunk
+		models[index] = new Cone(gl, mode, 32, 0.3f, 0.3f, 1.0f, colorBrown);
+		models[index].setPos(-3.0f, 0.5f, -1.0f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 1 Leaves Bottom
+		models[index] = new Cone(gl, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index].setPos(-3.0f, 1.5f, -1.0f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 1 Leaves Middle
+		models[index] = new Cone(gl, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index].setPos(-3.0f, 2.5f, -1.0f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 1 Leaves Top
+		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index].setPos(-3.0f, 3.5f, -1.0f);
+		loadModel(gl, models[index], index, 9);
+		index++;
 
-		// Load Sphere as Model
-		models[3] = new Sphere(gl, mode, 64, 64, 0.5f, colorBlue);
-		models[3].setPos(0.0f, 0.0f, -1.5f);
-		loadModel(gl, models[3], 3, 9);
+		// Tree 2 Trunk
+		models[index] = new Cone(gl, mode, 32, 0.3f, 0.3f, 1.2f, colorBrown);
+		models[index].setPos(3.2f, 0.6f, -0.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 2 Leaves Bottom
+		models[index] = new Cone(gl, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index].setPos(3.2f, 1.6f, -0.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 2 Leaves Middle
+		models[index] = new Cone(gl, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index].setPos(3.2f, 2.6f, -0.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 2 Leaves Top
+		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index].setPos(3.2f, 3.6f, -0.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Tree 3 Trunk
+		models[index] = new Cone(gl, mode, 32, 0.3f, 0.3f, 1.2f, colorBrown);
+		models[index].setPos(0.2f, 0.6f, -3.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Bottom
+		models[index] = new Cone(gl, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index].setPos(0.2f, 1.6f, -3.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Middle
+		models[index] = new Cone(gl, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index].setPos(0.2f, 2.6f, -3.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Top
+		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index].setPos(0.2f, 3.6f, -3.8f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Tree 3 Trunk
+		models[index] = new Cone(gl, mode, 32, 0.2f, 0.2f, 0.6f, colorBrown);
+		models[index].setPos(-1.5f, 0.3f, -2.5f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Bottom
+		models[index] = new Cone(gl, mode, 32, 0.4f, 0.8f, 0.5f, colorGreen);
+		models[index].setPos(-1.5f, 0.8f, -2.5f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Middle
+		models[index] = new Cone(gl, mode, 32, 0.2f, 0.6f, 0.5f, colorGreen);
+		models[index].setPos(-1.5f, 1.3f, -2.5f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 3 Leaves Top
+		models[index] = new Cone(gl, mode, 32, 0.0f, 0.3f, 0.5f, colorGreen);
+		models[index].setPos(-1.5f, 1.8f, -2.5f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Tree 4 Trunk
+		models[index] = new Cone(gl, mode, 32, 0.2f, 0.2f, 0.8f, colorBrown);
+		models[index].setPos(1.8f, 0.4f, -2.7f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 4 Leaves Bottom
+		models[index] = new Cone(gl, mode, 32, 0.4f, 0.8f, 0.5f, colorGreen);
+		models[index].setPos(1.8f, 0.9f, -2.7f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 4 Leaves Middle
+		models[index] = new Cone(gl, mode, 32, 0.2f, 0.6f, 0.5f, colorGreen);
+		models[index].setPos(1.8f, 1.4f, -2.7f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+		// Tree 4 Leaves Top
+		models[index] = new Cone(gl, mode, 32, 0.0f, 0.3f, 0.5f, colorGreen);
+		models[index].setPos(1.8f, 1.9f, -2.7f);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Present 1
+		models[index] = new Box(gl, mode, 0.8f, 0.8f, 0.8f, colorRed);
+		models[index].setPos(2.0f, 0.4f, -1.0f);
+		models[index].setRot(30, 0, 1, 0);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Present 2
+		models[index] = new Box(gl, mode, 0.6f, 0.6f, 0.6f, colorBlue);
+		models[index].setPos(2.3f, 0.3f, -0.2f);
+		models[index].setRot(40, 0, 1, 0);
+		loadModel(gl, models[index], index, 9);
+		index++;
+
+		// Present 3
+		models[index] = new Box(gl, mode, 0.6f, 0.6f, 0.6f, colorRed);
+		models[index].setPos(-2.3f, 0.3f, -0.2f);
+		models[index].setRot(70, 0, 1, 0);
+		loadModel(gl, models[index], index, 9);
+		index++;
 	}
 }
