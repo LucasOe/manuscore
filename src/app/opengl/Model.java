@@ -6,14 +6,20 @@ public class Model {
 	private float[] vertices;
 	private int[] indices;
 
+	private int mode;
+	private float posX;
+	private float posY;
+	private float posZ;
+
 	private static ShaderProgram shaderProgram;
 	private static String shaderPath = ".\\resources\\shaders\\";
 	private static String vertexShaderFileName = "Basic.vert";
 	private static String fragmentShaderFileName = "Basic.frag";
 
-	public Model(GL3 gl, float[] vertices, int[] indices) {
+	public Model(GL3 gl, float[] vertices, int[] indices, int mode) {
 		this.vertices = vertices;
 		this.indices = indices;
+		this.mode = mode;
 
 		// Set default shaderProgram
 		shaderProgram = new ShaderProgram(gl);
@@ -34,6 +40,32 @@ public class Model {
 
 	public void setIndices(int[] indices) {
 		this.indices = indices;
+	}
+
+	public int getMode() {
+		return this.mode;
+	}
+
+	public void setMode(int mode) {
+		this.mode = mode;
+	}
+
+	public float getPosX() {
+		return this.posX;
+	}
+
+	public float getPosY() {
+		return this.posY;
+	}
+
+	public float getPosZ() {
+		return this.posZ;
+	}
+
+	public void setPos(float x, float y, float z) {
+		this.posX = x;
+		this.posY = y;
+		this.posZ = z;
 	}
 
 	public static ShaderProgram getShaderProgram() {

@@ -6,11 +6,13 @@ import app.opengl.Model;
 
 public class Cone extends Model {
 
-    public Cone(GL3 gl, int horizontalResolution, float radiusTop, float radiusBottom, float length, float[] color) {
+    public Cone(GL3 gl, int mode, int horizontalResolution, float radiusTop, float radiusBottom, float length,
+            float[] color) {
         super(
                 gl,
                 makeVertices(horizontalResolution, radiusTop, radiusBottom, length, color),
-                makeIndices(horizontalResolution));
+                makeIndices(horizontalResolution),
+                mode);
     }
 
     /**
