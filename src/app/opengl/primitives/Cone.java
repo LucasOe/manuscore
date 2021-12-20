@@ -44,17 +44,18 @@ public class Cone extends Model {
         // normal vector for top circle
         float[] topNormal = { 0, 1, 0 };
         // top center of circle
-        vertices[vertexNumber] = 0f;
+        vertices[vertexNumber + 0] = 0f;
         vertices[vertexNumber + 1] = yTop;
         vertices[vertexNumber + 2] = 0f;
-        // color coordinates (for all vertices the same)
-        vertices[vertexNumber + 3] = color[0];
-        vertices[vertexNumber + 4] = color[1];
-        vertices[vertexNumber + 5] = color[2];
         // normal vector coordinates
-        vertices[vertexNumber + 6] = topNormal[0];
-        vertices[vertexNumber + 7] = topNormal[1];
-        vertices[vertexNumber + 8] = topNormal[2];
+        vertices[vertexNumber + 3] = topNormal[0];
+        vertices[vertexNumber + 4] = topNormal[1];
+        vertices[vertexNumber + 5] = topNormal[2];
+        // color coordinates (for all vertices the same)
+        vertices[vertexNumber + 6] = color[0];
+        vertices[vertexNumber + 7] = color[1];
+        vertices[vertexNumber + 8] = color[2];
+
         vertexNumber += vertexNumberInc;
 
         // vertices for the top circle
@@ -62,17 +63,18 @@ public class Cone extends Model {
         float angleTopInc = (float) (2 * Math.PI / horizontalResolution);
         for (int angleIndex = 0; angleIndex < horizontalResolution; angleIndex++) {
             // position coordinates
-            vertices[vertexNumber] = radiusTop * (float) (Math.cos(angleTop));
+            vertices[vertexNumber + 0] = radiusTop * (float) (Math.cos(angleTop));
             vertices[vertexNumber + 1] = yTop;
             vertices[vertexNumber + 2] = radiusTop * (float) Math.sin(angleTop);
-            // color coordinates (for all vertices the same)
-            vertices[vertexNumber + 3] = color[0];
-            vertices[vertexNumber + 4] = color[1];
-            vertices[vertexNumber + 5] = color[2];
             // normal vector coordinates
-            vertices[vertexNumber + 6] = topNormal[0];
-            vertices[vertexNumber + 7] = topNormal[1];
-            vertices[vertexNumber + 8] = topNormal[2];
+            vertices[vertexNumber + 3] = topNormal[0];
+            vertices[vertexNumber + 4] = topNormal[1];
+            vertices[vertexNumber + 5] = topNormal[2];
+            // color coordinates (for all vertices the same)
+            vertices[vertexNumber + 6] = color[0];
+            vertices[vertexNumber + 7] = color[1];
+            vertices[vertexNumber + 8] = color[2];
+
             vertexNumber += vertexNumberInc;
             angleTop += angleTopInc;
         }
@@ -87,19 +89,20 @@ public class Cone extends Model {
             float xPos = radiusTop * (float) (Math.cos(angleTop));
             float yPos = yTop;
             float zPos = radiusTop * (float) Math.sin(angleTop);
-            vertices[vertexNumber] = xPos;
+            vertices[vertexNumber + 0] = xPos;
             vertices[vertexNumber + 1] = yPos;
             vertices[vertexNumber + 2] = zPos;
-            // color coordinates (for all vertices the same)
-            vertices[vertexNumber + 3] = color[0];
-            vertices[vertexNumber + 4] = color[1];
-            vertices[vertexNumber + 5] = color[2];
             // normalize normal vector
             float normalizationFactor = 1
                     / (float) Math.sqrt((xPos * xPos) + (yNormalTop * yNormalTop) + (zPos * zPos));
-            vertices[vertexNumber + 6] = xPos * normalizationFactor;
-            vertices[vertexNumber + 7] = 0f;
-            vertices[vertexNumber + 8] = zPos * normalizationFactor;
+            vertices[vertexNumber + 3] = xPos * normalizationFactor;
+            vertices[vertexNumber + 4] = 0f;
+            vertices[vertexNumber + 5] = zPos * normalizationFactor;
+            // color coordinates (for all vertices the same)
+            vertices[vertexNumber + 6] = color[0];
+            vertices[vertexNumber + 7] = color[1];
+            vertices[vertexNumber + 8] = color[2];
+
             vertexNumber += vertexNumberInc;
             angleTop += angleTopInc;
         }
@@ -114,19 +117,20 @@ public class Cone extends Model {
             float xPos = radiusBottom * (float) (Math.cos(angleBottom));
             float yPos = yBottom;
             float zPos = radiusBottom * (float) Math.sin(angleBottom);
-            vertices[vertexNumber] = xPos;
+            vertices[vertexNumber + 0] = xPos;
             vertices[vertexNumber + 1] = yPos;
             vertices[vertexNumber + 2] = zPos;
-            // color coordinates (for all vertices the same)
-            vertices[vertexNumber + 3] = color[0];
-            vertices[vertexNumber + 4] = color[1];
-            vertices[vertexNumber + 5] = color[2];
             // normalize normal vector
             float normalizationFactor = 1
                     / (float) Math.sqrt((xPos * xPos) + (yNormalBottom * yNormalBottom) + (zPos * zPos));
-            vertices[vertexNumber + 6] = xPos * normalizationFactor;
-            vertices[vertexNumber + 7] = 0f;
-            vertices[vertexNumber + 8] = zPos * normalizationFactor;
+            vertices[vertexNumber + 3] = xPos * normalizationFactor;
+            vertices[vertexNumber + 4] = 0f;
+            vertices[vertexNumber + 5] = zPos * normalizationFactor;
+            // color coordinates (for all vertices the same)
+            vertices[vertexNumber + 6] = color[0];
+            vertices[vertexNumber + 7] = color[1];
+            vertices[vertexNumber + 8] = color[2];
+
             vertexNumber += vertexNumberInc;
             angleBottom += angleBottomInc;
         }
@@ -138,33 +142,34 @@ public class Cone extends Model {
         angleBottomInc = (float) (2 * Math.PI / horizontalResolution);
         for (int angleIndex = 0; angleIndex < horizontalResolution; angleIndex++) {
             // position coordinates
-            vertices[vertexNumber] = radiusBottom * (float) (Math.cos(angleBottom));
+            vertices[vertexNumber + 0] = radiusBottom * (float) (Math.cos(angleBottom));
             vertices[vertexNumber + 1] = yBottom;
             vertices[vertexNumber + 2] = radiusBottom * (float) Math.sin(angleBottom);
+            // normal vector coordinates
+            vertices[vertexNumber + 3] = bottomNormal[0];
+            vertices[vertexNumber + 4] = bottomNormal[1];
+            vertices[vertexNumber + 5] = bottomNormal[2];
             // color coordinates (for all vertices the same)
-            vertices[vertexNumber + 3] = color[0];
-            vertices[vertexNumber + 4] = color[1];
-            vertices[vertexNumber + 5] = color[2];
+            vertices[vertexNumber + 6] = color[0];
+            vertices[vertexNumber + 7] = color[1];
+            vertices[vertexNumber + 8] = color[2];
+
             vertexNumber += vertexNumberInc;
             angleBottom += angleBottomInc;
-            // normal vector coordinates
-            vertices[vertexNumber + 6] = bottomNormal[0];
-            vertices[vertexNumber + 7] = bottomNormal[1];
-            vertices[vertexNumber + 8] = bottomNormal[2];
         }
 
         // bottom center of circle
-        vertices[vertexNumber] = 0f;
+        vertices[vertexNumber + 0] = 0f;
         vertices[vertexNumber + 1] = yBottom;
         vertices[vertexNumber + 2] = 0f;
-        // color coordinates (for all vertices the same)
-        vertices[vertexNumber + 3] = color[0];
-        vertices[vertexNumber + 4] = color[1];
-        vertices[vertexNumber + 5] = color[2];
         // normal vector coordinates
-        vertices[vertexNumber + 6] = bottomNormal[0];
-        vertices[vertexNumber + 7] = bottomNormal[1];
-        vertices[vertexNumber + 8] = bottomNormal[2];
+        vertices[vertexNumber + 3] = bottomNormal[0];
+        vertices[vertexNumber + 4] = bottomNormal[1];
+        vertices[vertexNumber + 5] = bottomNormal[2];
+        // color coordinates (for all vertices the same)
+        vertices[vertexNumber + 6] = color[0];
+        vertices[vertexNumber + 7] = color[1];
+        vertices[vertexNumber + 8] = color[2];
 
         return vertices;
     }
