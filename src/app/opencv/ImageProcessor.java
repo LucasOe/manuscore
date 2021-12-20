@@ -5,24 +5,33 @@ import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.*;
+
+
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+
 
 public class ImageProcessor {
 
 	public static Mat processImage(Mat frame) {
 		// if the frame is not empty, process it
 		Mat processedImage = new Mat();
+		Random rng = new Random(12345);
 
 		if (!frame.empty()) {
 			// Wandelt das RGB Bild in HSV um
 			Imgproc.cvtColor(frame, processedImage, Imgproc.COLOR_BGR2HSV);
+			//Speichert HSV werte in separaten variablen in einer Liste
 			List<Mat> hsv = new ArrayList<>(3);
 			Core.split(processedImage, hsv);
 
 			//entnimmt den S-Wert aus HSV und speichert ihn
 			Mat S = hsv.get(1);
+			//Weichzeichnung des Bildes
 			Imgproc.GaussianBlur(frame, frame, new Size(15, 15), 0);
 			Imgproc.medianBlur(S, S, 15);
 
@@ -66,9 +75,34 @@ public class ImageProcessor {
 
 			// Video anhand der Maske Croppen und Maskiertes abspeichern
 			Mat cropped = new Mat();
+
+			//Versuch mit konturen von - OpenCV Dokumentation entnommen
+			List<MatOfPoint> contours = new ArrayList<>();
+			Mat hierarchy = new Mat();
+			Imgproc.findContours(centroidRegion, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+
+			List<MatOfPoint> hullList = new ArrayList<>();
+			for (MatOfPoint contour : contours) {
+				MatOfInt hull = new MatOfInt();
+				Imgproc.convexHull(contour, hull);
+				Point[] contourArray = contour.toArray();
+				Point[] hullPoints = new Point[hull.rows()];
+				List<Integer> hullContourIdxList = hull.toList();
+				for (int i = 0; i < hullContourIdxList.size(); i++) {
+					hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+				}
+				hullList.add(new MatOfPoint(hullPoints));
+			}
+			Mat drawing = Mat.zeros(centroidRegion.size(), CvType.CV_8UC3);
+			for (int i = 0; i < contours.size(); i++) {
+				Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
+				Imgproc.drawContours(drawing, contours, i, color);
+				Imgproc.drawContours(drawing, hullList, i, color );
+			}
+
 			frame.copyTo(cropped, centroidRegion);
 
-			return cropped;
+			return drawing;
 		}
 
 		return null;
