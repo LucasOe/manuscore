@@ -135,12 +135,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		pmvMatrix.glRotatef(interactionHandler.getAngleXaxis(), 1f, 0f, 0f);
 		pmvMatrix.glRotatef(interactionHandler.getAngleYaxis(), 0f, 1f, 0f);
 
-		// Transfer the PVM-Matrix (model-view and projection matrix) to the GPU via uniforms
-		// Transfer projection matrix via uniform layout position 0
-		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
-		// Transfer model-view matrix via layout position 1
-		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
-
 		// Display Geometry
 		for (int i = 0; i < models.length; i++) {
 			if (models[i] != null) {
@@ -230,8 +224,9 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 	private void displayModel(GL3 gl, int index, int mode) {
 		gl.glUseProgram(models[index].getShaderProgramID());
-		// Transfer the PVM-Matrix (model-view and projection matrix to the vertex shader
+		// Transfer projection matrix via uniform layout position 0
 		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
+		// Transfer model-view matrix via layout position 1
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 		gl.glBindVertexArray(vaoName[index]);
 		// Draws the elements in the order defined by the index buffer object (IBO)
@@ -243,10 +238,12 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 		// Create and load new Model from Mesh data
 		try {
-			Mesh mesh = new OBJLoader()
-					.setLoadNormals(true)
-					.setGenerateIndexedMeshes(true)
-					.loadMesh(Resource.file(objectPaths[activeObject]));
+			OBJLoader loader = new OBJLoader();
+			loader.setLoadNormals(true);
+			loader.setLoadTextureCoordinates(false);
+			loader.setGenerateIndexedMeshes(true);
+
+			Mesh mesh = loader.loadMesh(Resource.file(objectPaths[activeObject]));
 			models[index] = new Model(gl, mesh.getVertices(), mesh.getIndices(), GL.GL_TRIANGLES);
 			models[index].setPos(0.0f, 1.5f, 0.0f);
 
@@ -289,7 +286,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Tree 1 Leaves Top
-		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(-3.0f, 3.5f, -1.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
@@ -310,7 +307,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Tree 2 Leaves Top
-		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(3.2f, 3.6f, -0.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
@@ -331,7 +328,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Tree 3 Leaves Top
-		models[index] = new Cone(gl, mode, 32, 0.0f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(0.2f, 3.6f, -3.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
@@ -352,7 +349,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Tree 3 Leaves Top
-		models[index] = new Cone(gl, mode, 32, 0.0f, 0.3f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, mode, 32, 0.01f, 0.3f, 0.5f, colorGreen);
 		models[index].setPos(-1.5f, 1.8f, -2.5f);
 		loadModel(gl, models[index], index, 9);
 		index++;
@@ -373,7 +370,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Tree 4 Leaves Top
-		models[index] = new Cone(gl, mode, 32, 0.0f, 0.3f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, mode, 32, 0.01f, 0.3f, 0.5f, colorGreen);
 		models[index].setPos(1.8f, 1.9f, -2.7f);
 		loadModel(gl, models[index], index, 9);
 		index++;

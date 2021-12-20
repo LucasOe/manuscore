@@ -48,8 +48,8 @@ public class Box extends Model {
         float[] nb = { 0, 0, -1 }; // 0 back
         float[] nl = { -1, 0, 0 }; // 0 left
         float[] nr = { 1, 0, 0 }; // 0 right
-        float[] nu = { 0, 1, 1 }; // 0 up (top)
-        float[] nd = { 0, -1, 1 }; // 0 down (bottom)
+        float[] nu = { 0, 1, 0 }; // 0 up (top)
+        float[] nd = { 0, -1, 0 }; // 0 down (bottom)
 
         // Cuboid vertices to be drawn as triangle stripes
         // Interlaces with color information and normal vectors
@@ -57,110 +57,110 @@ public class Box extends Model {
                 // front surface
                 // index: 0
                 p0[0], p0[1], p0[2], // position
-                c[0], c[1], c[2], // color
                 nf[0], nf[1], nf[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 1
                 p3[0], p3[1], p3[2], // position
-                c[0], c[1], c[2], // color
                 nf[0], nf[1], nf[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 2
                 p1[0], p1[1], p1[2], // position
-                c[0], c[1], c[2], // color
                 nf[0], nf[1], nf[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 3
                 p2[0], p2[1], p2[2], // position
-                c[0], c[1], c[2], // color
                 nf[0], nf[1], nf[2], // normal
+                c[0], c[1], c[2], // color
 
                 // back surface
                 // index: 4
                 p5[0], p5[1], p5[2], // position
-                c[0], c[1], c[2], // color
                 nb[0], nb[1], nb[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 5
                 p6[0], p6[1], p6[2], // position
-                c[0], c[1], c[2], // color
                 nb[0], nb[1], nb[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 6
                 p4[0], p4[1], p4[2], // position
-                c[0], c[1], c[2], // color
                 nb[0], nb[1], nb[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 7
                 p7[0], p7[1], p7[2], // position
-                c[0], c[1], c[2], // color
                 nb[0], nb[1], nb[2], // normal
+                c[0], c[1], c[2], // color
 
                 // left surface
                 // index: 8
                 p4[0], p4[1], p4[2], // position
-                c[0], c[1], c[2], // color
                 nl[0], nl[1], nl[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 9
                 p7[0], p7[1], p7[2], // position
-                c[0], c[1], c[2], // color
                 nl[0], nl[1], nl[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 10
                 p0[0], p0[1], p0[2], // position
-                c[0], c[1], c[2], // color
                 nl[0], nl[1], nl[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 11
                 p3[0], p3[1], p3[2], // position
-                c[0], c[1], c[2], // color
                 nl[0], nl[1], nl[2], // normal
+                c[0], c[1], c[2], // color
 
                 // right surface
                 // index: 12
                 p1[0], p1[1], p1[2], // position
-                c[0], c[1], c[2], // color
                 nr[0], nr[1], nr[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 13
                 p2[0], p2[1], p2[2], // position
-                c[0], c[1], c[2], // color
                 nr[0], nr[1], nr[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 14
                 p5[0], p5[1], p5[2], // position
-                c[0], c[1], c[2], // color
                 nr[0], nr[1], nr[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 15
                 p6[0], p6[1], p6[2], // position
-                c[0], c[1], c[2], // color
                 nr[0], nr[1], nr[2], // normal
+                c[0], c[1], c[2], // color
 
                 // top surface
                 // index: 16
                 p4[0], p4[1], p4[2], // position
-                c[0], c[1], c[2], // color
                 nu[0], nu[1], nu[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 17
                 p0[0], p0[1], p0[2], // position
-                c[0], c[1], c[2], // color
                 nu[0], nu[1], nu[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 18
                 p5[0], p5[1], p5[2], // position
-                c[0], c[1], c[2], // color
                 nu[0], nu[1], nu[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 19
                 p1[0], p1[1], p1[2], // position
-                c[0], c[1], c[2], // color
                 nu[0], nu[1], nu[2], // normal
+                c[0], c[1], c[2], // color
 
                 // bottom surface
                 // index: 20
                 p3[0], p3[1], p3[2], // position
-                c[0], c[1], c[2], // color
                 nd[0], nd[1], nd[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 21
                 p7[0], p7[1], p7[2], // position
-                c[0], c[1], c[2], // color
                 nd[0], nd[1], nd[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 22
                 p2[0], p2[1], p2[2], // position
-                c[0], c[1], c[2], // color
                 nd[0], nd[1], nd[2], // normal
+                c[0], c[1], c[2], // color
                 // index: 23
                 p6[0], p6[1], p6[2], // position
-                c[0], c[1], c[2], // color
                 nd[0], nd[1], nd[2], // normal
+                c[0], c[1], c[2], // color
         };
         return verticies;
     }

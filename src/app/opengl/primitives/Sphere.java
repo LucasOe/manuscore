@@ -35,23 +35,22 @@ public class Sphere extends Model {
         for (int elevationIndex = 0; elevationIndex <= verticalResolution; elevationIndex++) {
             azimuth = 0;
             for (int azimuthIndex = 0; azimuthIndex < horizontalResolution; azimuthIndex++) {
-                // position coordinates in spherical coordinates
+                // Position coordinates in spherical coordinates
                 float xPos = radius * (float) (Math.sin(elevation) * Math.cos(azimuth));
                 float yPos = radius * (float) (Math.sin(elevation) * Math.sin(azimuth));
                 float zPos = radius * (float) Math.cos(elevation);
-                vertices[vertexNumber] = xPos;
+                vertices[vertexNumber + 0] = xPos;
                 vertices[vertexNumber + 1] = yPos;
                 vertices[vertexNumber + 2] = zPos;
-                // color coordinates (for all vertices the same)
-                vertices[vertexNumber + 3] = color[0];
-                vertices[vertexNumber + 4] = color[1];
-                vertices[vertexNumber + 5] = color[2];
-                // coordinates of normal vector
-                // for a sphere this vector is identical to the normalizes position vector
+                // Coordinates of normal vector for a sphere this vector is identical to the normalizes position vector
                 float normalizationFactor = 1 / (float) Math.sqrt((xPos * xPos) + (yPos * yPos) + (zPos * zPos));
-                vertices[vertexNumber + 6] = xPos * normalizationFactor;
-                vertices[vertexNumber + 7] = yPos * normalizationFactor;
-                vertices[vertexNumber + 8] = zPos * normalizationFactor;
+                vertices[vertexNumber + 3] = xPos * normalizationFactor;
+                vertices[vertexNumber + 4] = yPos * normalizationFactor;
+                vertices[vertexNumber + 5] = zPos * normalizationFactor;
+                // Color coordinates (for all vertices the same)
+                vertices[vertexNumber + 6] = color[0];
+                vertices[vertexNumber + 7] = color[1];
+                vertices[vertexNumber + 8] = color[2];
 
                 vertexNumber += vertexNumberInc;
                 azimuth += azimuthInc;
