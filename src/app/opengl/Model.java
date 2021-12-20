@@ -10,6 +10,10 @@ public class Model {
 	private float posX;
 	private float posY;
 	private float posZ;
+	private float ang;
+	private float rotX;
+	private float rotY;
+	private float rotZ;
 
 	private static ShaderProgram shaderProgram;
 	private static String shaderPath = ".\\resources\\shaders\\";
@@ -66,6 +70,29 @@ public class Model {
 		this.posX = x;
 		this.posY = y;
 		this.posZ = z;
+	}
+
+	public float getAng() {
+		return this.ang;
+	}
+
+	public float getRotX() {
+		return this.rotX;
+	}
+
+	public float getRotY() {
+		return this.rotY;
+	}
+
+	public float getRotZ() {
+		return this.rotZ;
+	}
+
+	public void setRot(float ang, float x, float y, float z) {
+		this.ang = ang;
+		this.rotX = x;
+		this.rotY = y;
+		this.rotZ = z;
 	}
 
 	public static ShaderProgram getShaderProgram() {
