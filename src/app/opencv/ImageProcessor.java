@@ -101,8 +101,9 @@ public class ImageProcessor {
 			}
 
 			frame.copyTo(cropped, centroidRegion);
+			frame.copyTo(cropped, drawing);
 
-			return drawing;
+			return cropped;
 		}
 
 		return null;
