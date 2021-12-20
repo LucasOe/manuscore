@@ -39,7 +39,7 @@ public class ShaderProgram {
 		String vertexShaderString;
 		int vertexShader;
 		String vertexPathAndFileName = path + vertexShaderFileName;
-		System.out.println("Loading vertex shader from file: " + vertexPathAndFileName);
+		//System.out.println("Loading vertex shader from file: " + vertexPathAndFileName);
 		vertexShaderString = loadFileToString(vertexPathAndFileName);
 		vertexShader = createAndCompileShader(GL2ES2.GL_VERTEX_SHADER, vertexShaderString);
 
@@ -47,7 +47,7 @@ public class ShaderProgram {
 		String fragmentShaderString;
 		int fragmentShader;
 		String fragmentPathAndFileName = path + fragmentShaderFileName;
-		System.out.println("Loading fragment shader from file: " + fragmentPathAndFileName);
+		//System.out.println("Loading fragment shader from file: " + fragmentPathAndFileName);
 		fragmentShaderString = loadFileToString(fragmentPathAndFileName);
 		fragmentShader = createAndCompileShader(GL2ES2.GL_FRAGMENT_SHADER, fragmentShaderString);
 
@@ -89,7 +89,7 @@ public class ShaderProgram {
 		int[] compiled = new int[1];
 		gl.glGetShaderiv(shader, GL2ES2.GL_COMPILE_STATUS, compiled, 0);
 		if (compiled[0] != 0) {
-			System.out.println("Shader compiled successfully.");
+			//System.out.println("Shader compiled successfully.");
 		} else {
 			// Compilation with error: Read and print compiler log to console
 			int[] logLength = new int[1];

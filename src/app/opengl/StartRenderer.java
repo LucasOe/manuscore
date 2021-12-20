@@ -40,8 +40,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	// Declaration for using the projection-model-view matrix tool
 	private PMVMatrix pmvMatrix;
 
-	private GL3 gl;
-
 	public StartRenderer(int activeObject) {
 		// Create the OpenGL canvas with default capabilities
 		super();
@@ -65,13 +63,15 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	@Override
 	public void init(GLAutoDrawable drawable) {
 		// Get the OpenGL graphics context
-		gl = drawable.getGL().getGL3();
+		GL3 gl = drawable.getGL().getGL3();
 
 		// Outputs information about the available and chosen profile
+		/*
 		System.err.println("Chosen GLCapabilities: " + drawable.getChosenGLCapabilities());
 		System.err.println("GL_VENDOR: " + gl.glGetString(GL.GL_VENDOR));
 		System.err.println("GL_RENDERER: " + gl.glGetString(GL.GL_RENDERER));
 		System.err.println("GL_VERSION: " + gl.glGetString(GL.GL_VERSION));
+		*/
 
 		// BEGIN: Preparing scene
 		// BEGIN: Allocating vertex array objects and buffers for each object
@@ -94,34 +94,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			System.err.println("Error allocating index buffer object.");
 		// END: Allocating vertex array objects and buffers for each object
 
-		// Create and load new Model from Mesh data
-		try {
-			Mesh mesh = new OBJLoader()
-					.setLoadNormals(true)
-					.setGenerateIndexedMeshes(true)
-					.loadMesh(Resource.file(objectPaths[activeObject]));
-			models[0] = new Model(gl, mesh.getVertices(), mesh.getIndices());
-
-			// Load activeObject as Model
-			loadModel(gl, models[0], 0, 6);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		// Load Box as Model
-		float[] colorBox = { 0.1f, 0.6f, 0.1f };
-		models[1] = new Box(gl, 0.8f, 0.5f, 0.4f, colorBox);
-		loadModel(gl, models[1], 1, 9);
-
-		// Load Cone as Model
-		float[] colorCone = { 0.1f, 0.1f, 0.6f };
-		models[2] = new Cone(gl, 64, 0.2f, 0.6f, 1f, colorCone);
-		loadModel(gl, models[2], 2, 9);
-
-		// Load Sphere as Model
-		float[] colorSphere = { 0.6f, 0.1f, 0.1f };
-		models[3] = new Sphere(gl, 64, 64, 0.5f, colorSphere);
-		loadModel(gl, models[3], 3, 9);
+		createModels(gl);
 		// END: Preparing scene
 
 		// Enable alpha transparency
@@ -147,6 +120,9 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 	@Override
 	public void display(GLAutoDrawable drawable) {
+		// Get the OpenGL graphics context
+		GL3 gl = drawable.getGL().getGL3();
+
 		// Clear color and depth buffer
 		gl.glClear(GL3.GL_COLOR_BUFFER_BIT | GL3.GL_DEPTH_BUFFER_BIT);
 
@@ -164,29 +140,20 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Transfer model-view matrix via layout position 1
 		gl.glUniformMatrix4fv(1, 1, false, pmvMatrix.glGetMvMatrixf());
 
-		pmvMatrix.glPushMatrix();
-		pmvMatrix.glTranslatef(0f, 0f, 0f); // Translate Geometry
-		displayModel(gl, 0, GL.GL_TRIANGLES);
-		pmvMatrix.glPopMatrix();
-
-		pmvMatrix.glPushMatrix();
-		pmvMatrix.glTranslatef(0f, -0.5f, 0f); // Translate Geometry
-		displayModel(gl, 1, GL.GL_TRIANGLE_STRIP);
-		pmvMatrix.glPopMatrix();
-
-		pmvMatrix.glPushMatrix();
-		pmvMatrix.glTranslatef(1.5f, 0f, 0f); // Translate Geometry
-		displayModel(gl, 2, GL.GL_TRIANGLE_STRIP);
-		pmvMatrix.glPopMatrix();
-
-		pmvMatrix.glPushMatrix();
-		pmvMatrix.glTranslatef(-1.5f, 0f, 0f); // Translate Geometry
-		displayModel(gl, 3, GL.GL_TRIANGLE_STRIP);
-		pmvMatrix.glPopMatrix();
+		// Display Geometry
+		for (int i = 0; i < models.length; i++) {
+			pmvMatrix.glPushMatrix();
+			pmvMatrix.glTranslatef(models[i].getPosX(), models[i].getPosY(), models[i].getPosZ());
+			displayModel(gl, i, models[i].getMode());
+			pmvMatrix.glPopMatrix();
+		}
 	}
 
 	@Override
 	public void reshape(GLAutoDrawable drawable, int x, int y, int width, int height) {
+		// Get the OpenGL graphics context
+		GL3 gl = drawable.getGL().getGL3();
+
 		// Set the viewport width and height to the entire window
 		gl.glViewport(0, 0, width, height);
 
@@ -203,6 +170,9 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	// Called by the drawable before the OpenGL context is destroyed by an external event
 	@Override
 	public void dispose(GLAutoDrawable drawable) {
+		// Get the OpenGL graphics context
+		GL3 gl = drawable.getGL().getGL3();
+
 		// Detach and delete shader program
 		gl.glUseProgram(0);
 		for (Model model : models) {
@@ -262,5 +232,41 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glBindVertexArray(vaoName[index]);
 		// Draws the elements in the order defined by the index buffer object (IBO)
 		gl.glDrawElements(mode, models[index].getIndices().length, GL.GL_UNSIGNED_INT, 0);
+	}
+
+	private void createModels(GL3 gl) {
+		try {
+			Mesh mesh = new OBJLoader()
+					.setLoadNormals(true)
+					.setGenerateIndexedMeshes(true)
+					.loadMesh(Resource.file(objectPaths[activeObject]));
+			models[0] = new Model(gl, mesh.getVertices(), mesh.getIndices(), GL.GL_TRIANGLES);
+
+			// Load activeObject as Model
+			loadModel(gl, models[0], 0, 6);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		int mode = GL.GL_TRIANGLE_STRIP;
+
+		float[] colorRed = { 0.6f, 0.1f, 0.1f };
+		float[] colorGreen = { 0.1f, 0.6f, 0.1f };
+		float[] colorBlue = { 0.1f, 0.1f, 0.6f };
+
+		// Load Box as Model
+		models[1] = new Box(gl, mode, 0.8f, 0.5f, 0.4f, colorRed);
+		models[1].setPos(1.5f, 0.0f, 0.0f);
+		loadModel(gl, models[1], 1, 9);
+
+		// Load Cone as Model
+		models[2] = new Cone(gl, mode, 64, 0.2f, 0.6f, 1f, colorGreen);
+		models[2].setPos(-1.5f, 0.0f, 0.0f);
+		loadModel(gl, models[2], 2, 9);
+
+		// Load Sphere as Model
+		models[3] = new Sphere(gl, mode, 64, 64, 0.5f, colorBlue);
+		models[3].setPos(0.0f, 0.0f, -1.5f);
+		loadModel(gl, models[3], 3, 9);
 	}
 }
