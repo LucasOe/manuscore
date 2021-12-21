@@ -8,8 +8,6 @@ import org.opencv.imgproc.Imgproc;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.*;
 
-
-
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -29,23 +27,26 @@ public class ImageProcessor {
 			List<Mat> hsv = new ArrayList<>(3);
 			Core.split(processedImage, hsv);
 
-			//entnimmt den S-Wert aus HSV und speichert ihn
-			Mat S = hsv.get(1);
+			//entnimmt den V-Wert aus HSV und speichert ihn
+			Mat V = hsv.get(2);
 			//Weichzeichnung des Bildes
 			Imgproc.GaussianBlur(frame, frame, new Size(15, 15), 0);
-			Imgproc.medianBlur(S, S, 15);
+			Imgproc.medianBlur(V, V, 15);
 
 			// Threshold in binäres Bild mit der OTSU-Methode
 			Mat region = new Mat();
-			Imgproc.threshold(S, region, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+			//Imgproc.cvtColor(frame, region, Imgproc.COLOR_BGR2GRAY);
+			Imgproc.threshold(V, region, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
 
-			// Gebe alle zusammengehörige Komponenten
+			// Alle Variablen von ConnectedComponentsWithStats separat speichern
 			Mat labels = new Mat();
 			Mat stats = new Mat();
 			Mat centroids = new Mat();
+
+			//Sucht zusammengehörige Regionen
 			Imgproc.connectedComponentsWithStats(region, labels, stats, centroids, 4);
 
-			// Wie viele Komponenten haben wir?
+			// Wie viele Label haben wir?
 			Core.MinMaxLocResult x = Core.minMaxLoc(labels);
 
 			// Prüfe bei Komponenten ob in Mitte des Bildes
@@ -100,12 +101,14 @@ public class ImageProcessor {
 				Imgproc.drawContours(drawing, hullList, i, color );
 			}
 
+			//Bild der Hand auf schwarzem Hintergrund
 			frame.copyTo(cropped, centroidRegion);
+
+			//Hulls darüber legen
 			frame.copyTo(cropped, drawing);
 
-			return cropped;
+			return drawing;
 		}
-
 		return null;
 	}
 
