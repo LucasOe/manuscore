@@ -77,15 +77,23 @@ public class ImageProcessor {
 			// Video anhand der Maske Croppen und Maskiertes abspeichern
 			Mat cropped = new Mat();
 
-			//Versuch mit konturen von - OpenCV Dokumentation entnommen
+			//Versuch mit konturen von - OpenCV Dokumentation entnommen und abgeändert
 			List<MatOfPoint> contours = new ArrayList<>();
 			Mat hierarchy = new Mat();
 			Imgproc.findContours(centroidRegion, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
 
 			List<MatOfPoint> hullList = new ArrayList<>();
 			for (MatOfPoint contour : contours) {
+				//Convex Hull Bilden
 				MatOfInt hull = new MatOfInt();
 				Imgproc.convexHull(contour, hull);
+
+				//ConvexityDefects erkennen
+				MatOfInt4 defects = new MatOfInt4();
+				Imgproc.convexityDefects(contour, hull, defects);
+				//List<Integer> conDefList = defects.toList();
+				//System.out.println("Biggest Extreme: " + conDefList.get(3));
+
 				Point[] contourArray = contour.toArray();
 				Point[] hullPoints = new Point[hull.rows()];
 				List<Integer> hullContourIdxList = hull.toList();
@@ -98,14 +106,28 @@ public class ImageProcessor {
 			for (int i = 0; i < contours.size(); i++) {
 				Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
 				Imgproc.drawContours(drawing, contours, i, color);
-				Imgproc.drawContours(drawing, hullList, i, color );
+				Imgproc.drawContours(drawing, hullList, i, color);
 			}
 
-			//Bild der Hand auf schwarzem Hintergrund
+			// Versuch mit CornerHarris Kantenerkennung
+			/*
+			Mat harris = new Mat();
+			Imgproc.cvtColor(frame, processedImage, Imgproc.COLOR_BGR2GRAY);
+
+			Imgproc.cornerHarris(harris,2,3,0.04);
+			*/
+
+			//Bild der Hand ausgeschnitten
 			frame.copyTo(cropped, centroidRegion);
 
-			//Hulls darüber legen
+			//Hulls über das aktuelle Bild legen
 			frame.copyTo(cropped, drawing);
+
+
+
+
+
+
 
 			return drawing;
 		}
