@@ -53,7 +53,7 @@ public class ImageProcessor {
 			// tolerance = Abweichung von der Mitte des Bildes
 			int width = frame.width();
 			int height = frame.height();
-			double tolerance = 0.3;
+			double tolerance = 0.4;
 			Mat centroidRegion = new Mat(region.rows(), region.cols(), region.type(), Scalar.all(0));
 			ArrayList<Integer> selectedLabels = new ArrayList<>();
 
@@ -79,35 +79,69 @@ public class ImageProcessor {
 
 			//Versuch mit konturen von - OpenCV Dokumentation entnommen und abgeändert
 			List<MatOfPoint> contours = new ArrayList<>();
+			MatOfPoint biggestContour;
+
 			Mat hierarchy = new Mat();
 			Imgproc.findContours(centroidRegion, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+			//System.out.println("Amount of Contours: " + contours.size());
 
-			List<MatOfPoint> hullList = new ArrayList<>();
-			for (MatOfPoint contour : contours) {
-				//Convex Hull Bilden
-				MatOfInt hull = new MatOfInt();
-				Imgproc.convexHull(contour, hull);
-
-				//ConvexityDefects erkennen
-				MatOfInt4 defects = new MatOfInt4();
-				Imgproc.convexityDefects(contour, hull, defects);
-				//List<Integer> conDefList = defects.toList();
-				//System.out.println("Biggest Extreme: " + conDefList.get(3));
-
-				Point[] contourArray = contour.toArray();
-				Point[] hullPoints = new Point[hull.rows()];
-				List<Integer> hullContourIdxList = hull.toList();
-				for (int i = 0; i < hullContourIdxList.size(); i++) {
-					hullPoints[i] = contourArray[hullContourIdxList.get(i)];
-				}
-				hullList.add(new MatOfPoint(hullPoints));
-			}
+			//Bild der Hand ausgeschnitten
+			frame.copyTo(cropped, centroidRegion);
 			Mat drawing = Mat.zeros(centroidRegion.size(), CvType.CV_8UC3);
-			for (int i = 0; i < contours.size(); i++) {
-				Scalar color = new Scalar(rng.nextInt(256), rng.nextInt(256), rng.nextInt(256));
-				Imgproc.drawContours(drawing, contours, i, color);
-				Imgproc.drawContours(drawing, hullList, i, color);
+			if (contours.size() < 2) {
+				return cropped;
 			}
+
+			double maxArea = 0.0;
+			//Ersten index ueberspringen, da darin automatisch riesiger Wert gespeichert wird
+			int index = 1;
+			for (int k = 1; k < contours.size(); k++){
+				double area = Imgproc.contourArea(contours.get(k));
+				if (area >= maxArea) {
+					maxArea = area;
+					index = k;
+					//System.out.println("max: " + maxArea + " | Index: " + index);
+				}
+			}
+			biggestContour = contours.get(index);
+			//System.out.println("Amount of biggestContour: " + biggestContour.size());
+
+
+			//Convex Hull Bilden
+			/*
+			MatOfInt hull = new MatOfInt();
+			Imgproc.convexHull(biggestContour, hull);
+
+			Point[] contourArray = biggestContour.toArray();
+			Point[] hullPoints = new Point[hull.rows()];
+			List<Integer> hullContourIdxList = hull.toList();
+			for (int i = 0; i < hullContourIdxList.size(); i++) {
+				hullPoints[i] = contourArray[hullContourIdxList.get(i)];
+			}
+			MatOfPoint hullPointsMat = new MatOfPoint(hullPoints);
+			*/
+			/*
+			//ConvexityDefects erkennen
+			MatOfInt4 defects = new MatOfInt4();
+			Imgproc.convexityDefects(contour, hull, defects);
+			System.out.println(defects.size().area());
+			*/
+
+			List<MatOfPoint> biggestContourList = new ArrayList<>();
+			//List<MatOfPoint> hullPointsMatList = new ArrayList<>();
+			biggestContourList.add(biggestContour);
+			//hullPointsMatList.add(hullPointsMat);
+
+			Scalar color = new Scalar(0, 255, 0);
+			Imgproc.drawContours(drawing, biggestContourList, 0, color);
+			//Imgproc.drawContours(drawing, hullPointsMatList, 0, color);
+
+			MatOfPoint2f NewMtx = new MatOfPoint2f( biggestContour.toArray() );
+			double area = Imgproc.contourArea(biggestContour);
+			double perimeter = Imgproc.arcLength(NewMtx, true);
+			System.out.println("Area of Contour: " + area / (720*480) * 100.0);
+			System.out.println("Perimeter of Contour: " + perimeter / (720*480) * 100.0);
+			System.out.println();
 
 			// Versuch mit CornerHarris Kantenerkennung
 			/*
@@ -117,19 +151,10 @@ public class ImageProcessor {
 			Imgproc.cornerHarris(harris,2,3,0.04);
 			*/
 
-			//Bild der Hand ausgeschnitten
-			frame.copyTo(cropped, centroidRegion);
-
 			//Hulls über das aktuelle Bild legen
-			frame.copyTo(cropped, drawing);
+			//frame.copyTo(cropped, drawing);
 
-
-
-
-
-
-
-			return drawing;
+			return cropped;
 		}
 		return null;
 	}
