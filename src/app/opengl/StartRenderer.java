@@ -224,6 +224,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 
 	private void displayModel(GL3 gl, int index, int mode) {
 		gl.glUseProgram(models[index].getShaderProgramID());
+
 		// Transfer projection matrix via uniform layout position 0
 		gl.glUniformMatrix4fv(0, 1, false, pmvMatrix.glGetPMatrixf());
 		// Transfer model-view matrix via layout position 1
@@ -231,6 +232,8 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		gl.glBindVertexArray(vaoName[index]);
 		// Draws the elements in the order defined by the index buffer object (IBO)
 		gl.glDrawElements(mode, models[index].getIndices().length, GL.GL_UNSIGNED_INT, 0);
+
+		gl.glUseProgram(0);
 	}
 
 	private void createModels(GL3 gl) {
