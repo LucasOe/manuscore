@@ -2,6 +2,7 @@ package app;
 
 import javax.swing.SwingUtilities;
 
+import app.opencv.TrainingData;
 import org.opencv.core.Core;
 
 import app.gui.UserInterface;
@@ -12,6 +13,8 @@ public class Main {
 		// load the native OpenCV library
 		System.loadLibrary(Core.NATIVE_LIBRARY_NAME);
 
+		//einmalig um Trainingsdaten zu generieren
+		TrainingData.getFiles();
 		new UserInterface();
 	}
 

@@ -1,14 +1,7 @@
 package app.opencv;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfInt;
-import org.opencv.core.MatOfInt4;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Scalar;
-import org.opencv.core.Size;
+import org.opencv.core.*;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +25,8 @@ public class ImageProcessor {
 
 		Mat frameBlur = new Mat();
 		Mat frameValueBlur = new Mat();
+
+		//nur ungerade Werte funktionieren???
 		int blurStrength = 15;
 		// Weichzeichnung des original Bildes und vom Value Bild
 		Imgproc.GaussianBlur(frame, frameBlur, new Size(blurStrength, blurStrength), 0);
@@ -113,7 +108,7 @@ public class ImageProcessor {
 		MatOfInt hull = new MatOfInt();
 		List<Point> hullPointList = new ArrayList<>();
 
-		Imgproc.convexHull(biggestContour, hull);
+		Imgproc.convexHull(biggestContour, hull, false);
 
 		for (int i = 0; i < hull.toList().size(); i++) {
 			hullPointList.add(biggestContour.toList().get(hull.toList().get(i)));
@@ -148,6 +143,25 @@ public class ImageProcessor {
 			Imgproc.circle(frameHull, defectEnd, radius, new Scalar(0, 255, 0), 1);
 			Imgproc.circle(frameHull, defect, radius, new Scalar(0, 0, 255), 2);
 		}
+
+		//Handfeatures
+		MatOfPoint2f newMtx = new MatOfPoint2f(biggestContour.toArray());
+		double area = Imgproc.contourArea(biggestContour);
+		double perimeter = Imgproc.arcLength(newMtx, true);
+		Rect rect = Imgproc.boundingRect(biggestContour);
+		//System.out.println("Hull: " + hull);
+		double aspectRatio = (double) rect.width / (double) rect.height;
+		//double hullArea = Imgproc.contourArea(hull, false);
+		//double hullArea = 0.5;
+		//double solidity = area / hullArea;
+
+		//print all features to debug
+		System.out.println("Area of Contour: " + area / (720 * 480) * 100.0);
+		System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
+		System.out.println("Amount of Defects: " + defectsLists.size()/4);
+		System.out.println("Aspect Ratio: " + aspectRatio);
+		//System.out.println("Solidity: " + solidity);
+		System.out.println();
 
 		// Processed frame zurückgeben
 		return frameHull;
