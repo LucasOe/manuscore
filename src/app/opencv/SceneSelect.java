@@ -7,6 +7,7 @@ import java.awt.Color;
 
 import org.opencv.core.Mat;
 
+import app.Utils;
 import app.gui.UserInterface;
 
 public class SceneSelect {
