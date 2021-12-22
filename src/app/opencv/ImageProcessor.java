@@ -2,6 +2,8 @@ package app.opencv;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -83,7 +85,50 @@ public class ImageProcessor {
 		Mat frameMasked = new Mat();
 		frame.copyTo(frameMasked, frameCenterLabels);
 
-		return frameMasked;
+		// Erkenne Konturen
+		List<MatOfPoint> contours = new ArrayList<>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours(frameCenterLabels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		System.out.println("Amount of Contours: " + contours.size());
+
+		// Finde die größte Kontur
+		MatOfPoint biggestContour = new MatOfPoint();
+		double maxArea = 0;
+		for (int i = 0; i < contours.size(); i++) {
+			double area = Imgproc.contourArea(contours.get(i));
+			if (area >= maxArea) {
+				maxArea = area;
+				biggestContour = contours.get(i);
+			}
+		}
+
+		// Returned frameMasked wenn keine Kontur gefunden wurde
+		//System.out.println("Amount of biggestContour: " + biggestContour.size());
+		if (biggestContour.size().empty())
+			return frameMasked;
+
+		// Convex Hull bilden
+		// https://coderedirect.com/questions/285270/android-java-opencv-2-4-convexhull-convexdefect
+		MatOfInt hullInt = new MatOfInt();
+		List<Point> hullPointList = new ArrayList<>();
+		MatOfPoint hullPointMat = new MatOfPoint();
+		List<MatOfPoint> hullPoints = new ArrayList<>();
+
+		Imgproc.convexHull(biggestContour, hullInt);
+
+		for (int i = 0; i < hullInt.toList().size(); i++) {
+			hullPointList.add(biggestContour.toList().get(hullInt.toList().get(i)));
+		}
+
+		hullPointMat.fromList(hullPointList);
+		hullPoints.add(hullPointMat);
+
+		Mat frameHull = new Mat(frameMasked.rows(), frameMasked.cols(), frameMasked.type(), Scalar.all(0));
+		frameMasked.copyTo(frameHull);
+		Imgproc.drawContours(frameHull, hullPoints, -1, new Scalar(0, 255, 0), 1);
+
+		return frameHull;
+		//return frameMasked;
 	}
 
 	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
