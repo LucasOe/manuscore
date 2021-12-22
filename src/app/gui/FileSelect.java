@@ -7,6 +7,11 @@ import java.io.IOException;
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 
+import org.opencv.core.Mat;
+
+import app.Utils;
+import app.opencv.ImageProcessor;
+
 public class FileSelect {
 	private UserInterface userInterface;
 	private JFileChooser fileChooser;
@@ -24,8 +29,14 @@ public class FileSelect {
 			File file = fileChooser.getSelectedFile();
 			try {
 				BufferedImage image = ImageIO.read(file);
-				userInterface.setCurrentFrame(image, image); // TODO: Fix missing processing
-				userInterface.setWebcamIcon(image);
+
+				// Process Frame
+				Mat frame = Utils.BufferedImage2Mat(image);
+				Mat frameProcessed = ImageProcessor.processImage(frame);
+				BufferedImage imageProcessed = Utils.Mat2BufferedImage(frameProcessed);
+
+				userInterface.setCurrentFrame(imageProcessed, image);
+				userInterface.setWebcamIcon(imageProcessed);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

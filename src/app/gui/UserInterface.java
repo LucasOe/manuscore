@@ -18,6 +18,7 @@ import javax.swing.JSplitPane;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
+import app.Utils;
 import app.opencv.SceneSelect;
 import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
