@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
+import app.Utils;
 import app.gui.UserInterface;
 
 public class WebcamCapture {
