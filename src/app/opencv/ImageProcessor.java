@@ -132,7 +132,7 @@ public class ImageProcessor {
 		Imgproc.drawContours(frameHull, hullPointsMatList, -1, new Scalar(0, 255, 0), 1);
 		Imgproc.drawContours(frameHull, biggestContourList, -1, new Scalar(0, 255, 0), 1);
 
-		// Covex Defects erkennen
+		// Covexity Defects erkennen
 		MatOfInt4 defects = new MatOfInt4();
 		Imgproc.convexityDefects(biggestContour, hull, defects);
 

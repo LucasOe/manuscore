@@ -20,7 +20,7 @@ public class WebcamCapture {
 	// Flag to change the button behavior
 	private boolean cameraActive = false;
 	// The id of the camera to be used
-	private static int cameraId = 0;
+	private static int cameraId = 1;
 
 	private UserInterface userInterface;
 
