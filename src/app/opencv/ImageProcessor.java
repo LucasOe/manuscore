@@ -10,7 +10,6 @@ import org.opencv.core.*;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 
 public class ImageProcessor {
 

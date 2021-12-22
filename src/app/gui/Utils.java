@@ -24,9 +24,10 @@ public class Utils {
 		return image.getScaledInstance(width, height, Image.SCALE_SMOOTH);
 	}
 
-	public static void writeFile(Image image) {
+	public static void writeFile(Image image, String outputPath) {
 		try {
-			File outputfile = new File("Debug_WebcamOutput.jpg");
+			File outputfile = new File(outputPath + ".jpg");
+			System.out.println("Write output File to: " + outputPath + ".jpg");
 			ImageIO.write((RenderedImage) image, "jpg", outputfile);
 		} catch (IOException e) {
 			e.printStackTrace();

@@ -24,7 +24,7 @@ public class FileSelect {
 			File file = fileChooser.getSelectedFile();
 			try {
 				BufferedImage image = ImageIO.read(file);
-				userInterface.setCurrentFrame(image);
+				userInterface.setCurrentFrame(image, image); // TODO: Fix missing processing
 				userInterface.setWebcamIcon(image);
 			} catch (IOException e) {
 				e.printStackTrace();
