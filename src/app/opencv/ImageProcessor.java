@@ -32,7 +32,6 @@ public class ImageProcessor {
 
 			// Threshold in binäres Bild mit der OTSU-Methode
 			Mat region = new Mat();
-			//Imgproc.cvtColor(frame, region, Imgproc.COLOR_BGR2GRAY);
 			Imgproc.threshold(V, region, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
 
 			// Alle Variablen von ConnectedComponentsWithStats separat speichern
@@ -50,7 +49,7 @@ public class ImageProcessor {
 			// tolerance = Abweichung von der Mitte des Bildes
 			int width = frame.width();
 			int height = frame.height();
-			double tolerance = 0.4;
+			double tolerance = 0.3;
 			Mat centroidRegion = new Mat(region.rows(), region.cols(), region.type(), Scalar.all(0));
 			ArrayList<Integer> selectedLabels = new ArrayList<>();
 
@@ -104,18 +103,18 @@ public class ImageProcessor {
 			//System.out.println("Amount of biggestContour: " + biggestContour.size());
 
 			//Convex Hull Bilden
-			/*
 			MatOfInt hull = new MatOfInt();
 			Imgproc.convexHull(biggestContour, hull);
 			
 			Point[] contourArray = biggestContour.toArray();
 			Point[] hullPoints = new Point[hull.rows()];
 			List<Integer> hullContourIdxList = hull.toList();
+
 			for (int i = 0; i < hullContourIdxList.size(); i++) {
 				hullPoints[i] = contourArray[hullContourIdxList.get(i)];
 			}
 			MatOfPoint hullPointsMat = new MatOfPoint(hullPoints);
-			*/
+
 			/*
 			//ConvexityDefects erkennen
 			MatOfInt4 defects = new MatOfInt4();
@@ -124,19 +123,21 @@ public class ImageProcessor {
 			*/
 
 			List<MatOfPoint> biggestContourList = new ArrayList<>();
-			//List<MatOfPoint> hullPointsMatList = new ArrayList<>();
+			List<MatOfPoint> hullPointsMatList = new ArrayList<>();
 			biggestContourList.add(biggestContour);
-			//hullPointsMatList.add(hullPointsMat);
+			hullPointsMatList.add(hullPointsMat);
 
+			//Rote Kontur über
 			Scalar color = new Scalar(0, 255, 0);
 			Imgproc.drawContours(drawing, biggestContourList, 0, color);
-			//Imgproc.drawContours(drawing, hullPointsMatList, 0, color);
+			Imgproc.drawContours(drawing, hullPointsMatList, 0, color);
 
 			MatOfPoint2f NewMtx = new MatOfPoint2f(biggestContour.toArray());
 			double area = Imgproc.contourArea(biggestContour);
 			double perimeter = Imgproc.arcLength(NewMtx, true);
 			System.out.println("Area of Contour: " + area / (720 * 480) * 100.0);
 			System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
+
 			System.out.println();
 
 			// Versuch mit CornerHarris Kantenerkennung
@@ -147,8 +148,9 @@ public class ImageProcessor {
 			Imgproc.cornerHarris(harris,2,3,0.04);
 			*/
 
+			frame.copyTo(cropped, centroidRegion);
 			//Hulls über das aktuelle Bild legen
-			//frame.copyTo(cropped, drawing);
+			frame.copyTo(cropped, drawing);
 
 			return cropped;
 		}
