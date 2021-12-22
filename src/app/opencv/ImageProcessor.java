@@ -12,13 +12,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-
 public class ImageProcessor {
 
 	public static Mat processImage(Mat frame) {
 		// if the frame is not empty, process it
 		Mat processedImage = new Mat();
-		Random rng = new Random(12345);
 
 		if (!frame.empty()) {
 			// Wandelt das RGB Bild in HSV um
@@ -95,7 +93,7 @@ public class ImageProcessor {
 			double maxArea = 0.0;
 			//Ersten index ueberspringen, da darin automatisch riesiger Wert gespeichert wird
 			int index = 1;
-			for (int k = 1; k < contours.size(); k++){
+			for (int k = 1; k < contours.size(); k++) {
 				double area = Imgproc.contourArea(contours.get(k));
 				if (area >= maxArea) {
 					maxArea = area;
@@ -106,12 +104,11 @@ public class ImageProcessor {
 			biggestContour = contours.get(index);
 			//System.out.println("Amount of biggestContour: " + biggestContour.size());
 
-
 			//Convex Hull Bilden
 			/*
 			MatOfInt hull = new MatOfInt();
 			Imgproc.convexHull(biggestContour, hull);
-
+			
 			Point[] contourArray = biggestContour.toArray();
 			Point[] hullPoints = new Point[hull.rows()];
 			List<Integer> hullContourIdxList = hull.toList();
@@ -136,18 +133,18 @@ public class ImageProcessor {
 			Imgproc.drawContours(drawing, biggestContourList, 0, color);
 			//Imgproc.drawContours(drawing, hullPointsMatList, 0, color);
 
-			MatOfPoint2f NewMtx = new MatOfPoint2f( biggestContour.toArray() );
+			MatOfPoint2f NewMtx = new MatOfPoint2f(biggestContour.toArray());
 			double area = Imgproc.contourArea(biggestContour);
 			double perimeter = Imgproc.arcLength(NewMtx, true);
-			System.out.println("Area of Contour: " + area / (720*480) * 100.0);
-			System.out.println("Perimeter of Contour: " + perimeter / (720*480) * 100.0);
+			System.out.println("Area of Contour: " + area / (720 * 480) * 100.0);
+			System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
 			System.out.println();
 
 			// Versuch mit CornerHarris Kantenerkennung
 			/*
 			Mat harris = new Mat();
 			Imgproc.cvtColor(frame, processedImage, Imgproc.COLOR_BGR2GRAY);
-
+			
 			Imgproc.cornerHarris(harris,2,3,0.04);
 			*/
 
