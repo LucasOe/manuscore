@@ -109,26 +109,29 @@ public class ImageProcessor {
 
 		// Convex Hull bilden
 		// https://coderedirect.com/questions/285270/android-java-opencv-2-4-convexhull-convexdefect
-		MatOfInt hullInt = new MatOfInt();
+		MatOfInt hull = new MatOfInt();
 		List<Point> hullPointList = new ArrayList<>();
-		MatOfPoint hullPointMat = new MatOfPoint();
-		List<MatOfPoint> hullPoints = new ArrayList<>();
 
-		Imgproc.convexHull(biggestContour, hullInt);
+		Imgproc.convexHull(biggestContour, hull);
 
-		for (int i = 0; i < hullInt.toList().size(); i++) {
-			hullPointList.add(biggestContour.toList().get(hullInt.toList().get(i)));
+		for (int i = 0; i < hull.toList().size(); i++) {
+			hullPointList.add(biggestContour.toList().get(hull.toList().get(i)));
 		}
 
+		MatOfPoint hullPointMat = new MatOfPoint();
 		hullPointMat.fromList(hullPointList);
-		hullPoints.add(hullPointMat);
+
+		List<MatOfPoint> hullPointsMatList = new ArrayList<>();
+		List<MatOfPoint> biggestContourList = new ArrayList<>();
+		hullPointsMatList.add(hullPointMat);
+		biggestContourList.add(biggestContour);
 
 		Mat frameHull = new Mat(frameMasked.rows(), frameMasked.cols(), frameMasked.type(), Scalar.all(0));
 		frameMasked.copyTo(frameHull);
-		Imgproc.drawContours(frameHull, hullPoints, -1, new Scalar(0, 255, 0), 1);
+		Imgproc.drawContours(frameHull, hullPointsMatList, -1, new Scalar(0, 255, 0), 1);
+		Imgproc.drawContours(frameHull, biggestContourList, -1, new Scalar(0, 255, 0), 1);
 
 		return frameHull;
-		//return frameMasked;
 	}
 
 	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
