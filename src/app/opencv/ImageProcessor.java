@@ -2,11 +2,13 @@ package app.opencv;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
+import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfInt4;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.*;
+import org.opencv.core.Point;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,152 +16,148 @@ import java.util.List;
 public class ImageProcessor {
 
 	public static Mat processImage(Mat frame) {
-		// if the frame is not empty, process it
-		Mat processedImage = new Mat();
+		// Stop when frame is empty
+		if (frame.empty())
+			return null;
 
-		if (!frame.empty()) {
-			// Wandelt das RGB Bild in HSV um
-			Imgproc.cvtColor(frame, processedImage, Imgproc.COLOR_BGR2HSV);
-			//Speichert HSV werte in separaten variablen in einer Liste
-			List<Mat> hsv = new ArrayList<>(3);
-			Core.split(processedImage, hsv);
+		Mat frameHSV = new Mat();
+		// Wandelt das RGB Bild in HSV um
+		Imgproc.cvtColor(frame, frameHSV, Imgproc.COLOR_BGR2HSV);
+		// Speichert HSV werte in separaten variablen in einer Liste
+		List<Mat> hsv = new ArrayList<>(3);
+		Core.split(frameHSV, hsv);
 
-			//entnimmt den V-Wert aus HSV und speichert ihn
-			Mat V = hsv.get(2);
-			//Weichzeichnung des Bildes
-			Imgproc.GaussianBlur(frame, frame, new Size(15, 15), 0);
-			Imgproc.medianBlur(V, V, 15);
+		// Speichert die hsv-Werte in einzelnen Matrizen
+		Mat frameValue = hsv.get(2);
 
-			// Threshold in binäres Bild mit der OTSU-Methode
-			Mat region = new Mat();
-			//Imgproc.cvtColor(frame, region, Imgproc.COLOR_BGR2GRAY);
-			Imgproc.threshold(V, region, 0, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
+		Mat frameBlur = new Mat();
+		Mat frameValueBlur = new Mat();
+		int blurStrength = 15;
+		// Weichzeichnung des original Bildes und vom Value Bild
+		Imgproc.GaussianBlur(frame, frameBlur, new Size(blurStrength, blurStrength), 0);
+		Imgproc.medianBlur(frameValue, frameValueBlur, blurStrength);
 
-			// Alle Variablen von ConnectedComponentsWithStats separat speichern
-			Mat labels = new Mat();
-			Mat stats = new Mat();
-			Mat centroids = new Mat();
+		// Threshold in binäres Bild mit der OTSU-Methode
+		Mat frameBinary = new Mat();
+		int threshold = 0;
+		Imgproc.threshold(frameValueBlur, frameBinary, threshold, 255, Imgproc.THRESH_BINARY + Imgproc.THRESH_OTSU);
 
-			//Sucht zusammengehörige Regionen
-			Imgproc.connectedComponentsWithStats(region, labels, stats, centroids, 4);
+		// Alle Variablen von ConnectedComponentsWithStats separat speichern
+		Mat frameLabels = new Mat();
+		Mat stats = new Mat();
+		Mat centroids = new Mat();
 
-			// Wie viele Label haben wir?
-			Core.MinMaxLocResult x = Core.minMaxLoc(labels);
+		// Sucht zusammengehörige Regionen
+		int labelCount = Imgproc.connectedComponentsWithStats(frameBinary, frameLabels, stats, centroids, 4);
 
-			// Prüfe bei Komponenten ob in Mitte des Bildes
-			// tolerance = Abweichung von der Mitte des Bildes
-			int width = frame.width();
-			int height = frame.height();
-			double tolerance = 0.4;
-			Mat centroidRegion = new Mat(region.rows(), region.cols(), region.type(), Scalar.all(0));
-			ArrayList<Integer> selectedLabels = new ArrayList<>();
+		// Filtern nach Komponenten in der Mitte des Bildes
+		int width = frame.width();
+		int height = frame.height();
+		double tolerance = 0.5; // Erlaubte Abweichung von der Mitte des Bildes
+		ArrayList<Integer> selectedLabels = new ArrayList<>();
 
-			for (int l = 1; l < x.maxVal; l++) {
-				int x_centroid = (int) centroids.get(l, 0)[0];
-				int y_centroid = (int) centroids.get(l, 1)[0];
+		// Neues Bild mit ausschließlich ausgewählten labels
+		Mat frameCenterLabels = new Mat(frameBinary.rows(), frameBinary.cols(), frameBinary.type(), Scalar.all(255));
 
-				if (x_centroid >= (width / 2) - tolerance * (width / 2)
-						&& x_centroid <= (width / 2) + tolerance * (width / 2)) {
-					if (y_centroid >= (height / 2) - tolerance * (height / 2)
-							&& y_centroid <= (height / 2) + tolerance * (height / 2)) {
-						// Alle Komponenten, die in der Mitte liegen werden in der Arraylist "selectedLabels" gespeichert
-						selectedLabels.add(l);
-					}
-				}
+		// Fange bei eins an, damit der Hintergrund ignoriert wird
+		for (int i = 1; i < labelCount; i++) {
+			int centroidX = (int) centroids.get(i, 0)[0];
+			int centroidY = (int) centroids.get(i, 1)[0];
+			//Point center = new Point(centroidX, centroidY);
+
+			// Füge alle labels hinzu, die sich in der Mitte des Bildes befinden
+			if (centroidX >= (width / 2) - tolerance * (width / 2)
+					&& centroidX <= (width / 2) + tolerance * (width / 2)
+					&& centroidY >= (height / 2) - tolerance * (height / 2)
+					&& centroidY <= (height / 2) + tolerance * (height / 2)) {
+				selectedLabels.add(i);
+				// Zeige einen Punkt an, wenn das label sich in der Mitte befindnet
+				/*
+				Imgproc.circle(frameCenterLabels, center, 3, new Scalar(0, 0, 0));
+				Imgproc.circle(frameCenterLabels, center, 4, new Scalar(255, 255, 255));
+				*/
 			}
-
-			// neues Bild mit weiß für alle ausgewählten Komponenten
-			fillRegion(centroidRegion, labels, selectedLabels);
-
-			// Video anhand der Maske Croppen und Maskiertes abspeichern
-			Mat cropped = new Mat();
-
-			//Versuch mit konturen von - OpenCV Dokumentation entnommen und abgeändert
-			List<MatOfPoint> contours = new ArrayList<>();
-			MatOfPoint biggestContour;
-
-			Mat hierarchy = new Mat();
-			Imgproc.findContours(centroidRegion, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-			//System.out.println("Amount of Contours: " + contours.size());
-
-			//Bild der Hand ausgeschnitten
-			frame.copyTo(cropped, centroidRegion);
-			Mat drawing = Mat.zeros(centroidRegion.size(), CvType.CV_8UC3);
-			if (contours.size() < 2) {
-				return cropped;
-			}
-
-			double maxArea = 0.0;
-			//Ersten index ueberspringen, da darin automatisch riesiger Wert gespeichert wird
-			int index = 1;
-			for (int k = 1; k < contours.size(); k++) {
-				double area = Imgproc.contourArea(contours.get(k));
-				if (area >= maxArea) {
-					maxArea = area;
-					index = k;
-					//System.out.println("max: " + maxArea + " | Index: " + index);
-				}
-			}
-			biggestContour = contours.get(index);
-			//System.out.println("Amount of biggestContour: " + biggestContour.size());
-
-			//Convex Hull Bilden
-			/*
-			MatOfInt hull = new MatOfInt();
-			Imgproc.convexHull(biggestContour, hull);
-			
-			Point[] contourArray = biggestContour.toArray();
-			Point[] hullPoints = new Point[hull.rows()];
-			List<Integer> hullContourIdxList = hull.toList();
-			for (int i = 0; i < hullContourIdxList.size(); i++) {
-				hullPoints[i] = contourArray[hullContourIdxList.get(i)];
-			}
-			MatOfPoint hullPointsMat = new MatOfPoint(hullPoints);
-			*/
-			/*
-			//ConvexityDefects erkennen
-			MatOfInt4 defects = new MatOfInt4();
-			Imgproc.convexityDefects(contour, hull, defects);
-			System.out.println(defects.size().area());
-			*/
-
-			List<MatOfPoint> biggestContourList = new ArrayList<>();
-			//List<MatOfPoint> hullPointsMatList = new ArrayList<>();
-			biggestContourList.add(biggestContour);
-			//hullPointsMatList.add(hullPointsMat);
-
-			Scalar color = new Scalar(0, 255, 0);
-			Imgproc.drawContours(drawing, biggestContourList, 0, color);
-			//Imgproc.drawContours(drawing, hullPointsMatList, 0, color);
-
-			MatOfPoint2f NewMtx = new MatOfPoint2f(biggestContour.toArray());
-			double area = Imgproc.contourArea(biggestContour);
-			double perimeter = Imgproc.arcLength(NewMtx, true);
-			System.out.println("Area of Contour: " + area / (720 * 480) * 100.0);
-			System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
-			System.out.println();
-
-			// Versuch mit CornerHarris Kantenerkennung
-			/*
-			Mat harris = new Mat();
-			Imgproc.cvtColor(frame, processedImage, Imgproc.COLOR_BGR2GRAY);
-			
-			Imgproc.cornerHarris(harris,2,3,0.04);
-			*/
-
-			//Hulls über das aktuelle Bild legen
-			//frame.copyTo(cropped, drawing);
-
-			return cropped;
 		}
-		return null;
+
+		// Füllt alle Regionen die außerhalb der Mitte sind
+		fillRegion(frameLabels, frameCenterLabels, selectedLabels);
+
+		// Frame anhand der center labels maskieren
+		Mat frameMasked = new Mat();
+		frame.copyTo(frameMasked, frameCenterLabels);
+
+		// Erkenne Konturen
+		List<MatOfPoint> contours = new ArrayList<>();
+		Mat hierarchy = new Mat();
+		Imgproc.findContours(frameCenterLabels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
+		//System.out.println("Amount of Contours: " + contours.size());
+
+		// Finde die größte Kontur
+		MatOfPoint biggestContour = new MatOfPoint();
+		double maxArea = 0;
+		for (int i = 0; i < contours.size(); i++) {
+			double area = Imgproc.contourArea(contours.get(i));
+			if (area >= maxArea) {
+				maxArea = area;
+				biggestContour = contours.get(i);
+			}
+		}
+
+		// Returned frameMasked wenn keine Kontur gefunden wurde
+		//System.out.println("Amount of biggestContour: " + biggestContour.size());
+		if (biggestContour.size().empty())
+			return frameMasked;
+
+		// Convex Hull bilden
+		// https://coderedirect.com/questions/285270/android-java-opencv-2-4-convexhull-convexdefect
+		MatOfInt hull = new MatOfInt();
+		List<Point> hullPointList = new ArrayList<>();
+
+		Imgproc.convexHull(biggestContour, hull);
+
+		for (int i = 0; i < hull.toList().size(); i++) {
+			hullPointList.add(biggestContour.toList().get(hull.toList().get(i)));
+		}
+
+		MatOfPoint hullPointMat = new MatOfPoint();
+		hullPointMat.fromList(hullPointList);
+
+		List<MatOfPoint> hullPointsMatList = new ArrayList<>();
+		List<MatOfPoint> biggestContourList = new ArrayList<>();
+		hullPointsMatList.add(hullPointMat);
+		biggestContourList.add(biggestContour);
+
+		Mat frameHull = new Mat(frameMasked.rows(), frameMasked.cols(), frameMasked.type(), Scalar.all(0));
+		frameMasked.copyTo(frameHull);
+		Imgproc.drawContours(frameHull, hullPointsMatList, -1, new Scalar(0, 255, 0), 1);
+		Imgproc.drawContours(frameHull, biggestContourList, -1, new Scalar(0, 255, 0), 1);
+
+		// Covex Defects erkennen
+		MatOfInt4 defects = new MatOfInt4();
+		Imgproc.convexityDefects(biggestContour, hull, defects);
+
+		Point[] data = biggestContour.toArray();
+		List<Integer> defectsLists = defects.toList();
+		for (int j = 0; j < defectsLists.size(); j = j + 4) {
+			Point defectStart = data[defectsLists.get(j)];
+			Point defectEnd = data[defectsLists.get(j + 1)];
+			Point defect = data[defectsLists.get(j + 2)];
+
+			int radius = 2;
+			Imgproc.circle(frameHull, defectStart, radius, new Scalar(0, 255, 0), 1);
+			Imgproc.circle(frameHull, defectEnd, radius, new Scalar(0, 255, 0), 1);
+			Imgproc.circle(frameHull, defect, radius, new Scalar(0, 0, 255), 2);
+		}
+
+		// Processed frame zurückgeben
+		return frameHull;
 	}
 
-	public static void fillRegion(Mat imgMat, Mat labels, ArrayList<Integer> selectedLabel) {
-		for (int r = 0; r < imgMat.rows(); r++) {
-			for (int c = 0; c < imgMat.cols(); c++) {
-				if (!selectedLabel.contains((int) labels.get(r, c)[0])) {
-					imgMat.put(r, c, 255);
+	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
+		for (int r = 0; r < dst.rows(); r++) {
+			for (int c = 0; c < dst.cols(); c++) {
+				if (!selectedLabel.contains((int) src.get(r, c)[0])) {
+					dst.put(r, c, 0);
 				}
 			}
 		}
