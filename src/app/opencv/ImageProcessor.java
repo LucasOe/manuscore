@@ -104,7 +104,7 @@ public class ImageProcessor {
 
 			//Convex Hull Bilden
 			MatOfInt hull = new MatOfInt();
-			Imgproc.convexHull(biggestContour, hull);
+			Imgproc.convexHull(biggestContour, hull, false);
 			
 			Point[] contourArray = biggestContour.toArray();
 			Point[] hullPoints = new Point[hull.rows()];
@@ -115,12 +115,35 @@ public class ImageProcessor {
 			}
 			MatOfPoint hullPointsMat = new MatOfPoint(hullPoints);
 
-			/*
+			///////////////Test/////////////////
 			//ConvexityDefects erkennen
 			MatOfInt4 defects = new MatOfInt4();
-			Imgproc.convexityDefects(contour, hull, defects);
-			System.out.println(defects.size().area());
-			*/
+			Imgproc.convexityDefects(biggestContour, hull, defects);
+
+			//List<MatOfInt4> convDef = new List<MatOfInt4>;
+			System.out.println("" + defects.get(0,1));
+
+			// NICHT FUNKTIONSTUECHTIG, ConvexityDefects scheint nicht wirklich ganz zu funktionieren für JavaCV?
+			// Bei ConvexHull fehlt die Moeglichkeit einen 4. Wert fuer die returnpoints anzugeben, was fuer
+			// ConvexityDefects notwendig sein soll
+			/*
+			for (int k = 0; k < contours.size(); k++) {
+				convDef.add(new MatOfInt4());
+				Imgproc.convexityDefects(contours.get(k), hull.get(k), convDef.get(k));
+				cdList = convDef.get(k).toList();
+				Point data[] = contours.get(k).toArray();
+				{
+					for (int l = 0; l < defects.rows(); l = l+4){
+						Point start = data[defects.rows(l+1)];
+						Point end = data[defects.get(l+2)];
+						Point defect = data[defects.get(l+3)];
+
+						Imgproc.circle(cropped, start, 5, new Scalar(0, 255, 0), 2);
+						Imgproc.circle(cropped, end, 5, new Scalar(0, 255, 0), 2);
+						Imgproc.circle(cropped, defect, 5, new Scalar(0, 255, 0), 2);
+					}
+				}
+				*/
 
 			List<MatOfPoint> biggestContourList = new ArrayList<>();
 			List<MatOfPoint> hullPointsMatList = new ArrayList<>();
@@ -152,7 +175,7 @@ public class ImageProcessor {
 			//Hulls über das aktuelle Bild legen
 			frame.copyTo(cropped, drawing);
 
-			return cropped;
+			return drawing;
 		}
 		return null;
 	}
