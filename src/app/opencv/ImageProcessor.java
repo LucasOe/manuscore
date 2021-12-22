@@ -54,7 +54,7 @@ public class ImageProcessor {
 		ArrayList<Integer> selectedLabels = new ArrayList<>();
 
 		// Neues Bild mit ausschließlich ausgewählten labels
-		Mat frameCenterLabels = new Mat(frameBinary.rows(), frameBinary.cols(), frameBinary.type(), Scalar.all(0));
+		Mat frameCenterLabels = new Mat(frameBinary.rows(), frameBinary.cols(), frameBinary.type(), Scalar.all(255));
 
 		// Fange bei eins an, damit der Hintergrund ignoriert wird
 		for (int i = 1; i < labelCount; i++) {
@@ -76,17 +76,21 @@ public class ImageProcessor {
 			}
 		}
 
-		// Füllt alle Regionen weiß die außerhalb der Mitte sind
+		// Füllt alle Regionen die außerhalb der Mitte sind
 		fillRegion(frameLabels, frameCenterLabels, selectedLabels);
 
-		return frameCenterLabels;
+		// Frame anhand der center labels maskieren
+		Mat frameMasked = new Mat();
+		frame.copyTo(frameMasked, frameCenterLabels);
+
+		return frameMasked;
 	}
 
 	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
 		for (int r = 0; r < dst.rows(); r++) {
 			for (int c = 0; c < dst.cols(); c++) {
 				if (!selectedLabel.contains((int) src.get(r, c)[0])) {
-					dst.put(r, c, 255);
+					dst.put(r, c, 0);
 				}
 			}
 		}
