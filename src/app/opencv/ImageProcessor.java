@@ -3,6 +3,7 @@ package app.opencv;
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
+import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
 import org.opencv.core.Size;
@@ -131,6 +132,24 @@ public class ImageProcessor {
 		Imgproc.drawContours(frameHull, hullPointsMatList, -1, new Scalar(0, 255, 0), 1);
 		Imgproc.drawContours(frameHull, biggestContourList, -1, new Scalar(0, 255, 0), 1);
 
+		// Covex Defects erkennen
+		MatOfInt4 defects = new MatOfInt4();
+		Imgproc.convexityDefects(biggestContour, hull, defects);
+
+		Point[] data = biggestContour.toArray();
+		List<Integer> defectsLists = defects.toList();
+		for (int j = 0; j < defectsLists.size(); j = j + 4) {
+			Point defectStart = data[defectsLists.get(j)];
+			Point defectEnd = data[defectsLists.get(j + 1)];
+			Point defect = data[defectsLists.get(j + 2)];
+
+			int radius = 2;
+			Imgproc.circle(frameHull, defectStart, radius, new Scalar(0, 255, 0), 1);
+			Imgproc.circle(frameHull, defectEnd, radius, new Scalar(0, 255, 0), 1);
+			Imgproc.circle(frameHull, defect, radius, new Scalar(0, 0, 255), 2);
+		}
+
+		// Processed frame zurückgeben
 		return frameHull;
 	}
 
