@@ -6,9 +6,11 @@ import app.opengl.Model;
 
 public class Sphere extends Model {
 
-    public Sphere(GL3 gl, int mode, int verticalResolution, int horizontalResolution, float radius, float[] color) {
+    public Sphere(GL3 gl, int shaderProgramId, int mode, int verticalResolution, int horizontalResolution,
+            float radius, float[] color) {
         super(
                 gl,
+                shaderProgramId,
                 makeVertices(verticalResolution, horizontalResolution, radius, color),
                 makeIndices(verticalResolution, horizontalResolution),
                 mode);

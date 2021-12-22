@@ -6,9 +6,10 @@ import app.opengl.Model;
 
 public class Box extends Model {
 
-    public Box(GL3 gl, int mode, float width, float height, float depth, float[] color) {
+    public Box(GL3 gl, int shaderProgramId, int mode, float width, float height, float depth, float[] color) {
         super(
                 gl,
+                shaderProgramId,
                 makeBoxVertices(width, height, depth, color),
                 makeBoxIndices(),
                 mode);

@@ -15,19 +15,13 @@ public class Model {
 	private float rotY;
 	private float rotZ;
 
-	private ShaderProgram shaderProgram;
-	private String shaderPath = ".\\resources\\shaders\\";
-	private String vertexShaderFileName = "Basic.vert";
-	private String fragmentShaderFileName = "Basic.frag";
+	private int shaderProgramId;
 
-	public Model(GL3 gl, float[] vertices, int[] indices, int mode) {
+	public Model(GL3 gl, int shaderProgramId, float[] vertices, int[] indices, int mode) {
 		this.vertices = vertices;
 		this.indices = indices;
 		this.mode = mode;
-
-		// Set default shaderProgram
-		shaderProgram = new ShaderProgram(gl);
-		ShaderProgram.loadShaderAndCreateProgram(shaderPath, vertexShaderFileName, fragmentShaderFileName);
+		this.shaderProgramId = shaderProgramId;
 	}
 
 	public float[] getVertices() {
@@ -95,19 +89,11 @@ public class Model {
 		this.rotZ = z;
 	}
 
-	public ShaderProgram getShaderProgram() {
-		return this.shaderProgram;
+	public void setShaderProgramId(int shaderProgramId) {
+		this.shaderProgramId = shaderProgramId;
 	}
 
-	public void setShaderProgram(ShaderProgram shaderProgram) {
-		this.shaderProgram = shaderProgram;
-	}
-
-	public void deleteShaderProgram() {
-		shaderProgram.deleteShaderProgram();
-	}
-
-	public int getShaderProgramID() {
-		return shaderProgram.getShaderProgramID();
+	public int getShaderProgramId() {
+		return this.shaderProgramId;
 	}
 }
