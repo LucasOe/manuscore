@@ -89,7 +89,7 @@ public class ImageProcessor {
 		List<MatOfPoint> contours = new ArrayList<>();
 		Mat hierarchy = new Mat();
 		Imgproc.findContours(frameCenterLabels, contours, hierarchy, Imgproc.RETR_TREE, Imgproc.CHAIN_APPROX_SIMPLE);
-		System.out.println("Amount of Contours: " + contours.size());
+		//System.out.println("Amount of Contours: " + contours.size());
 
 		// Finde die größte Kontur
 		MatOfPoint biggestContour = new MatOfPoint();
