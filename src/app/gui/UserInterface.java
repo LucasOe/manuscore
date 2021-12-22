@@ -250,6 +250,8 @@ public class UserInterface extends JFrame {
 	private void continueWithFrame() {
 		if (currentFrame != null) {
 			sceneSelect.selectScene(currentFrame);
+			if (isDebug)
+				Utils.writeFile(currentFrame);
 		}
 	}
 
