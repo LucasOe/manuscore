@@ -7,6 +7,9 @@ layout (location = 2) in vec3 aColor;
 // Projection and model-view matrix
 layout (location = 0) uniform mat4 projectionMatrix;
 layout (location = 1) uniform mat4 modelViewMatrix;
+// Animation
+uniform float loopDuration;
+uniform float time;
 
 // Color of the vertex
 out vec3 Normal;
@@ -18,7 +21,13 @@ void main() {
 	FragPos = vec3(modelViewMatrix * vec4(aPos, 1.0));
 	//Normal = mat3(transpose(inverse(modelViewMatrix))) * aNormal;
 	Normal = aNormal;
-	ObjectColor = vec3(1, 1, 1);
+	ObjectColor = aColor;
 
-	gl_Position = projectionMatrix * modelViewMatrix * vec4(aPos, 1.0);
+	// Animation
+	float radius = 0.3f;
+	float timeScale = 3.14159f * 2.0f / loopDuration;
+    float currentTime = mod(time, loopDuration);
+    vec4 totalOffset = vec4(cos(currentTime * timeScale) * radius, sin(currentTime * timeScale) * radius, 0.0f, 0.0f);
+
+	gl_Position = projectionMatrix * modelViewMatrix * (vec4(aPos, 1.0) + totalOffset);
 }

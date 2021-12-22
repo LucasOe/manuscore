@@ -40,7 +40,7 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	// Declaration for using the projection-model-view matrix tool
 	private PMVMatrix pmvMatrix;
 
-	// Animation
+	// Shader Program
 	private ShaderProgram shaderProgram;
 	private int shaderProgramBasicId, shaderProgramAnimationId;
 	private String shaderPath = ".\\resources\\shaders\\";
@@ -48,6 +48,10 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	private String fragmentShaderFileNameBasic = "Basic.frag";
 	private String vertexShaderFileNameAniamtion = "Animation.vert";
 	private String fragmentShaderFileNameAnimation = "Animation.frag";
+
+	// Animation
+	private int elapsedTimeUniform;
+	private long startingTime;
 
 	public StartRenderer(int activeObject) {
 		// Create the OpenGL canvas with default capabilities
@@ -140,6 +144,16 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		// Set camera position
 		interactionHandler.setEyeZ(4.0f);
 		interactionHandler.setyPosition(-1.5f);
+
+		// Animation
+		elapsedTimeUniform = gl.glGetUniformLocation(shaderProgramAnimationId, "time");
+		int loopDurationUnf = gl.glGetUniformLocation(shaderProgramAnimationId, "loopDuration");
+
+		gl.glUseProgram(shaderProgramAnimationId);
+		gl.glUniform1f(loopDurationUnf, 5f);
+		gl.glUseProgram(0);
+
+		startingTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -168,6 +182,11 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 				pmvMatrix.glPopMatrix();
 			}
 		}
+
+		// Animation
+		gl.glUseProgram(shaderProgramAnimationId);
+		gl.glUniform1f(elapsedTimeUniform, (System.currentTimeMillis() - startingTime) / 1000.0f);
+		gl.glUseProgram(0);
 	}
 
 	@Override
