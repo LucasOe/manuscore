@@ -9,6 +9,7 @@ import org.opencv.core.Mat;
 import org.opencv.videoio.VideoCapture;
 import org.opencv.videoio.Videoio;
 
+import app.Utils;
 import app.gui.UserInterface;
 
 public class WebcamCapture {
@@ -65,13 +66,15 @@ public class WebcamCapture {
 					Mat frame = grabFrame();
 
 					// Process Frame
-					frame = ImageProcessor.processImage(frame);
+					Mat frameProcessed = ImageProcessor.processImage(frame);
 
 					// Convert the frame to a bufferd image and display it
 					try {
-						BufferedImage image = Utils.Mat2BufferedImage(frame);
-						userInterface.setCurrentFrame(image);
-						userInterface.setWebcamIcon(image);
+						BufferedImage imageProcessed = Utils.Mat2BufferedImage(frameProcessed);
+						BufferedImage imageBefore = Utils.Mat2BufferedImage(frame);
+
+						userInterface.setCurrentFrame(imageProcessed, imageBefore);
+						userInterface.setWebcamIcon(imageProcessed);
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

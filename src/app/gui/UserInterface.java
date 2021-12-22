@@ -18,6 +18,7 @@ import javax.swing.JSplitPane;
 
 import com.jogamp.opengl.util.FPSAnimator;
 
+import app.Utils;
 import app.opencv.SceneSelect;
 import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
@@ -45,7 +46,7 @@ public class UserInterface extends JFrame {
 	private JButton captureButton;
 
 	// The image that is used to select the scene
-	private Image currentFrame;
+	private Image currentFrame, currentFrameBefore;
 
 	public UserInterface() {
 		// initialize Components
@@ -242,14 +243,19 @@ public class UserInterface extends JFrame {
 		captureButton.setText(text);
 	}
 
-	public void setCurrentFrame(Image image) {
-		this.currentFrame = image;
+	public void setCurrentFrame(Image imageProcessed, Image imageBefore) {
+		this.currentFrame = imageProcessed;
+		this.currentFrameBefore = imageBefore;
 	}
 
 	// Continue with current frame
 	private void continueWithFrame() {
 		if (currentFrame != null) {
 			sceneSelect.selectScene(currentFrame);
+			if (isDebug) {
+				Utils.writeFile(currentFrame, "Debug_WebcamOutput_After");
+				Utils.writeFile(currentFrameBefore, "Debug_WebcamOutput_Before");
+			}
 		}
 	}
 
