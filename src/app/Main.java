@@ -6,6 +6,12 @@ import org.opencv.core.Core;
 
 import app.gui.UserInterface;
 
+/**
+ * Haupteingangspunkt für das Programm erstellt das Fenster
+ * für das GUI.
+ * @param args Argumente werden nicht benutzt
+ */
+
 public class Main {
 	// Constructor generating Java Swing window
 	public Main() {
