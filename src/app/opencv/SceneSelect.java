@@ -30,17 +30,22 @@ public class SceneSelect {
      */
     public void selectScene(int defectsListSize, double rotAspectRatio) {
         if (rotAspectRatio >= 0.7 && rotAspectRatio <= 1.2) {
-            System.out.print("YYYYYYYYYYYYY");
+            System.out.print("Erkannte Geste: Y");
+            setScene(0);
         } else if (rotAspectRatio >= 1.5 && rotAspectRatio <= 2) {
-            System.out.print("QQQQQQQQQQQQQQ");
+            System.out.print("Erkannte Geste: Q");
+            setScene(1);
         } else if (rotAspectRatio >= 0.4 && rotAspectRatio <= 0.55 && (defectsListSize / 4) >= 20
                 && (defectsListSize / 4) <= 29) {
-            System.out.print("KKKKKKKKKKKKKKK");
+            System.out.print("Erkannte Geste: K");
+            setScene(2);
         } else if (rotAspectRatio >= 0.4 && rotAspectRatio <= 0.55 && (defectsListSize / 4) >= 30
                 && (defectsListSize / 4) <= 45) {
-            System.out.print("BBBBBBBBBBBBBBBBBBB");
+            System.out.print("Erkannte Geste: B");
+            setScene(3);
         } else if (rotAspectRatio >= 0.8 && rotAspectRatio <= 1) {
-            System.out.print("AAAAAAAAAAAAAA");
+            System.out.print("Erkannte Geste: A");
+            setScene(4);
         } else {
             System.out.println("Geste konnte nicht erkannt werden.");
         }
