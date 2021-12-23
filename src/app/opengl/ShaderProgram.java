@@ -6,11 +6,18 @@ import java.io.IOException;
 
 import com.jogamp.opengl.GL2ES2;
 
+/**
+ * ShaderProgram erstellt einen Shader mit den angegebenen Vertx und Fragment Shader Dateien und speichert die ShaderProgramID.
+ */
 public class ShaderProgram {
 
 	static int shaderProgramID;
 	static GL2ES2 gl;
 
+	/**
+	* Konstruktor intialisiert die Instanzvariable.
+	* @param gl	OpenGL Graphics Context
+	*/
 	public ShaderProgram(GL2ES2 gl) {
 		ShaderProgram.gl = gl;
 	}
@@ -19,79 +26,76 @@ public class ShaderProgram {
 		return shaderProgramID;
 	}
 
+	/**
+	 * Löscht das ShaderProgram
+	 */
 	public void deleteShaderProgram() {
 		gl.glDeleteProgram(shaderProgramID);
 	}
 
 	/**
-	 * Loads a vertex and a fragment shader from two files,
-	 * creates a shader program object on the GPU and links the shaders
-	 * with this shader program.
 	 * The shader program ID is stored in an instance variable of this program object.
-	 *
-	 * @param path						Directory path of the shader files
-	 * @param vertexShaderFileName		File name (including file name extension) of the vertex shader
-	 * @param fragmentShaderFileName	File name (including file name extension) of the fragment shader
+	 * Lädt einen Vertex und Fragment Shader aus zwei Dateien und erstellt das shader program
+	 * object auf der GPU.
+	 * @param path						Verzeischnispfad zu den Shader Dateien
+	 * @param vertexShaderFileName		Dateiname für den Vertex Shader
+	 * @param fragmentShaderFileName	Dateiname für den Fragment Shader
 	 */
 	public static void loadShaderAndCreateProgram(String path, String vertexShaderFileName,
 			String fragmentShaderFileName) {
-		// Load shader from file and compile vertex shader
+		// Lädt den Vertex Shader aus der Datei
 		String vertexShaderString;
 		int vertexShader;
 		String vertexPathAndFileName = path + vertexShaderFileName;
-		//System.out.println("Loading vertex shader from file: " + vertexPathAndFileName);
 		vertexShaderString = loadFileToString(vertexPathAndFileName);
 		vertexShader = createAndCompileShader(GL2ES2.GL_VERTEX_SHADER, vertexShaderString);
 
-		// Load shader from file and compile fragment shader
+		// Lädt den Fragment Shader aus der Datei
 		String fragmentShaderString;
 		int fragmentShader;
 		String fragmentPathAndFileName = path + fragmentShaderFileName;
-		//System.out.println("Loading fragment shader from file: " + fragmentPathAndFileName);
 		fragmentShaderString = loadFileToString(fragmentPathAndFileName);
 		fragmentShader = createAndCompileShader(GL2ES2.GL_FRAGMENT_SHADER, fragmentShaderString);
 
-		// Create the shader program object on the GPU and attach the shader objects to it.
-		// Stores the GPU's program ID in the instance variable shaderProgramID.
+		// Erstellt das shader program object auf der GPU und verbindet das Shader Objekt.
+		// Die Program ID von der GPU wird in shaderProgramID gespeichert.
 		shaderProgramID = gl.glCreateProgram();
 		gl.glAttachShader(shaderProgramID, vertexShader);
 		gl.glAttachShader(shaderProgramID, fragmentShader);
 
-		// Link the program.
+		// Linked das Program
 		gl.glLinkProgram(shaderProgramID);
 
-		// The shader objects (on the GPU) can be deleted because they are linked with the program.
+		// Die Shader Objekte auf der GPU können gelöscht werden
 		gl.glDeleteShader(vertexShader);
 		gl.glDeleteShader(fragmentShader);
 	}
 
 	/**
-	 * Creates a shader object on the GPU, compiles a shader
-	 * of a given shader type from a character string array.
-	 * Checks compile status and outputs the error log.
+	 * Erstellt ein Shader Objekt auf der GPU und kompiliert einen Shader mit
+	 * dem gegebenen Shader Typen. Überprüft den Kompilierungsstatus und gibt
+	 * den Error log aus.
 	 *
-	 * @param shaderType	OpenGL-Shader type (eg. GL2ES2.GL_VERTEX_SHADER)
-	 * @param shaderString	Character string containing the shader source code
-	 * @return 				OpenGL shader ID on the GPU
+	 * @param shaderType	OpenGL-Shader Typ (z.B. GL2ES2.GL_VERTEX_SHADER)
+	 * @param shaderString	String mit dem Shader Source Code
+	 * @return 				OpenGL Shader ID auf der GPU
 	 */
 	private static int createAndCompileShader(int shaderType, String shaderString) {
 		int shader;
 
-		// Create shader object on GPU, associate the source code with it
-		// and compile the shader string.
 		shader = gl.glCreateShader(shaderType);
 		String[] shaderLines = new String[] { shaderString };
 		int[] shaderLengths = new int[] { shaderLines[0].length() };
 		gl.glShaderSource(shader, shaderLines.length, shaderLines, shaderLengths, 0);
 		gl.glCompileShader(shader);
 
-		// Check the compile status and output an error log.
+		// Überprüft den Kompilierungsstatus und gibt den Error log aus
 		int[] compiled = new int[1];
 		gl.glGetShaderiv(shader, GL2ES2.GL_COMPILE_STATUS, compiled, 0);
 		if (compiled[0] != 0) {
 			//System.out.println("Shader compiled successfully.");
 		} else {
-			// Compilation with error: Read and print compiler log to console
+			// Error: Log in der Konsole
 			int[] logLength = new int[1];
 			gl.glGetShaderiv(shader, GL2ES2.GL_INFO_LOG_LENGTH, logLength, 0);
 
@@ -105,9 +109,9 @@ public class ShaderProgram {
 	}
 
 	/**
-	 * Loads the contents of a (text) file into a string variable.
-	 * @param fileName name of the file including the (relative) path
-	 * @return contents of the (text) file
+	 * Lädt den Textinhalt in einem String
+	 * @param fileName	Name der Textdatei mit dem relativen Pfad
+	 * @return			Inhalt der Textdatei
 	 *
 	 */
 	private static String loadFileToString(String fileName) {
