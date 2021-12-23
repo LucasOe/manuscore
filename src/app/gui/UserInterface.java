@@ -59,7 +59,9 @@ public class UserInterface extends JFrame {
 	// Speichert das unverarbeitete Bild von der Webcam für einen Vorher/Nachher-Vergleich.
 	private Image currentFrameBefore;
 
-	// Konstruktor erstellt die benötigten Instanzen und zeigt das GUI an.
+	/**
+	 * Konstruktor erstellt die benötigten Instanzen und zeigt das GUI an.
+	 */
 	public UserInterface() {
 		// Initialisierung
 		webcamCapture = new WebcamCapture(this, CONTENT_WIDTH, CONTENT_HEIGHT);
