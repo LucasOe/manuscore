@@ -5,9 +5,15 @@ import org.opencv.core.Mat;
 import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
+import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
+
+import app.gui.UserInterface;
+
 import org.opencv.core.Point;
+import org.opencv.core.Rect;
+import org.opencv.core.RotatedRect;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,16 +23,19 @@ import java.util.List;
  */
 public class ImageProcessor {
 
+	UserInterface userInterface;
+
 	/**
 	 * Zuständig für die Verarbeitung der Eingabebilder. Zunächst wird eine Mat erstellt, welche die
 	 * Helligkeitswerte speichert. Diese wird dann weichgezeichnet und mit der OTSU-Methode binarisiert.
 	 * Das Schwarz-Weiß Bild wird dann in zusammengehörige Regionen aufgeteilt und nach den Regionen gefiltert,
 	 * die sich in der Mitte des Bildes befinden. Von der Region mit der größten Kontur werden dann die convex hull
 	 * und die convexity defects gebildet und angezeigt.
+	 * Die Berechnete defectsListSize und rotAspectRatio wird zur Unterscheidung der Handgesten in SceneSelect genutzt.
 	 * @param frame	Unverarbeitetes Eingabebild
 	 * @return		Verarbeitetes Ausgabebild
 	 */
-	public static Mat processImage(Mat frame) {
+	public static Mat processImage(UserInterface userInterface, Mat frame) {
 		// Stoppt wenn der Frame leer ist
 		if (frame.empty())
 			return null;
@@ -158,6 +167,28 @@ public class ImageProcessor {
 			Imgproc.circle(frameHull, defect, radius, new Scalar(0, 0, 255), 2);
 		}
 
+		//Handfeatures
+		MatOfPoint2f newMtx = new MatOfPoint2f(biggestContour.toArray());
+		double area = Imgproc.contourArea(biggestContour);
+		double perimeter = Imgproc.arcLength(newMtx, true);
+		Rect rect = Imgproc.boundingRect(biggestContour);
+		RotatedRect rotRect = Imgproc.minAreaRect(newMtx);
+		double aspectRatio = (double) rect.width / (double) rect.height;
+		double rotAspectRatio = rotRect.size.width / rotRect.size.height;
+		double relativePerimeter = perimeter / area;
+		int defectsListSize = defectsLists.size();
+
+		// Debug
+		System.out.println("Area of Contour: " + area);
+		System.out.println("Perimeter of Contour: " + relativePerimeter);
+		System.out.println("Amount of Defects: " + defectsListSize / 4);
+		System.out.println("Aspect Ratio: " + aspectRatio);
+		System.out.println("Rotated Aspect Ratio: " + rotAspectRatio);
+		System.out.println("");
+
+		// Übergebe defectsListSize und rotAspectRatio für die Auswahl der Szene
+		userInterface.setDefectsListSize(defectsListSize);
+		userInterface.setRotAspectRatio(rotAspectRatio);
 		// Processed frame zurückgeben
 		return frameHull;
 	}
