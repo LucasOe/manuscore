@@ -35,7 +35,7 @@ public class SceneSelect {
         }
     }
 
-    private void setScene(int scene) {
+    public void setScene(int scene) {
         userInterface.setContentScene(scene);
         userInterface.setControlsScene();
     }

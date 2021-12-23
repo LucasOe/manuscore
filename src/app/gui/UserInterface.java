@@ -9,6 +9,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.BoxLayout;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -83,7 +84,7 @@ public class UserInterface extends JFrame {
 
 		// Create and add split pane to window
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
-		splitPane.setDividerLocation(600);
+		splitPane.setDividerLocation(500);
 		splitPane.setEnabled(false);
 
 		// Create and add webcam output as the top component of the split pane
@@ -108,36 +109,105 @@ public class UserInterface extends JFrame {
 
 	// Add the buttons for starting & stopping the webcam and a button for uploading an image file instead
 	private JPanel getControlsWebcam() {
-		JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEADING, 20, 0));
+		JPanel controls = new JPanel();
+
+		Dimension buttonSize = new Dimension(130, 25);
+
+		BoxLayout boxLayout = new BoxLayout(controls, BoxLayout.Y_AXIS);
+		controls.setLayout(boxLayout);
+
+		JPanel webcamControls = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
 		String label = webcamCapture.getLabel();
-
 		captureButton = new JButton(label);
+		captureButton.setPreferredSize(buttonSize);
 		captureButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				webcamCapture.toggleCapture();
 			}
 		});
-		controls.add(captureButton);
+		webcamControls.add(captureButton);
 
 		JButton uploadButton = new JButton("Bild hochladen");
+		uploadButton.setPreferredSize(buttonSize);
 		uploadButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				fileSelect.selectFile();
 			}
 		});
-		controls.add(uploadButton);
+		webcamControls.add(uploadButton);
 
 		JButton continueButton = new JButton("Weiter");
+		continueButton.setPreferredSize(buttonSize);
 		continueButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				continueWithFrame();
 			}
 		});
-		controls.add(continueButton);
+		webcamControls.add(continueButton);
+
+		controls.add(webcamControls);
+
+		// Unsichtbares JPanel für vertikalen Abstand
+		controls.add(new JPanel());
+
+		// Szenenauswahl
+		JPanel sceneControls = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
+
+		JButton scene1Button = new JButton("(A)pfel");
+		scene1Button.setPreferredSize(buttonSize);
+		scene1Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sceneSelect.setScene(0);
+			}
+		});
+		sceneControls.add(scene1Button);
+
+		JButton scene2Button = new JButton("(C)hristbaum");
+		scene2Button.setPreferredSize(buttonSize);
+		scene2Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sceneSelect.setScene(1);
+			}
+		});
+		sceneControls.add(scene2Button);
+
+		JButton scene3Button = new JButton("G(eschenk)");
+		scene3Button.setPreferredSize(buttonSize);
+		scene3Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sceneSelect.setScene(2);
+			}
+		});
+		sceneControls.add(scene3Button);
+
+		JButton scene4Button = new JButton("(L)iebe");
+		scene4Button.setPreferredSize(buttonSize);
+		scene4Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sceneSelect.setScene(3);
+			}
+		});
+		sceneControls.add(scene4Button);
+
+		JButton scene5Button = new JButton("(W)eihnachtsmann");
+		scene5Button.setPreferredSize(buttonSize);
+		scene5Button.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				sceneSelect.setScene(4);
+			}
+		});
+		sceneControls.add(scene5Button);
+
+		controls.add(sceneControls);
 
 		return controls;
 	}
