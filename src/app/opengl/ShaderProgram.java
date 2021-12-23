@@ -8,6 +8,8 @@ import com.jogamp.opengl.GL2ES2;
 
 /**
  * ShaderProgram erstellt einen Shader mit den angegebenen Vertx und Fragment Shader Dateien und speichert die ShaderProgramID.
+ * 
+ * Der Code ist übernommen von den Beispielen auf Moodle von Karsten Lehn.
  */
 public class ShaderProgram {
 

@@ -362,9 +362,6 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 			e.printStackTrace();
 		}
 
-		// Primitives benutzen TRIANGLE_STIP für schnelleres Zeichnen
-		int mode = GL.GL_TRIANGLE_STRIP;
-
 		// Farben
 		float[] colorGround = { 0.1f, 0.5f, 0.1f };
 		float[] colorGreen = { 0.1f, 0.6f, 0.1f };
@@ -373,132 +370,132 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 		float[] colorBlue = { 0.1f, 0.1f, 0.8f };
 
 		// Boden
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 5.0f, 5.0f, 0.1f, colorGround);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 5.0f, 5.0f, 0.1f, colorGround);
 		models[index].setPos(0.0f, 0.0f, 0.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Baum 1 Stamm
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.3f, 0.3f, 1.0f, colorBrown);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.3f, 0.3f, 1.0f, colorBrown);
 		models[index].setPos(-3.0f, 0.5f, -1.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 1 Blätter Unten
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.5f, 1.3f, 1.0f, colorGreen);
 		models[index].setPos(-3.0f, 1.5f, -1.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 1 Blätter Mitte
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 1.0f, 1.0f, colorGreen);
 		models[index].setPos(-3.0f, 2.5f, -1.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 1 Blätter Oben
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(-3.0f, 3.5f, -1.0f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Baum 2 Stamm
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.3f, 0.3f, 1.2f, colorBrown);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.3f, 0.3f, 1.2f, colorBrown);
 		models[index].setPos(3.2f, 0.6f, -0.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 2 Blätter Unten
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.5f, 1.3f, 1.0f, colorGreen);
 		models[index].setPos(3.2f, 1.6f, -0.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 2 Blätter Mitte
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 1.0f, 1.0f, colorGreen);
 		models[index].setPos(3.2f, 2.6f, -0.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 2 Blätter Oben
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(3.2f, 3.6f, -0.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Baum 3 Stamm
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.3f, 0.3f, 1.2f, colorBrown);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.3f, 0.3f, 1.2f, colorBrown);
 		models[index].setPos(0.2f, 0.6f, -3.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Unten
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.5f, 1.3f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.5f, 1.3f, 1.0f, colorGreen);
 		models[index].setPos(0.2f, 1.6f, -3.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Mitte
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 1.0f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 1.0f, 1.0f, colorGreen);
 		models[index].setPos(0.2f, 2.6f, -3.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Oben
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.01f, 0.7f, 1.0f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.01f, 0.7f, 1.0f, colorGreen);
 		models[index].setPos(0.2f, 3.6f, -3.8f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Baum 3 Stamm
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 0.2f, 0.6f, colorBrown);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 0.2f, 0.6f, colorBrown);
 		models[index].setPos(-1.5f, 0.3f, -2.5f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Unten
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.4f, 0.8f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.4f, 0.8f, 0.5f, colorGreen);
 		models[index].setPos(-1.5f, 0.8f, -2.5f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Mitte
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 0.6f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 0.6f, 0.5f, colorGreen);
 		models[index].setPos(-1.5f, 1.3f, -2.5f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 3 Blätter Oben
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.01f, 0.3f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.01f, 0.3f, 0.5f, colorGreen);
 		models[index].setPos(-1.5f, 1.8f, -2.5f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Baum 4 Stamm
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 0.2f, 0.8f, colorBrown);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 0.2f, 0.8f, colorBrown);
 		models[index].setPos(1.8f, 0.4f, -2.7f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 4 Blätter Unten
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.4f, 0.8f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.4f, 0.8f, 0.5f, colorGreen);
 		models[index].setPos(1.8f, 0.9f, -2.7f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 4 Blätter Mitte
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.2f, 0.6f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.2f, 0.6f, 0.5f, colorGreen);
 		models[index].setPos(1.8f, 1.4f, -2.7f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 		// Baum 4 Blätter Oben
-		models[index] = new Cone(gl, shaderProgramBasicId, mode, 32, 0.01f, 0.3f, 0.5f, colorGreen);
+		models[index] = new Cone(gl, shaderProgramBasicId, 32, 0.01f, 0.3f, 0.5f, colorGreen);
 		models[index].setPos(1.8f, 1.9f, -2.7f);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Present 1
-		models[index] = new Box(gl, shaderProgramBasicId, mode, 0.8f, 0.8f, 0.8f, colorRed);
+		models[index] = new Box(gl, shaderProgramBasicId, 0.8f, 0.8f, 0.8f, colorRed);
 		models[index].setPos(2.0f, 0.4f, -1.0f);
 		models[index].setRot(30, 0, 1, 0);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Present 2
-		models[index] = new Box(gl, shaderProgramBasicId, mode, 0.6f, 0.6f, 0.6f, colorBlue);
+		models[index] = new Box(gl, shaderProgramBasicId, 0.6f, 0.6f, 0.6f, colorBlue);
 		models[index].setPos(2.3f, 0.3f, -0.2f);
 		models[index].setRot(40, 0, 1, 0);
 		loadModel(gl, models[index], index, 9);
 		index++;
 
 		// Present 3
-		models[index] = new Box(gl, shaderProgramBasicId, mode, 0.6f, 0.6f, 0.6f, colorRed);
+		models[index] = new Box(gl, shaderProgramBasicId, 0.6f, 0.6f, 0.6f, colorRed);
 		models[index].setPos(-2.3f, 0.3f, -0.2f);
 		models[index].setRot(70, 0, 1, 0);
 		loadModel(gl, models[index], index, 9);

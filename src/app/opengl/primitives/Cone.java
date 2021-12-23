@@ -1,12 +1,29 @@
 package app.opengl.primitives;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
 import app.opengl.Model;
 
+/**
+ * Erstellt einen Kegel mit einer angegebenen horizontalen Auflösung, einem Radius für
+ * den oberen Kreis, einem Radius für den unteren Kreis, einer Länge und Farbe.
+ * 
+ * Der Code basiert auf den Beispielen auf Moodle von Karsten Lehn.
+ */
 public class Cone extends Model {
 
-    public Cone(GL3 gl, int shaderProgramId, int mode, int horizontalResolution, float radiusTop,
+    /**
+     * Konstuktor erstellt ein Modell mit den Vertices und Indices für einen Kegel.
+     * @param gl                    OpenGL Graphics Context
+     * @param shaderProgramId       ID vom Shader Programm
+     * @param horizontalResolution  Horizontale Auflösung
+     * @param radiusTop             Radius Oben
+     * @param radiusBottom          Radius Unten
+     * @param length                Länge
+     * @param color                 Farbe
+     */
+    public Cone(GL3 gl, int shaderProgramId, int horizontalResolution, float radiusTop,
             float radiusBottom, float length,
             float[] color) {
         super(
@@ -14,19 +31,16 @@ public class Cone extends Model {
                 shaderProgramId,
                 makeVertices(horizontalResolution, radiusTop, radiusBottom, length, color),
                 makeIndices(horizontalResolution),
-                mode);
+                GL.GL_TRIANGLE_STRIP);
     }
 
     /**
-     * Creates vertices for a cone (frustum) with one single color and normal vectors.
-     * To be used together with makeIndicesForTriangleStrip().
-     * If the top and base circles have the same radius, then the center of gravity
-     * lies in the origin. The surface is parallel to the y-axis.
-     * @param radiusTop radius of the top circle
-     * @param radiusBottom radius of the bottom circle
-     * @param length length of the cone (frustum) (distance between the two circles)
-     * @param color three dimensional color vector for each vertex
-     * @return list of vertices
+     * Erstellt 24 Vertices für einen Kegel mit einer einzigen Farbe.
+     * @param radiusTop     Radius für den oberen Kreis
+     * @param radiusBottom  Radius für den unteren Kreis
+     * @param length        Distanz zwischen den zwei Kreisen
+     * @param color         Farbe der Vertices
+     * @return              Liste an Vertices
      */
     private static float[] makeVertices(int horizontalResolution, float radiusTop, float radiusBottom, float length,
             float[] color) {
@@ -177,10 +191,9 @@ public class Cone extends Model {
     }
 
     /**
-     * Creates indices for drawing the shape with glDrawElements().
-     * To be used together with makeVertices().
-     * To be used with "glDrawElements" and "GL_TRIANGLE_STRIP".
-     * @return indices into the vertex array of the shape
+     * Erstellt Indices für einen Kegel.
+     * @param horizontalResolution  Horizontale Auflösung
+     * @return                      Indices für das Vertex Array
      */
     private static int[] makeIndices(int horizontalResolution) {
 
@@ -250,8 +263,8 @@ public class Cone extends Model {
     }
 
     /**
-    * Computes the number of indices of a shape for the draw call.
-    * @return
+    * Berechnet die Anzhal an Indices
+    * @return   Anzahl an Indices
     */
     private static int noOfIndicesForCone(int horizontalResolution) {
         int noOfIndicesForCircle = 1 + // center of the circle
