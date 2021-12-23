@@ -1,27 +1,44 @@
 package app.opengl.primitives;
 
+import com.jogamp.opengl.GL;
 import com.jogamp.opengl.GL3;
 
 import app.opengl.Model;
 
+/**
+ * Erstellt eine UV-Kugel mit einer angegebenen horizontalen Auflösung, einer vertikalen Auflösung,
+ * einem Radius und Farbe.
+ * 
+ * Der Code basiert auf den Beispielen auf Moodle von Karsten Lehn.
+ */
 public class Sphere extends Model {
 
-    public Sphere(GL3 gl, int shaderProgramId, int mode, int verticalResolution, int horizontalResolution,
+    /**
+     * Konstuktor erstellt ein Modell mit den Vertices und Indices für eine Kugel.
+     * @param gl                    OpenGL Graphics Context
+     * @param shaderProgramId       ID vom Shader Programm
+     * @param verticalResolution    Vetikale Auflösung
+     * @param horizontalResolution  Horizontale Auflösung
+     * @param radius                Radius
+     * @param color                 Farbe
+     */
+    public Sphere(GL3 gl, int shaderProgramId, int verticalResolution, int horizontalResolution,
             float radius, float[] color) {
         super(
                 gl,
                 shaderProgramId,
                 makeVertices(verticalResolution, horizontalResolution, radius, color),
                 makeIndices(verticalResolution, horizontalResolution),
-                mode);
+                GL.GL_TRIANGLE_STRIP);
     }
 
     /**
-     * Creates vertices for a (UV)-sphere with one single color and normal vectors.
-     * To be used together with makeIndicesForTriangleStrip().
-     * @param radius radius of the sphere
-     * @param color three dimensional color vector for each vertex
-     * @return list of vertices
+     * Erstellt Vertices für eine UV-Kugel mit einer einzigen Farbe.
+     * @param verticalResolution    Vertikale Auflösung
+     * @param horizontalResolution  Horizontale Auflösung
+     * @param radius                Radius
+     * @param color                 Farbe
+     * @return                      Liste an Vertices
      */
     private static float[] makeVertices(int verticalResolution, int horizontalResolution, float radius, float[] color) {
         // Using spherical coordinates to create the vertices
@@ -63,10 +80,8 @@ public class Sphere extends Model {
     }
 
     /**
-     * Creates indices for drawing a sphere with glDrawElements().
-     * To be used together with makeVertices().
-     * To be used with "glDrawElements" and "GL_TRIANGLE_STRIP".
-     * @return indices into the vertex array of the sphere
+     * Erstellt Indices für eine UV-Kugel.
+     * @return Indices für das Vertex Array
      */
     private static int[] makeIndices(int verticalResolution, int horizontalResolution) {
 
@@ -86,8 +101,8 @@ public class Sphere extends Model {
     }
 
     /**
-    * Computes the number of indices of a sphere for the draw call.
-    * @return number of indices the index buffer
+    * Berechnet die Anzahl an Indices
+    * @return   Anzahl an Indices
     */
     private static int noOfIndicesForSphere(int verticalResolution, int horizontalResolution) {
         return 2 * verticalResolution * horizontalResolution;

@@ -2,6 +2,9 @@ package app.opengl;
 
 import com.jogamp.opengl.GL3;
 
+/**
+ * Speichert die Vertices und Indices in einer Instanz zusammen mit der Position und Rotation.
+ */
 public class Model {
 	private float[] vertices;
 	private int[] indices;
@@ -17,6 +20,14 @@ public class Model {
 
 	private int shaderProgramId;
 
+	/**
+	 * Konstruktor intialisiert die Instanzvariablen.
+	 * @param gl				OpenGL Graphics Context
+	 * @param shaderProgramId	ID vom Shader Programm
+	 * @param vertices			Liste mit Vertices
+	 * @param indices			Liste mit Indices
+	 * @param mode				GL_TRIANGLES oder GL_TRIANGLE_STRIP
+	 */
 	public Model(GL3 gl, int shaderProgramId, float[] vertices, int[] indices, int mode) {
 		this.vertices = vertices;
 		this.indices = indices;

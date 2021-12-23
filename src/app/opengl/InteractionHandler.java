@@ -3,6 +3,11 @@ package app.opengl;
 import java.awt.*;
 import java.awt.event.*;
 
+/**
+ * Der InteractionHandler ist zuständig für die Interaktion mit Maus und Tastatur.
+ * 
+ * Der Code ist übernommen aus den Beispielen auf Moodle von Karsten Lehn.
+ */
 public class InteractionHandler implements KeyListener, MouseListener, MouseMotionListener, MouseWheelListener {
 
 	// Constant for debugging purposes
@@ -31,13 +36,6 @@ public class InteractionHandler implements KeyListener, MouseListener, MouseMoti
 	private final float mouseRotationFactor = 0.1f;
 	private final float mouseTranslationFactor = 0.1f;
 	private final float mouseWheelScrollFactor = 10f;
-
-	/**
-	 * Standard constructor for creation of the interaction handler.
-	 */
-	public InteractionHandler() {
-
-	}
 
 	public float getEyeZ() {
 		return eyeZ;
