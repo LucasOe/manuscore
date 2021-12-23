@@ -6,9 +6,7 @@ import app.gui.UserInterface;
  * Zuständig für die Auswahl der passenden 3D-Szene basierend auf der Geste, die auf dem Eingagbebild
  * erkannt wird. Das Erkennen der Handgeste soll später mit den Convexity Defects und k-Nearest-Neighbors
  * erkannt werden.
- * Momentan befinden sich hier placeholder Methoden, die die Szene basieren auf der Farbe des Pixels an der
- * Stelle 0, 0 auswählen. Bei rot wird Szene 0, bei grün Szene 1 und bei blau Szene 2 angezeigt. Die placeholder
- * Methoden sollen später noch ersetzt werden.
+ * Momentan wird die Geste mit der berechneten defectsListSize und rotAspectRatio erkannt.
  */
 public class SceneSelect {
 
@@ -23,9 +21,8 @@ public class SceneSelect {
     }
 
     /**
-     * TODO: selectScene mit richtiger Szenen-Auswahl ersetzen basierend auf den Convexity Defects.
-     * Wählt aus, welcher der fünf 3D-Szenen angezeigt werden soll, basierend auf dem Farbwert an der
-     * Stelle 0, 0.
+     * Wählt aus, welcher der fünf 3D-Szenen angezeigt werden soll, basierend auf der defectsListSize
+     * und rotAspectRatio.
      * @param image Eingabebild
      */
     public void selectScene(int defectsListSize, double rotAspectRatio) {
