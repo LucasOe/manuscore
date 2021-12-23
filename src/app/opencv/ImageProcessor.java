@@ -190,6 +190,7 @@ public class ImageProcessor {
 
 		// Processed frame zurückgeben
 		return frameHull;
+
 	}
 
 	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
