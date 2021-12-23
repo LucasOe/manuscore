@@ -23,14 +23,14 @@ public class StartRenderer extends GLCanvas implements GLEventListener {
 	private int activeObject;
 	// List of Object paths pointing to the .obj file
 	private Path[] objectPaths = {
-			Paths.get(modelPath + "heart.obj"),
-			Paths.get(modelPath + "tree.obj"),
-			Paths.get(modelPath + "santa.obj"),
 			Paths.get(modelPath + "apple.obj"),
-			Paths.get(modelPath + "present.obj")
+			Paths.get(modelPath + "tree.obj"),
+			Paths.get(modelPath + "present.obj"),
+			Paths.get(modelPath + "heart.obj"),
+			Paths.get(modelPath + "santa.obj"),
 	};
 
-	private Model[] models = new Model[50];
+	private Model[] models = new Model[25];
 
 	// OpenGL buffer names for data allocation and handling on GPU
 	private int[] vaoName;
