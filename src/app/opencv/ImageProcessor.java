@@ -27,7 +27,7 @@ public class ImageProcessor {
 		Mat frameValueBlur = new Mat();
 
 		//nur ungerade Werte funktionieren???
-		int blurStrength = 15;
+		int blurStrength = 11;
 		// Weichzeichnung des original Bildes und vom Value Bild
 		Imgproc.GaussianBlur(frame, frameBlur, new Size(blurStrength, blurStrength), 0);
 		Imgproc.medianBlur(frameValue, frameValueBlur, blurStrength);
@@ -133,15 +133,29 @@ public class ImageProcessor {
 
 		Point[] data = biggestContour.toArray();
 		List<Integer> defectsLists = defects.toList();
+		int counter = 0;
+		double before = 0;
+
 		for (int j = 0; j < defectsLists.size(); j = j + 4) {
 			Point defectStart = data[defectsLists.get(j)];
 			Point defectEnd = data[defectsLists.get(j + 1)];
 			Point defect = data[defectsLists.get(j + 2)];
 
+			/*System.out.println("AAAAAAAAA: " + (before/defectsLists.get(j + 2)));
+
+			if (defectsLists.get(j + 2) - before >= 50){
+				System.out.println("filteredpoints: " + defectsLists.get(j+2));
+				counter++;
+			}
+			*/
+
 			int radius = 2;
 			Imgproc.circle(frameHull, defectStart, radius, new Scalar(0, 255, 0), 1);
 			Imgproc.circle(frameHull, defectEnd, radius, new Scalar(0, 255, 0), 1);
 			Imgproc.circle(frameHull, defect, radius, new Scalar(0, 0, 255), 2);
+
+			//before = defectsLists.get(j + 2);
+
 		}
 
 		//Handfeatures
@@ -160,6 +174,17 @@ public class ImageProcessor {
 		System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
 		System.out.println("Amount of Defects: " + defectsLists.size()/4);
 		System.out.println("Aspect Ratio: " + aspectRatio);
+		//System.out.println("Ecken: " + counter);
+
+
+		//Ganz hohle implementierung einer Klassifizierung mithilfe der Tiefenparameter von Convexitydefect
+		if (counter >=6 && counter <=7){
+			System.out.print("Offene Hand");
+		}
+		if (counter == 3 || counter == 4){
+			System.out.print("YYYYYYYYYYYY");
+		}
+
 		//System.out.println("Solidity: " + solidity);
 		System.out.println();
 
