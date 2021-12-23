@@ -26,13 +26,13 @@ import app.opengl.StartRenderer;
 
 /**
  * Die UserInterface Klasse ist für das Erstellen und Anzeigen des User Interfaces zuständig.
- * Das Interface ist aufgeteile in das contentPanel, welches das Bild von der Webcam oder den OpenGL-
- * Canvas anzeigt, und in das controlsPanel, welches die Buttons zur Navigation anzeigt.
- * Der Inhalt wird ausgetauscht je nachdem was gerade angezeigt werden soll.
+ * Das Interface ist aufgeteilt in das contentPanel, welches das Bild von der Webcam oder den OpenGL-
+ * Canvas anzeigt, und in das controlsPanel, welches die Buttons zur Navigation der jeweiligen
+ * Ansicht anzeigt. Der Inhalt wird ausgetauscht je nachdem welche Ansicht gerade aktiv ist.
  */
 public class UserInterface extends JFrame {
-	// Für Debugzwecke. Ist der Wert auf true, startet das Programm mit OpenGL-Canvas und
-	// speichert ein Bild der Webcam wenn man auf "Weiter" klickt.
+	// Für Debugzwecke. Ist der Wert auf true, dann startet das Programm mit dem OpenGL-Canvas
+	// und speichert ein Vorher/Nachher-Bild von der Webcam, wenn man auf "Weiter" klickt.
 	private final boolean isDebug = false;
 
 	private static final String FRAME_TITLE = "ManusCore";
