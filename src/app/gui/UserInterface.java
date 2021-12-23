@@ -24,8 +24,16 @@ import app.opencv.SceneSelect;
 import app.opencv.WebcamCapture;
 import app.opengl.StartRenderer;
 
+/**
+ * Die UserInterface Klasse ist für das Erstellen und Anzeigen des User Interfaces zuständig.
+ * Das Interface ist aufgeteile in das contentPanel, welches das Bild von der Webcam oder den OpenGL-
+ * Canvas anzeigt, und in das controlsPanel, welches die Buttons zur Navigation anzeigt.
+ * Der Inhalt wird ausgetauscht je nachdem was gerade angezeigt werden soll.
+ */
 public class UserInterface extends JFrame {
-	private final boolean isDebug = true; // FOR DEBUG PURPOSES JUMP STRAIGHT TO MODEL VIEW
+	// Für Debugzwecke. Ist der Wert auf true, startet das Programm mit OpenGL-Canvas und
+	// speichert ein Bild der Webcam wenn man auf "Weiter" klickt.
+	private final boolean isDebug = false;
 
 	private static final String FRAME_TITLE = "ManusCore";
 	private static final int FRAME_WIDTH = 1280;
@@ -46,21 +54,25 @@ public class UserInterface extends JFrame {
 	private JLabel webcamLabel;
 	private JButton captureButton;
 
-	// The image that is used to select the scene
-	private Image currentFrame, currentFrameBefore;
+	// Wird an SceneSelect übergeben für die Auswahl der Szene.
+	private Image currentFrame;
+	// Speichert das unverarbeitete Bild von der Webcam für einen Vorher/Nachher-Vergleich.
+	private Image currentFrameBefore;
 
+	// Konstruktor erstellt die benötigten Instanzen und zeigt das GUI an.
 	public UserInterface() {
-		// initialize Components
+		// Initialisierung
 		webcamCapture = new WebcamCapture(this, CONTENT_WIDTH, CONTENT_HEIGHT);
 		fileSelect = new FileSelect(this);
 		sceneSelect = new SceneSelect(this);
 
+		// Erstellt das User Interface
 		initializeUserInterface();
 
+		// Stoppt den Animator wenn man das Programm verlässt.
 		this.addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
-				// Thread to stop the animator before the program exits
 				new Thread() {
 					@Override
 					public void run() {
@@ -78,16 +90,21 @@ public class UserInterface extends JFrame {
 		this.setVisible(true);
 	}
 
+	/**
+	 * Zuständig für das Erstellen des User Interfaces. JSplitPane teilt das User Interface in
+	 * zwei Bereiche für den Inhalt und die Buttons. Wenn isDebug true ist, startet das
+	 * Programm mit dem OpenGL-Canvas.
+	 */
 	private void initializeUserInterface() {
-		// Create the window container
+		// Erstellt den Window Container mit der angegbenen Größe
 		this.setPreferredSize(new Dimension(FRAME_WIDTH, FRAME_HEIGHT));
 
-		// Create and add split pane to window
+		// Erstellt ein JSplitPane
 		JSplitPane splitPane = new JSplitPane(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setDividerLocation(500);
 		splitPane.setEnabled(false);
 
-		// Create and add webcam output as the top component of the split pane
+		// Fügt contentPanel als oberen Component zu splitPane hinzu
 		contentPanel = new JPanel(new GridBagLayout());
 		splitPane.setTopComponent(contentPanel);
 		if (!isDebug)
@@ -95,7 +112,7 @@ public class UserInterface extends JFrame {
 		else
 			setContentScene(0);
 
-		// Create and add menu panel as the bottom component of the split pane
+		// Fügt controlsPanel als unteren Component zu splitPane hinzu
 		controlsPanel = new JPanel(new GridBagLayout());
 		splitPane.setBottomComponent(controlsPanel);
 		if (!isDebug)
@@ -103,11 +120,15 @@ public class UserInterface extends JFrame {
 		else
 			setControlsScene();
 
-		// Add split pane to window
+		// Fügt die splitPane zum Fenster hinzu
 		this.getContentPane().add(splitPane);
 	}
 
-	// Add the buttons for starting & stopping the webcam and a button for uploading an image file instead
+	/**
+	 * Erstellt die Controls für die Steuerungselemente in der Webcam-Ansicht.
+	 * Fügt Aufnahme Starten, Bild hochladen, Weiter und die direkte Auswahl der 3D-Szene hinzu.
+	 * @return	Controls für die Webcam-Ansicht
+	 */
 	private JPanel getControlsWebcam() {
 		JPanel controls = new JPanel();
 
@@ -118,6 +139,7 @@ public class UserInterface extends JFrame {
 
 		JPanel webcamControls = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
+		// Aufnahme Starten / Aufnahme Stoppen
 		String label = webcamCapture.getLabel();
 		captureButton = new JButton(label);
 		captureButton.setPreferredSize(buttonSize);
@@ -129,6 +151,7 @@ public class UserInterface extends JFrame {
 		});
 		webcamControls.add(captureButton);
 
+		// Bild hochladen
 		JButton uploadButton = new JButton("Bild hochladen");
 		uploadButton.setPreferredSize(buttonSize);
 		uploadButton.addActionListener(new ActionListener() {
@@ -139,6 +162,7 @@ public class UserInterface extends JFrame {
 		});
 		webcamControls.add(uploadButton);
 
+		// Weiter
 		JButton continueButton = new JButton("Weiter");
 		continueButton.setPreferredSize(buttonSize);
 		continueButton.addActionListener(new ActionListener() {
@@ -157,62 +181,71 @@ public class UserInterface extends JFrame {
 		// Szenenauswahl
 		JPanel sceneControls = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
-		JButton scene1Button = new JButton("(A)pfel");
-		scene1Button.setPreferredSize(buttonSize);
-		scene1Button.addActionListener(new ActionListener() {
+		// Szene 0
+		JButton scene0Button = new JButton("(A)pfel");
+		scene0Button.setPreferredSize(buttonSize);
+		scene0Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sceneSelect.setScene(0);
 			}
 		});
-		sceneControls.add(scene1Button);
+		sceneControls.add(scene0Button);
 
-		JButton scene2Button = new JButton("(C)hristbaum");
-		scene2Button.setPreferredSize(buttonSize);
-		scene2Button.addActionListener(new ActionListener() {
+		// Szene 1
+		JButton scene1Button = new JButton("(C)hristbaum");
+		scene1Button.setPreferredSize(buttonSize);
+		scene1Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sceneSelect.setScene(1);
 			}
 		});
-		sceneControls.add(scene2Button);
+		sceneControls.add(scene1Button);
 
-		JButton scene3Button = new JButton("G(eschenk)");
-		scene3Button.setPreferredSize(buttonSize);
-		scene3Button.addActionListener(new ActionListener() {
+		// Szene 2
+		JButton scene2Button = new JButton("G(eschenk)");
+		scene2Button.setPreferredSize(buttonSize);
+		scene2Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sceneSelect.setScene(2);
 			}
 		});
-		sceneControls.add(scene3Button);
+		sceneControls.add(scene2Button);
 
-		JButton scene4Button = new JButton("(L)iebe");
-		scene4Button.setPreferredSize(buttonSize);
-		scene4Button.addActionListener(new ActionListener() {
+		// Szene 3
+		JButton scene3Button = new JButton("(L)iebe");
+		scene3Button.setPreferredSize(buttonSize);
+		scene3Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sceneSelect.setScene(3);
 			}
 		});
-		sceneControls.add(scene4Button);
+		sceneControls.add(scene3Button);
 
-		JButton scene5Button = new JButton("(W)eihnachtsmann");
-		scene5Button.setPreferredSize(buttonSize);
-		scene5Button.addActionListener(new ActionListener() {
+		// Szene 4
+		JButton scene4Button = new JButton("(W)eihnachtsmann");
+		scene4Button.setPreferredSize(buttonSize);
+		scene4Button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				sceneSelect.setScene(4);
 			}
 		});
-		sceneControls.add(scene5Button);
+		sceneControls.add(scene4Button);
 
 		controls.add(sceneControls);
 
 		return controls;
 	}
 
-	// Add back button to return to the webcam view
+	/**
+	 * Erstellt die Controls für die Steuerungselemente in der OpenGL-Ansicht.
+	 * Fügt "Zurück" Button zum Zurückkehren in die Webcam-Ansicht hinzu.
+	 * @return	Controls für die OpenGL-Ansicht
+	 */
 	private JPanel getControlsScene() {
 		JPanel controls = new JPanel(new FlowLayout(FlowLayout.LEADING, 20, 0));
 
@@ -229,7 +262,11 @@ public class UserInterface extends JFrame {
 		return controls;
 	}
 
-	// Get image label to show webcam output
+	/**
+	 * Fügt ein JLabel hinzu welches das Bild von der Webcam anzeigt.
+	 * In setWebcamIcon() wird das Bild mit dem aktuellen Frame geupdated.
+	 * @return	JPanel mit dem webcamLabel als Inhalt
+	 */
 	private JPanel getContentWebcam() {
 		JPanel content = new JPanel();
 
@@ -239,13 +276,19 @@ public class UserInterface extends JFrame {
 		return content;
 	}
 
-	// Get the opengl canvas
+	/**
+	 * Fügt einen GLCnavas von StartRenderer hinzu welcher die 3D-Szene anzeigt und startet den FPSAnimator.
+	 * Jedes mal, wenn der Nutzer eine andere Szene auswählt, bzw. eine andere Geste zeigt, wird der
+	 * renderCanvas neu erstellt mit der jeweiligen Szene als Eingabeparameter.
+	 * @param scene	Szene die angezeigt werden soll
+	 * @return		JPanel mit dem renderCanvas als Inhalt
+	 */
 	private JPanel getContentScene(int scene) {
 		JPanel content = new JPanel();
 
 		renderCanvas = new StartRenderer(scene);
 
-		// Create an animator object for calling the display method of the GLCanvas at the defined frame rate.
+		// Erstellt ein Animator-Objekt für den GLCanvas mit der angegebenen Framerate.
 		animator = new FPSAnimator(renderCanvas, FRAME_RATE, true);
 		animator.start();
 
@@ -257,7 +300,10 @@ public class UserInterface extends JFrame {
 		return content;
 	}
 
-	// Set content to the webcam output
+	/**
+	 * Ändert contentPanel zu dem Inhalt von getContentWebcam und stoppt den
+	 * Animator wenn dieser aktiv ist.
+	 */
 	public void setContentWebcam() {
 		if (animator != null && animator.isAnimating())
 			animator.stop();
@@ -270,7 +316,10 @@ public class UserInterface extends JFrame {
 		contentPanel.repaint();
 	}
 
-	// Set content to the opengl canvas
+	/**
+	 * Ändert contentPanel zu dem Inhalt von getContentScene mit der jeweiligen 3D-Szene.
+	 * @param scene	Szene die angezeigt werden soll
+	 */
 	public void setContentScene(int scene) {
 		contentPanel.removeAll();
 		JPanel content = getContentScene(scene);
@@ -280,7 +329,9 @@ public class UserInterface extends JFrame {
 		contentPanel.repaint();
 	}
 
-	// Set controls to the webcam buttons
+	/**
+	 * Ändert controlsPanel zu dem Inhalt von getControlsWebcam.
+	 */
 	public void setControlsWebcam() {
 		controlsPanel.removeAll();
 		JPanel controls = getControlsWebcam();
@@ -290,7 +341,9 @@ public class UserInterface extends JFrame {
 		controlsPanel.repaint();
 	}
 
-	// Set controls to the opengl buttons
+	/**
+	 * Ändert controlsPanel zu dem Inhalt von getControlsScene.
+	 */
 	public void setControlsScene() {
 		controlsPanel.removeAll();
 		JPanel controls = getControlsScene();
@@ -300,24 +353,45 @@ public class UserInterface extends JFrame {
 		controlsPanel.repaint();
 	}
 
+	/**
+	 * Ändert das webcamLabel zu dem aktuellen Frame wenn die Webcam aktiv ist, oder
+	 * zu dem Bild das der Nutzer hochlädt.
+	 * @param image	Das Bild, das angezeigt werden soll
+	 */
 	public void setWebcamIcon(Image image) {
 		Image imageResized = Utils.resizeImage(image, CONTENT_WIDTH, CONTENT_HEIGHT);
 		webcamLabel.setIcon(new ImageIcon(imageResized));
 	}
 
+	/**
+	 * Ändert den Text von captureButton zu "Aufnahme beginnen" / "Aufnahme beenden", je nachdem
+	 * ob die Webcam gerade aufnimmt oder nicht.
+	 * @param text	Text für den captureButton
+	 */
 	public void setWebcamText(String text) {
 		captureButton.setText(text);
 	}
 
+	/**
+	 * Setzt currentFrame und currentFrameBefore zu dem aktuellen Bild, das für die Szenen-
+	 * Auswahl verwendet werden soll. Nimmt die Webcam auf, wird der letzte Frame verwendet,
+	 * lädt der Nutzer ein Bild hoch, wird dieses verwendet.
+	 * @param imageProcessed	Verarbeitetes Bild
+	 * @param imageBefore		Unverarbeitetes Bild
+	 */
 	public void setCurrentFrame(Image imageProcessed, Image imageBefore) {
 		this.currentFrame = imageProcessed;
 		this.currentFrameBefore = imageBefore;
 	}
 
-	// Continue with current frame
+	/**
+	 * Klickt der Nutzer auf "Weiter" wird currentFrame an sceneSelect übergeben für die
+	 * Auswahl der 3D-Szene.
+	 */
 	private void continueWithFrame() {
 		if (currentFrame != null) {
 			sceneSelect.selectScene(currentFrame);
+			// Wenn isDebug true ist, wird das Vorher/Nachher-Bild als jpg gespeichert.
 			if (isDebug) {
 				Utils.writeFile(currentFrame, "Debug_WebcamOutput_After");
 				Utils.writeFile(currentFrameBefore, "Debug_WebcamOutput_Before");
