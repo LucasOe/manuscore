@@ -59,6 +59,9 @@ public class UserInterface extends JFrame {
 	// Speichert das unverarbeitete Bild von der Webcam für einen Vorher/Nachher-Vergleich.
 	private Image currentFrameBefore;
 
+	private int defectsListSize;
+	private double rotAspectRatio;
+
 	/**
 	 * Konstruktor erstellt die benötigten Instanzen und zeigt das GUI an.
 	 */
@@ -387,16 +390,37 @@ public class UserInterface extends JFrame {
 	}
 
 	/**
-	 * Klickt der Nutzer auf "Weiter" wird currentFrame an sceneSelect übergeben für die
-	 * Auswahl der 3D-Szene.
+	 * ImageProcessor übergibt die defectsListSize
+	 * @param defectsListSize	Länge der defectsList
+	 */
+	public void setDefectsListSize(int defectsListSize) {
+		this.defectsListSize = defectsListSize;
+	}
+
+	/**
+	 * ImageProcessor übergibt die rotAspectRatio
+	 * @param rotAspectRatio	Rotiertes Seitenverhältnis
+	 */
+	public void setRotAspectRatio(double rotAspectRatio) {
+		this.rotAspectRatio = rotAspectRatio;
+	}
+
+	/**
+	 * Klickt der Nutzer auf "Weiter" wird die defectsListSize und die rotAspectRatio an sceneSelect
+	 * übergeben für die Auswahl der 3D-Szene.
 	 */
 	private void continueWithFrame() {
-		if (currentFrame != null) {
-			sceneSelect.selectScene(currentFrame);
+		System.out.println("Amount of Defects: " + defectsListSize / 4);
+		System.out.println("Rotated Aspect Ratio: " + rotAspectRatio);
+		if (defectsListSize != 0 && rotAspectRatio != 0) {
+			// Wähle die Szene anhand der defectsListSize und rotAspectRatio aus
+			sceneSelect.selectScene(defectsListSize, rotAspectRatio);
 			// Wenn isDebug true ist, wird das Vorher/Nachher-Bild als jpg gespeichert.
-			if (isDebug) {
-				Utils.writeFile(currentFrame, "Debug_WebcamOutput_After");
-				Utils.writeFile(currentFrameBefore, "Debug_WebcamOutput_Before");
+			if (currentFrame != null && currentFrameBefore != null) {
+				if (isDebug) {
+					Utils.writeFile(currentFrame, "Debug_WebcamOutput_After");
+					Utils.writeFile(currentFrameBefore, "Debug_WebcamOutput_Before");
+				}
 			}
 		}
 	}

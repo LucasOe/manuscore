@@ -26,6 +26,7 @@ public class FileSelect {
 	 */
 	public FileSelect(UserInterface userInterface) {
 		this.userInterface = userInterface;
+
 		fileChooser = new JFileChooser();
 	}
 
@@ -45,7 +46,7 @@ public class FileSelect {
 
 				// Verarbeitet das Bild und speichert es im imageProcessed
 				Mat frame = Utils.BufferedImage2Mat(image);
-				Mat frameProcessed = ImageProcessor.processImage(frame);
+				Mat frameProcessed = ImageProcessor.processImage(userInterface, frame);
 				BufferedImage imageProcessed = Utils.Mat2BufferedImage(frameProcessed);
 
 				// Übergibt das verarbeitete und das unverarbeitete Bild an das UserInterface
