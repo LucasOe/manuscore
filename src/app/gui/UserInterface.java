@@ -187,7 +187,7 @@ public class UserInterface extends JFrame {
 		JPanel sceneControls = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 0));
 
 		// Szene 0
-		JButton scene0Button = new JButton("(A)pfel");
+		JButton scene0Button = new JButton("(Y) Apfel");
 		scene0Button.setPreferredSize(buttonSize);
 		scene0Button.addActionListener(new ActionListener() {
 			@Override
@@ -198,7 +198,7 @@ public class UserInterface extends JFrame {
 		sceneControls.add(scene0Button);
 
 		// Szene 1
-		JButton scene1Button = new JButton("(C)hristbaum");
+		JButton scene1Button = new JButton("(Q) Christbaum");
 		scene1Button.setPreferredSize(buttonSize);
 		scene1Button.addActionListener(new ActionListener() {
 			@Override
@@ -209,7 +209,7 @@ public class UserInterface extends JFrame {
 		sceneControls.add(scene1Button);
 
 		// Szene 2
-		JButton scene2Button = new JButton("(G)eschenk");
+		JButton scene2Button = new JButton("(K) Geschenk");
 		scene2Button.setPreferredSize(buttonSize);
 		scene2Button.addActionListener(new ActionListener() {
 			@Override
@@ -220,7 +220,7 @@ public class UserInterface extends JFrame {
 		sceneControls.add(scene2Button);
 
 		// Szene 3
-		JButton scene3Button = new JButton("(L)iebe");
+		JButton scene3Button = new JButton("(B) Liebe");
 		scene3Button.setPreferredSize(buttonSize);
 		scene3Button.addActionListener(new ActionListener() {
 			@Override
@@ -231,7 +231,7 @@ public class UserInterface extends JFrame {
 		sceneControls.add(scene3Button);
 
 		// Szene 4
-		JButton scene4Button = new JButton("(W)eihnachtsmann");
+		JButton scene4Button = new JButton("(A) Weihnachtsmann");
 		scene4Button.setPreferredSize(buttonSize);
 		scene4Button.addActionListener(new ActionListener() {
 			@Override
