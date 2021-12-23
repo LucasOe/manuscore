@@ -230,14 +230,10 @@ public class UserInterface extends JFrame {
 	}
 
 	// Get image label to show webcam output
-	private JPanel getContentWebcam(String path) {
+	private JPanel getContentWebcam() {
 		JPanel content = new JPanel();
 
-		// Get and resize image
-		Image placeholderImage = Utils.readImageFile(path);
-		Image placeholderImageResized = Utils.resizeImage(placeholderImage, CONTENT_WIDTH, CONTENT_HEIGHT);
-
-		webcamLabel = new JLabel(new ImageIcon(placeholderImageResized));
+		webcamLabel = new JLabel();
 		content.add(webcamLabel);
 
 		return content;
@@ -267,7 +263,7 @@ public class UserInterface extends JFrame {
 			animator.stop();
 		contentPanel.removeAll();
 
-		JPanel content = getContentWebcam(".\\resources\\images\\placeholder_webcam.jpg");
+		JPanel content = getContentWebcam();
 		contentPanel.add(content);
 
 		contentPanel.revalidate();
