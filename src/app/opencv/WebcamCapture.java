@@ -29,7 +29,6 @@ public class WebcamCapture {
 	private static int cameraId = 0;
 
 	private UserInterface userInterface;
-	private SceneSelect sceneSelect;
 
 	/**
 	 * Konstruktor intialisiert die Instanzvariablen und legt die Breite und Höhe fest.
@@ -39,7 +38,6 @@ public class WebcamCapture {
 	 */
 	public WebcamCapture(UserInterface userInterface, int width, int height) {
 		this.userInterface = userInterface;
-		this.sceneSelect = sceneSelect;
 
 		capture = new VideoCapture();
 		capture.set(Videoio.CAP_PROP_FRAME_WIDTH, width);
