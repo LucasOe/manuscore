@@ -12,18 +12,30 @@ import org.opencv.videoio.Videoio;
 import app.Utils;
 import app.gui.UserInterface;
 
+/**
+ * Zuständig für das Aufzeichnen der Webcam.
+ * 
+ * Der Code für diese Klasse basiert auf dem Beispiel von Luigi De Russis und Alberto Sacco:
+ * https://opencv-java-tutorials.readthedocs.io/en/latest/03-first-javafx-application-with-opencv.html#video-capturing
+ */
 public class WebcamCapture {
-	// Timer for acquiring the video stream
+	// Timer fürs Erhalten des Video Streams
 	private ScheduledExecutorService timer;
-	// The OpenCV object that realizes the video capture
+	// OpenCV Objekt, zuständig für die Aufnahme
 	private VideoCapture capture;
-	// Flag to change the button behavior
+	// Gibt an ob die Aufnahme an oder aus ist
 	private boolean cameraActive = false;
-	// The id of the camera to be used
+	// Die ID der Kamera die benutzt wird
 	private static int cameraId = 0;
 
 	private UserInterface userInterface;
 
+	/**
+	 * Konstruktor intialisiert die Instanzvariablen und legt die Breite und Höhe fest.
+	 * @param userInterface	Referenz zum UserInterface
+	 * @param width			Breite der Ausgabe
+	 * @param height		Höhe der Ausgabe
+	 */
 	public WebcamCapture(UserInterface userInterface, int width, int height) {
 		this.userInterface = userInterface;
 
@@ -32,7 +44,10 @@ public class WebcamCapture {
 		capture.set(Videoio.CAP_PROP_FRAME_HEIGHT, height);
 	}
 
-	// Toggles the webcam capture on and off
+	/**
+	 * Startet oder stoppt die Aufnahme und setzt entsprechend den Text vom Button
+	 * im User Interface.
+	 */
 	public void toggleCapture() {
 		if (!cameraActive) {
 			startCapture();
@@ -43,32 +58,38 @@ public class WebcamCapture {
 		userInterface.setWebcamText(getLabel());
 	}
 
-	// Get the label text for the JPanel component
+	/**
+	 * Gibt den Text für den JPanel Component zurück der anzeigt ob die Aufnahme aktiv ist
+	 * oder nicht.
+	 * @return	Text
+	 */
 	public String getLabel() {
 		return cameraActive ? "Aufnahme stoppen" : "Aufnahme beginnen";
 	}
 
-	// Starts the webcam capture
+	/**
+	 * Startet die Webcam Aufnahme.
+	 */
 	public void startCapture() {
 		System.out.println("Start Video Capture");
-		// Start the video capture
+		// Startet die Aufnahme
 		this.capture.open(cameraId);
 
-		// Test if the video stream is available
+		// Testet ob der Video Stream verfügbar ist
 		if (this.capture.isOpened()) {
 			this.cameraActive = true;
 
-			// grab a frame every 33 ms (30 frames/sec)
+			// Speichert den frame alle 33ms (30 FPS)
 			Runnable frameGrabber = new Runnable() {
 				@Override
 				public void run() {
-					// Grab a single frame
+					// Speichert im Video Stream zu diesem Zeitpunkt
 					Mat frame = grabFrame();
 
-					// Process Frame
+					// Wendet die Bildverarbeitung auf dem Frame an
 					Mat frameProcessed = ImageProcessor.processImage(frame);
 
-					// Convert the frame to a bufferd image and display it
+					// Konvertiert den Frame in ein BufferedImage und übergibt ihn an das User Interface
 					try {
 						BufferedImage imageProcessed = Utils.Mat2BufferedImage(frameProcessed);
 						BufferedImage imageBefore = Utils.Mat2BufferedImage(frame);
@@ -89,22 +110,29 @@ public class WebcamCapture {
 		}
 	}
 
-	// Stops the webcam capture
+	/**
+	 * Stoppt die Webcam aufnahme.
+	 */
 	public void stopCapture() {
 		System.out.println("Stop Video Capture");
 		this.cameraActive = false;
 
-		this.stopAcquisition(); // Stop the timer
+		// Stoppt den Timer
+		this.stopAcquisition();
 	}
 
-	// Get a frame from the opened video stream
+	/**
+	 * Speichert den Frame aus dem Webcam Stream.
+	 * @return	Frame
+	 */
 	private Mat grabFrame() {
 		Mat frame = new Mat();
 
-		// Check if the capture is open
+		// Überprüft ob der Video Stream aktiv ist
 		if (this.capture.isOpened()) {
 			try {
-				this.capture.read(frame); // Read the current frame
+				// Liest den Frame aus
+				this.capture.read(frame);
 			} catch (Exception e) {
 				System.err.println("Exception during the image elaboration: " + e);
 			}
@@ -113,8 +141,11 @@ public class WebcamCapture {
 		return frame;
 	}
 
-	// Stops and terminates the timer
+	/**
+	 * Stoppt und terminiert den laufenden Timer.
+	 */
 	private void stopAcquisition() {
+		// Wenn der Timer existiert und aktiv ist wird er beendet
 		if (this.timer != null && !this.timer.isShutdown()) {
 			try {
 				timer.shutdown();
@@ -124,8 +155,7 @@ public class WebcamCapture {
 			}
 		}
 
-		if (this.capture.isOpened()) {
-			this.capture.release(); // Release the camera
-		}
+		if (this.capture.isOpened())
+			this.capture.release();
 	}
 }
