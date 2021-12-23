@@ -35,6 +35,7 @@ public class TrainingData {
                     char label = file.getName().charAt(0);
                     Mat image2Mat = BufferedImage2Mat(image);
                     ImageProcessor.processImage(image2Mat);
+                    System.out.println("Label: " + label);
 
                 } catch (IOException e) {
                     e.printStackTrace();

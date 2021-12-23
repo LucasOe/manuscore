@@ -163,27 +163,44 @@ public class ImageProcessor {
 		double area = Imgproc.contourArea(biggestContour);
 		double perimeter = Imgproc.arcLength(newMtx, true);
 		Rect rect = Imgproc.boundingRect(biggestContour);
+		RotatedRect rotRect = Imgproc.minAreaRect(newMtx);
 		//System.out.println("Hull: " + hull);
 		double aspectRatio = (double) rect.width / (double) rect.height;
+		double rotAspectRatio = rotRect.size.width / rotRect.size.height;
+		double relativePerimeter = perimeter / area;
+
 		//double hullArea = Imgproc.contourArea(hull, false);
 		//double hullArea = 0.5;
 		//double solidity = area / hullArea;
 
 		//print all features to debug
-		System.out.println("Area of Contour: " + area / (720 * 480) * 100.0);
-		System.out.println("Perimeter of Contour: " + perimeter / (720 * 480) * 100.0);
+		System.out.println("Area of Contour: " + area);
+		System.out.println("Perimeter of Contour: " + relativePerimeter);
 		System.out.println("Amount of Defects: " + defectsLists.size()/4);
 		System.out.println("Aspect Ratio: " + aspectRatio);
+		System.out.println("Rotated Aspect Ratio: " + rotAspectRatio);
+
 		//System.out.println("Ecken: " + counter);
 
 
 		//Ganz hohle implementierung einer Klassifizierung mithilfe der Tiefenparameter von Convexitydefect
-		if (counter >=6 && counter <=7){
-			System.out.print("Offene Hand");
+		if (rotAspectRatio >= 0.7 && rotAspectRatio <= 1.2){
+			System.out.print("YYYYYYYYYYYYY");
 		}
-		if (counter == 3 || counter == 4){
-			System.out.print("YYYYYYYYYYYY");
+		else if (rotAspectRatio >= 1.5 && rotAspectRatio <= 2){
+			System.out.print("QQQQQQQQQQQQQQ");
 		}
+		else if (rotAspectRatio >= 0.4 && rotAspectRatio <= 0.55 && (defectsLists.size()/4) >= 20 && (defectsLists.size()/4) <= 29){
+			System.out.print("KKKKKKKKKKKKKKK");
+		}
+		else if (rotAspectRatio >= 0.4 && rotAspectRatio <= 0.55 && (defectsLists.size()/4) >= 30 && (defectsLists.size()/4) <= 45){
+			System.out.print("BBBBBBBBBBBBBBBBBBB");
+		}
+		else if (rotAspectRatio >= 0.8 && rotAspectRatio <= 1)
+		{
+			System.out.print("AAAAAAAAAAAAAA");
+		}
+
 
 		//System.out.println("Solidity: " + solidity);
 		System.out.println();
