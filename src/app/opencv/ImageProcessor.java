@@ -6,17 +6,28 @@ import org.opencv.core.MatOfInt;
 import org.opencv.core.MatOfInt4;
 import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
-import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.core.Point;
 
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Die ImageProcessor Klasse ist für das verarbeiten und segmentieren der Bilder zuständig.
+ */
 public class ImageProcessor {
 
+	/**
+	 * Zuständig für die Verarbeitung der Eingabebilder. Zunächst wird eine Mat erstellt, welche die
+	 * Helligkeitswerte speichert. Diese wird dann weichgezeichnet und mit der OTSU-Methode binarisiert.
+	 * Das Schwarz-Weiß Bild wird dann in zusammengehörige Regionen aufgeteilt und nach den Regionen gefiltert,
+	 * die sich in der Mitte des Bildes befinden. Von der Region mit der größten Kontur werden dann die convex hull
+	 * und die convexity defects gebildet und angezeigt.
+	 * @param frame	Unverarbeitetes Eingabebild
+	 * @return		Verarbeitetes Ausgabebild
+	 */
 	public static Mat processImage(Mat frame) {
-		// Stop when frame is empty
+		// Stoppt wenn der Frame leer ist
 		if (frame.empty())
 			return null;
 
@@ -30,11 +41,9 @@ public class ImageProcessor {
 		// Speichert die hsv-Werte in einzelnen Matrizen
 		Mat frameValue = hsv.get(2);
 
-		Mat frameBlur = new Mat();
 		Mat frameValueBlur = new Mat();
 		int blurStrength = 15;
 		// Weichzeichnung des original Bildes und vom Value Bild
-		Imgproc.GaussianBlur(frame, frameBlur, new Size(blurStrength, blurStrength), 0);
 		Imgproc.medianBlur(frameValue, frameValueBlur, blurStrength);
 
 		// Threshold in binäres Bild mit der OTSU-Methode
@@ -153,6 +162,13 @@ public class ImageProcessor {
 		return frameHull;
 	}
 
+	/**
+	 * Füllt alle Regionen in src, die sich nicht in der selectedLabel Liste befinden schwarz, und speichert
+	 * das neue Bild in dst.
+	 * @param src			Eingabe Mat
+	 * @param dst			Ausgabe Mat
+	 * @param selectedLabel	Liste mit ausgewählten Labels
+	 */
 	public static void fillRegion(Mat src, Mat dst, ArrayList<Integer> selectedLabel) {
 		for (int r = 0; r < dst.rows(); r++) {
 			for (int c = 0; c < dst.cols(); c++) {
