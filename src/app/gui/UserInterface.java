@@ -206,7 +206,7 @@ public class UserInterface extends JFrame {
 		sceneControls.add(scene1Button);
 
 		// Szene 2
-		JButton scene2Button = new JButton("G(eschenk)");
+		JButton scene2Button = new JButton("(G)eschenk");
 		scene2Button.setPreferredSize(buttonSize);
 		scene2Button.addActionListener(new ActionListener() {
 			@Override
