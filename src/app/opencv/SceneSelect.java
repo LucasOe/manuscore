@@ -11,11 +11,11 @@ import app.Utils;
 import app.gui.UserInterface;
 
 /**
- * Zustädnig für die Auswahl der passenden 3D-Szene basierend auf der Geste, die auf dem Eingagbebild
+ * Zuständig für die Auswahl der passenden 3D-Szene basierend auf der Geste, die auf dem Eingagbebild
  * erkannt wird. Das Erkennen der Handgeste soll später mit den Convexity Defects und k-Nearest-Neighbors
  * erkannt werden.
  * Momentan befinden sich hier placeholder Methoden, die die Szene basieren auf der Farbe des Pixels an der
- * Stelle 0, 0 auswählen. Bei Rot wird Szene 0, bei Grün Szene 1 und bei Blau Szene 2 angezeigt. Die placeholder
+ * Stelle 0, 0 auswählen. Bei rot wird Szene 0, bei grün Szene 1 und bei blau Szene 2 angezeigt. Die placeholder
  * Methoden sollen später noch ersetzt werden.
  */
 public class SceneSelect {
